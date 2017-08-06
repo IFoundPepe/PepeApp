@@ -30,10 +30,15 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
+import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.SeekBar;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,6 +69,12 @@ public class PepeControlActivity extends Activity {
 
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
+
+    private int   look = 128;
+    private int   lean = 0;
+    private int   flap = 0;
+    private int  tweet = 0;
+
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -148,8 +159,8 @@ public class PepeControlActivity extends Activity {
     };
 
     private void clearUI() {
-        mGattServicesList.setAdapter((SimpleExpandableListAdapter) null);
-        mDataField.setText(R.string.no_data);
+        //mGattServicesList.setAdapter((SimpleExpandableListAdapter) null);
+        //mDataField.setText(R.string.no_data);
     }
 
     @Override
@@ -173,6 +184,117 @@ public class PepeControlActivity extends Activity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+
+
+        // ENABLE SEEKBAR PEPE CONTROL!
+        SeekBar lookBar=(SeekBar) findViewById(R.id.lookBar); // initiate the Seekbar
+        lookBar.setMax(255); // 255 maximum value for the Seek bar
+        lookBar.setProgress(128); // 50 default progress value
+
+        // perform seek bar change listener event used for getting the progress value
+        lookBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int progressChangedValue = 128;
+
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progressChangedValue = progress;
+                look = progressChangedValue;
+                sendUpdatedPositionData();
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+            }
+
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                look = 128;
+                seekBar.setProgress(look);
+
+                Toast.makeText(PepeControlActivity.this, "Look bar position is :" + progressChangedValue,
+                        Toast.LENGTH_SHORT).show();
+
+                //Brute force buffer clear to allow return to default cuz I iz l33t h@x0R
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                sendUpdatedPositionData();
+            }
+        });
+
+        SeekBar leanBar=(SeekBar) findViewById(R.id.leanBar); // initiate the Seekbar
+        leanBar.setMax(255); // 255 maximum value for the Seek bar
+
+        // perform seek bar change listener event used for getting the progress value
+        leanBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int progressChangedValue = 0;
+
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                progressChangedValue = progress;
+                lean = progressChangedValue;
+                sendUpdatedPositionData();
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+            }
+
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+                lean = 0;
+                seekBar.setProgress(lean);
+
+                Toast.makeText(PepeControlActivity.this, "Lean bar position is :" + progressChangedValue,
+                        Toast.LENGTH_SHORT).show();
+
+                //Brute force buffer clear to allow return to default cuz I iz l33t h@x0R
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                sendUpdatedPositionData();
+            }
+        });
+
+        final Button flapButton = (Button) findViewById(R.id.flap);
+        flapButton.setOnTouchListener(new OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    Toast.makeText(PepeControlActivity.this, "Flap up", Toast.LENGTH_SHORT).show();
+                    flap = 1;
+                    sendUpdatedPositionData();
+                }
+                else if (event.getAction() == MotionEvent.ACTION_UP) {
+
+                    Toast.makeText(PepeControlActivity.this, "Flap down", Toast.LENGTH_SHORT).show();
+                    flap = 0;
+                    sendUpdatedPositionData();
+                }
+                return false;
+            }
+        });
+
+        final Button tweetButton = (Button) findViewById(R.id.tweet);
+        tweetButton.setOnTouchListener(new OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    Toast.makeText(PepeControlActivity.this, "Tweet on", Toast.LENGTH_SHORT).show();
+                    tweet = 1;
+                    sendUpdatedPositionData();
+                }
+                else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    Toast.makeText(PepeControlActivity.this, "Tweet off", Toast.LENGTH_SHORT).show();
+                    tweet = 0;
+                    sendUpdatedPositionData();
+                }
+                return false;
+            }
+        });
+
+
     }
 
     @Override
@@ -313,5 +435,21 @@ public class PepeControlActivity extends Activity {
         return intentFilter;
     }
 
+    private boolean sendUpdatedPositionData() {
 
+        //Write to the Bluetooth service transmit characteristic
+        //Data transmit interface:
+        //      ! == look
+        //      @ == lean
+        //      $ == flap
+        //      # == tweet (see what I did there ;) )
+        if(mBluetoothLeService != null) {
+            mBluetoothLeService.sendData( "!" + look +
+                                          "@" + lean +
+                                          "$" + flap +
+                                          "#" + tweet + "%");
+        }
+
+        return false;
+    }
 }
