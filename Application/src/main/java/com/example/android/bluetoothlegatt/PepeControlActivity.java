@@ -444,10 +444,10 @@ public class PepeControlActivity extends Activity {
         //      $ == flap
         //      # == tweet (see what I did there ;) )
         if(mBluetoothLeService != null) {
-            mBluetoothLeService.sendData( "!" + look +
-                                          "@" + lean +
-                                          "$" + flap +
-                                          "#" + tweet + "%");
+            mBluetoothLeService.sendData( look + "|" +
+                                          lean + "|" +
+                                          flap + "|" +
+                                          tweet + "%");
         }
 
         return false;
