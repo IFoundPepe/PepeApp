@@ -75,6 +75,13 @@ public class PepeControlActivity extends Activity {
     private int   flap = 0;
     private int  tweet = 0;
 
+    private int lookCount = 0;
+    private int leanCount = 0;
+
+    // only sends data after this number of data points collected
+    // intent is to reduce jitter`
+    private int dataLimiter = 5;
+
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -188,17 +195,21 @@ public class PepeControlActivity extends Activity {
 
         // ENABLE SEEKBAR PEPE CONTROL!
         SeekBar lookBar=(SeekBar) findViewById(R.id.lookBar); // initiate the Seekbar
-        lookBar.setMax(255); // 255 maximum value for the Seek bar
-        lookBar.setProgress(128); // 50 default progress value
+        lookBar.setMax(450); // 255 maximum value for the Seek bar
+        lookBar.setProgress(225); // 50 default progress value
 
         // perform seek bar change listener event used for getting the progress value
         lookBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int progressChangedValue = 128;
+            int progressChangedValue = 225;
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                //Brute force buffer clear to allow return to default cuz I iz l33t h@x0R
                 progressChangedValue = progress;
                 look = progressChangedValue;
-                sendUpdatedPositionData();
+                if(lookCount++ >= dataLimiter) {
+                    sendUpdatedPositionData();
+                    lookCount = 0;
+                }
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -206,7 +217,7 @@ public class PepeControlActivity extends Activity {
             }
 
             public void onStopTrackingTouch(SeekBar seekBar) {
-                look = 128;
+                look = 225;
                 seekBar.setProgress(look);
 
                 Toast.makeText(PepeControlActivity.this, "Look bar position is :" + progressChangedValue,
@@ -224,7 +235,7 @@ public class PepeControlActivity extends Activity {
         });
 
         SeekBar leanBar=(SeekBar) findViewById(R.id.leanBar); // initiate the Seekbar
-        leanBar.setMax(255); // 255 maximum value for the Seek bar
+        leanBar.setMax(450); // 255 maximum value for the Seek bar
 
         // perform seek bar change listener event used for getting the progress value
         leanBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -233,7 +244,10 @@ public class PepeControlActivity extends Activity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 progressChangedValue = progress;
                 lean = progressChangedValue;
-                sendUpdatedPositionData();
+                if(leanCount++ >= dataLimiter) {
+                    sendUpdatedPositionData();
+                    leanCount = 0;
+                }
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
