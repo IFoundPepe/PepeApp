@@ -26,7 +26,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,6 +57,15 @@ public class PepeControlActivity extends Activity {
 
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+    private static final int MAX_SERVO = 550;
+    private static final int MIN_SERVO = 125;
+    private static final int DEFAULT_LOOK = ((MAX_SERVO + MIN_SERVO) / 2 );
+    private static final int STEPS = 6;
+    private static final int STEP_SIZE = (MAX_SERVO - MIN_SERVO) / STEPS;
+    private static final int NORM = MAX_SERVO - MIN_SERVO;
+
+//    private static final int THRESHOLD_1 = ((MAX_SERVO - DEFAULT_LOOK) / 2)  + DEFAULT_LOOK;
+//    private static final int THRESHOLD_2 = ((DEFAULT_LOOK - MIN_SERVO) / 2)  + MIN_SERVO;
 
     private TextView mConnectionState;
     private TextView mDataField;
@@ -70,9 +81,14 @@ public class PepeControlActivity extends Activity {
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
 
+    private boolean sendIt = false;
+    private int previousLook = 0;
     private int   look = 128;
+    private int previousLean = 0;
     private int   lean = 0;
+    private int previousFlap = 0;
     private int   flap = 0;
+    private int previousTweet = 0;
     private int  tweet = 0;
 
     private int lookCount = 0;
@@ -82,6 +98,8 @@ public class PepeControlActivity extends Activity {
     // intent is to reduce jitter`
     private int dataLimiter = 5;
 
+    private int mInterval = 10; // 0.5 seconds by default, can be changed later
+    private Handler mHandler;
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -192,22 +210,24 @@ public class PepeControlActivity extends Activity {
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
-
         // ENABLE SEEKBAR PEPE CONTROL!
         SeekBar lookBar=(SeekBar) findViewById(R.id.lookBar); // initiate the Seekbar
-        lookBar.setMax(450); // 255 maximum value for the Seek bar
-        lookBar.setProgress(225); // 50 default progress value
+        lookBar.setMax(MAX_SERVO); // 255 maximum value for the Seek bar
+        lookBar.setProgress(MIN_SERVO); // 50 default progress value
+
+        mHandler = new Handler();
+        startRepeatingTask();
 
         // perform seek bar change listener event used for getting the progress value
         lookBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int progressChangedValue = 225;
+            int progressChangedValue = DEFAULT_LOOK;
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 //Brute force buffer clear to allow return to default cuz I iz l33t h@x0R
                 progressChangedValue = progress;
                 look = progressChangedValue;
                 if(lookCount++ >= dataLimiter) {
-                    sendUpdatedPositionData();
+//                    sendUpdatedPositionData();
                     lookCount = 0;
                 }
             }
@@ -217,25 +237,22 @@ public class PepeControlActivity extends Activity {
             }
 
             public void onStopTrackingTouch(SeekBar seekBar) {
-                look = 225;
+                look = DEFAULT_LOOK;
                 seekBar.setProgress(look);
-
-                Toast.makeText(PepeControlActivity.this, "Look bar position is :" + progressChangedValue,
-                        Toast.LENGTH_SHORT).show();
-
                 //Brute force buffer clear to allow return to default cuz I iz l33t h@x0R
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
-                sendUpdatedPositionData();
+                Toast.makeText(PepeControlActivity.this, "Look bar position is :" + progressChangedValue,
+                        Toast.LENGTH_SHORT).show();
+//                sendUpdatedPositionData();
             }
         });
 
         SeekBar leanBar=(SeekBar) findViewById(R.id.leanBar); // initiate the Seekbar
-        leanBar.setMax(450); // 255 maximum value for the Seek bar
+        leanBar.setMax(MAX_SERVO); // 255 maximum value for the Seek bar
 
         // perform seek bar change listener event used for getting the progress value
         leanBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -245,7 +262,7 @@ public class PepeControlActivity extends Activity {
                 progressChangedValue = progress;
                 lean = progressChangedValue;
                 if(leanCount++ >= dataLimiter) {
-                    sendUpdatedPositionData();
+//                    sendUpdatedPositionData();
                     leanCount = 0;
                 }
             }
@@ -269,7 +286,7 @@ public class PepeControlActivity extends Activity {
                     e.printStackTrace();
                 }
 
-                sendUpdatedPositionData();
+//                sendUpdatedPositionData();
             }
         });
 
@@ -279,13 +296,13 @@ public class PepeControlActivity extends Activity {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     Toast.makeText(PepeControlActivity.this, "Flap up", Toast.LENGTH_SHORT).show();
                     flap = 1;
-                    sendUpdatedPositionData();
+//                    sendUpdatedPositionData();
                 }
                 else if (event.getAction() == MotionEvent.ACTION_UP) {
 
                     Toast.makeText(PepeControlActivity.this, "Flap down", Toast.LENGTH_SHORT).show();
                     flap = 0;
-                    sendUpdatedPositionData();
+//                    sendUpdatedPositionData();
                 }
                 return false;
             }
@@ -297,18 +314,39 @@ public class PepeControlActivity extends Activity {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     Toast.makeText(PepeControlActivity.this, "Tweet on", Toast.LENGTH_SHORT).show();
                     tweet = 1;
-                    sendUpdatedPositionData();
+//                    sendUpdatedPositionData();
                 }
                 else if (event.getAction() == MotionEvent.ACTION_UP) {
                     Toast.makeText(PepeControlActivity.this, "Tweet off", Toast.LENGTH_SHORT).show();
                     tweet = 0;
-                    sendUpdatedPositionData();
+//                    sendUpdatedPositionData();
                 }
                 return false;
             }
         });
 
 
+    }
+
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                sendUpdatedPositionData(); //this function can change value of mInterval.
+            } finally {
+                // 100% guarantee that this always happens, even if
+                // your update method throws an exception
+                mHandler.postDelayed(mStatusChecker, mInterval);
+            }
+        }
+    };
+
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
     }
 
     @Override
@@ -332,6 +370,7 @@ public class PepeControlActivity extends Activity {
         super.onDestroy();
         unbindService(mServiceConnection);
         mBluetoothLeService = null;
+        stopRepeatingTask();
     }
 
     @Override
@@ -449,7 +488,32 @@ public class PepeControlActivity extends Activity {
         return intentFilter;
     }
 
+    private int threshold = MAX_SERVO;
     private boolean sendUpdatedPositionData() {
+
+//        threshold = MAX_SERVO;
+
+        int bin = Math.round((look - MIN_SERVO) / STEP_SIZE);
+        look = (bin * STEP_SIZE) + MIN_SERVO;
+
+        if ( look < MIN_SERVO )
+        {
+            look = MIN_SERVO;
+        }
+
+        sendIt = false;
+        if ( (previousLook != look) ||
+             (previousLean != lean) ||
+             (previousFlap != flap) ||
+             (previousTweet != tweet))
+        {
+            sendIt = true;
+        }
+
+        previousLook = look;
+        previousLean = lean;
+        previousFlap = flap;
+        previousTweet = tweet;
 
         //Write to the Bluetooth service transmit characteristic
         //Data transmit interface:
@@ -457,7 +521,7 @@ public class PepeControlActivity extends Activity {
         //      @ == lean
         //      $ == flap
         //      # == tweet (see what I did there ;) )
-        if(mBluetoothLeService != null) {
+        if((mBluetoothLeService != null) && sendIt) {
             mBluetoothLeService.sendData( look + "|" +
                                           lean + "|" +
                                           flap + "|" +
