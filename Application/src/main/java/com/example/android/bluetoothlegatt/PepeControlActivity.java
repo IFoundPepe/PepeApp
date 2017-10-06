@@ -69,6 +69,9 @@ public class PepeControlActivity extends Activity {
     private static final int MAX_FLAP = 550;
     private static final int MIN_FLAP = 335;
 
+    // Values for tweeting
+    private static final int NUM_FILES = 10;
+
     // Derived Values
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
@@ -261,7 +264,6 @@ public class PepeControlActivity extends Activity {
 
         // perform seek bar change listener event used for getting the progress value
         final Button flapButton = (Button) findViewById(R.id.flap);
-
         flapButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -278,19 +280,18 @@ public class PepeControlActivity extends Activity {
         });
 
         final Button tweetButton = (Button) findViewById(R.id.tweet);
-        tweetButton.setOnTouchListener(new OnTouchListener() {
+        tweetButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    Toast.makeText(PepeControlActivity.this, "Tweet on", Toast.LENGTH_SHORT).show();
-                    tweet = 1;
-//                    sendUpdatedPositionData();
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        tweet = (int) Math.ceil(Math.random() * NUM_FILES) ;
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        tweet = 0;
+                        return true;
                 }
-                else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    Toast.makeText(PepeControlActivity.this, "Tweet off", Toast.LENGTH_SHORT).show();
-                    tweet = 0;
-//                    sendUpdatedPositionData();
-                }
-                return true;
+                return false;
             }
         });
     }
@@ -524,6 +525,9 @@ public class PepeControlActivity extends Activity {
         //      $ == flap
         //      # == tweet (see what I did there ;) )
         if((mBluetoothLeService != null) && sendIt) {
+            if (tweet != 0 ) {
+                Toast.makeText(PepeControlActivity.this, "Tweet: " + tweet, Toast.LENGTH_SHORT).show();
+            }
             mBluetoothLeService.sendData( look + "|" +
                                           lean + "|" +
                                           flap + "|" +
