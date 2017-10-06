@@ -28,7 +28,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +45,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import io.github.controlwear.virtual.joystick.android.JoystickView;
+
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
  * and display GATT services and characteristics supported by the device.  The Activity
@@ -55,17 +56,31 @@ import java.util.List;
 public class PepeControlActivity extends Activity {
     private final static String TAG = PepeControlActivity.class.getSimpleName();
 
+    // Settings
+    private static final int MAX_SERVO_LOOK = 550;
+    private static final int MIN_SERVO_LOOK = 125;
+
+    // Only want up to 90 degrees for the max lean
+    private static final int MAX_SERVO_LEAN = 350;
+    private static final int MIN_SERVO_LEAN = 130;
+    private static final int STRENGTH_JOYSTICK_LEAN = 40;
+
+    // Derived Values
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
-    private static final int MAX_SERVO = 550;
-    private static final int MIN_SERVO = 125;
-    private static final int DEFAULT_LOOK = ((MAX_SERVO + MIN_SERVO) / 2 );
-    private static final int STEPS = 6;
-    private static final int STEP_SIZE = (MAX_SERVO - MIN_SERVO) / STEPS;
-    private static final int NORM = MAX_SERVO - MIN_SERVO;
 
-//    private static final int THRESHOLD_1 = ((MAX_SERVO - DEFAULT_LOOK) / 2)  + DEFAULT_LOOK;
-//    private static final int THRESHOLD_2 = ((DEFAULT_LOOK - MIN_SERVO) / 2)  + MIN_SERVO;
+    // Derived for the look
+    private static final int DEFAULT_LOOK = ((MAX_SERVO_LOOK + MIN_SERVO_LOOK) / 2 );
+    private static final int STEPS = 6;
+    private static final int STEP_SIZE = (MAX_SERVO_LOOK - MIN_SERVO_LOOK) / STEPS;
+    private static final int NORM = (MAX_SERVO_LOOK - MIN_SERVO_LOOK)/2;
+    private static final int MEAN_LOOK = (MAX_SERVO_LOOK + MIN_SERVO_LOOK)/2;
+
+    // Derived for the lean
+    private static final int MEAN_LEAN = (MAX_SERVO_LEAN + MIN_SERVO_LEAN) / 2;
+
+//    private static final int THRESHOLD_1 = ((MAX_SERVO_LOOK - DEFAULT_LOOK) / 2)  + DEFAULT_LOOK;
+//    private static final int THRESHOLD_2 = ((DEFAULT_LOOK - MIN_SERVO_LOOK) / 2)  + MIN_SERVO_LOOK;
 
     private TextView mConnectionState;
     private TextView mDataField;
@@ -92,7 +107,6 @@ public class PepeControlActivity extends Activity {
     private int  tweet = 0;
 
     private int lookCount = 0;
-    private int leanCount = 0;
 
     // only sends data after this number of data points collected
     // intent is to reduce jitter`
@@ -212,11 +226,41 @@ public class PepeControlActivity extends Activity {
 
         // ENABLE SEEKBAR PEPE CONTROL!
         SeekBar lookBar=(SeekBar) findViewById(R.id.lookBar); // initiate the Seekbar
-        lookBar.setMax(MAX_SERVO); // 255 maximum value for the Seek bar
-        lookBar.setProgress(MIN_SERVO); // 50 default progress value
+        lookBar.setMax(MAX_SERVO_LOOK); // 255 maximum value for the Seek bar
+        lookBar.setProgress(MIN_SERVO_LOOK); // 50 default progress value
 
         mHandler = new Handler();
         startRepeatingTask();
+
+        JoystickView joystick = (JoystickView) findViewById(R.id.joystick);
+        joystick.setAutoReCenterButton(true);
+        joystick.setFixedCenter(true);
+        joystick.setOnMoveListener(new JoystickView.OnMoveListener() {
+
+            @Override
+            public void onMove(int angle, int strength) {
+                // do whatever you want
+                double distance = Math.cos(angle * (Math.PI/180));
+                double value = NORM * distance;
+                look = (int) (MEAN_LOOK + value);
+
+                if ( (angle > 45) && (angle < 135) )
+                {
+                    // Forward Tilt
+                    if ( strength > STRENGTH_JOYSTICK_LEAN  ) {
+                        lean = MAX_SERVO_LEAN;
+                    }
+                }
+                else if ( ( angle > 225) && (angle < 325) )
+                {
+                    // Backward Tilt
+                    if ( strength > STRENGTH_JOYSTICK_LEAN ) {
+                        lean = MIN_SERVO_LEAN;
+                    }
+
+                }
+            }
+        });
 
         // perform seek bar change listener event used for getting the progress value
         lookBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -252,19 +296,14 @@ public class PepeControlActivity extends Activity {
         });
 
         SeekBar leanBar=(SeekBar) findViewById(R.id.leanBar); // initiate the Seekbar
-        leanBar.setMax(MAX_SERVO); // 255 maximum value for the Seek bar
+        leanBar.setMax(MAX_SERVO_LEAN); // 255 maximum value for the Seek bar
 
         // perform seek bar change listener event used for getting the progress value
         leanBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int progressChangedValue = 0;
 
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                progressChangedValue = progress;
-                lean = progressChangedValue;
-                if(leanCount++ >= dataLimiter) {
-//                    sendUpdatedPositionData();
-                    leanCount = 0;
-                }
+                lean = progress;
+                seekBar.setProgress(lean);
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -273,20 +312,10 @@ public class PepeControlActivity extends Activity {
 
             public void onStopTrackingTouch(SeekBar seekBar) {
 
-                lean = 0;
                 seekBar.setProgress(lean);
-
-                Toast.makeText(PepeControlActivity.this, "Lean bar position is :" + progressChangedValue,
+                Toast.makeText(PepeControlActivity.this, "Lean bar position is :" + lean,
                         Toast.LENGTH_SHORT).show();
 
-                //Brute force buffer clear to allow return to default cuz I iz l33t h@x0R
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-//                sendUpdatedPositionData();
             }
         });
 
@@ -488,17 +517,26 @@ public class PepeControlActivity extends Activity {
         return intentFilter;
     }
 
-    private int threshold = MAX_SERVO;
+    private int threshold = MAX_SERVO_LOOK;
     private boolean sendUpdatedPositionData() {
 
-//        threshold = MAX_SERVO;
+//        threshold = MAX_SERVO_LOOK;
 
-        int bin = Math.round((look - MIN_SERVO) / STEP_SIZE);
-        look = (bin * STEP_SIZE) + MIN_SERVO;
+        int bin = Math.round((look - MIN_SERVO_LOOK) / STEP_SIZE);
+        look = (bin * STEP_SIZE) + MIN_SERVO_LOOK;
 
-        if ( look < MIN_SERVO )
+        if ( look < MIN_SERVO_LOOK)
         {
-            look = MIN_SERVO;
+            look = MIN_SERVO_LOOK;
+        }
+
+        if ( lean > MEAN_LEAN )
+        {
+            lean = MAX_SERVO_LEAN;
+        }
+        else // if ( lean < MEAN_LEAN )
+        {
+            lean = MIN_SERVO_LEAN;
         }
 
         sendIt = false;
