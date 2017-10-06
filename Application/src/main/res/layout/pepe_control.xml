@@ -6,60 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.example.android.bluetoothlegatt.PepeControlActivity">
 
-    <SeekBar
-        android:id="@+id/lookBar"
-        android:layout_width="338dp"
-        android:layout_height="63dp"
-        android:layout_marginLeft="36dp"
-        android:layout_marginTop="0dp"
-        android:clickable="false"
-        android:max="450"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteX="32dp" />
-
-    <SeekBar
-        android:id="@+id/leanBar"
-        android:layout_width="330dp"
-        android:layout_height="63dp"
-        android:layout_marginLeft="36dp"
-        android:layout_marginTop="0dp"
-        android:max="450"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteX="39dp"
-        app:layout_constraintHorizontal_bias="0.507" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="56dp"
-        android:layout_height="25dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="123dp"
-        android:text="@string/Lean_Label"
-        app:layout_constraintHorizontal_bias="0.067"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="56dp"
-        android:layout_height="25dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/Look_Label"
-        app:layout_constraintHorizontal_bias="0.067"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <Button
         android:id="@+id/flap"
         android:layout_width="88dp"
@@ -111,23 +57,22 @@
     <io.github.controlwear.virtual.joystick.android.JoystickView
         xmlns:custom="http://schemas.android.com/apk/res-auto"
         android:id="@+id/joystick"
-        android:layout_width="310dp"
-        android:layout_height="237dp"
+        android:layout_width="385dp"
+        android:layout_height="389dp"
         custom:JV_buttonColor="#020202"
         custom:JV_buttonSizeRatio="15%"
         custom:JV_borderColor="#000000"
         custom:JV_backgroundColor="#b9b9b9"
         custom:JV_borderWidth="4dp"
         custom:JV_fixedCenter="false"
-        android:layout_marginTop="39dp"
-        custom:layout_constraintTop_toBottomOf="@+id/leanBar"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="67dp"
         custom:layout_constraintBottom_toTopOf="@+id/silence"
-        custom:layout_constraintVertical_bias="0.0"
         android:layout_marginLeft="8dp"
         custom:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
-        custom:layout_constraintRight_toRightOf="parent" />
+        custom:layout_constraintRight_toRightOf="parent"
+        custom:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="8dp" />
 
     <android.support.constraint.Guideline
         android:layout_width="wrap_content"

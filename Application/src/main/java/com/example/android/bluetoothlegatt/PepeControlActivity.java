@@ -58,7 +58,7 @@ public class PepeControlActivity extends Activity {
 
     // Settings
     private static final int MAX_SERVO_LOOK = 550;
-    private static final int MIN_SERVO_LOOK = 125;
+    private static final int MIN_SERVO_LOOK = 130;
 
     // Only want up to 90 degrees for the max lean
     private static final int MAX_SERVO_LEAN = 350;
@@ -82,6 +82,7 @@ public class PepeControlActivity extends Activity {
 //    private static final int THRESHOLD_1 = ((MAX_SERVO_LOOK - DEFAULT_LOOK) / 2)  + DEFAULT_LOOK;
 //    private static final int THRESHOLD_2 = ((DEFAULT_LOOK - MIN_SERVO_LOOK) / 2)  + MIN_SERVO_LOOK;
 
+    private JoystickView joystick;
     private TextView mConnectionState;
     private TextView mDataField;
     private String mDeviceName;
@@ -96,6 +97,9 @@ public class PepeControlActivity extends Activity {
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
 
+
+    public int strength_value;
+    private int angle_value;
     private boolean sendIt = false;
     private int previousLook = 0;
     private int   look = 128;
@@ -224,101 +228,35 @@ public class PepeControlActivity extends Activity {
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
-        // ENABLE SEEKBAR PEPE CONTROL!
-        SeekBar lookBar=(SeekBar) findViewById(R.id.lookBar); // initiate the Seekbar
-        lookBar.setMax(MAX_SERVO_LOOK); // 255 maximum value for the Seek bar
-        lookBar.setProgress(MIN_SERVO_LOOK); // 50 default progress value
-
         mHandler = new Handler();
         startRepeatingTask();
 
-        JoystickView joystick = (JoystickView) findViewById(R.id.joystick);
-        joystick.setAutoReCenterButton(true);
-        joystick.setFixedCenter(true);
+        joystick = (JoystickView) findViewById(R.id.joystick);
+
+        joystick.setOnTouchListener( new JoystickView.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if ( event.getAction() == MotionEvent.ACTION_UP )
+                {
+                    angle_value = 0;
+                    strength_value = 0;
+                }
+                return false;
+            }
+
+        });
         joystick.setOnMoveListener(new JoystickView.OnMoveListener() {
 
             @Override
             public void onMove(int angle, int strength) {
                 // do whatever you want
-                double distance = Math.cos(angle * (Math.PI/180));
-                double value = NORM * distance;
-                look = (int) (MEAN_LOOK + value);
-
-                if ( (angle > 45) && (angle < 135) )
-                {
-                    // Forward Tilt
-                    if ( strength > STRENGTH_JOYSTICK_LEAN  ) {
-                        lean = MAX_SERVO_LEAN;
-                    }
-                }
-                else if ( ( angle > 225) && (angle < 325) )
-                {
-                    // Backward Tilt
-                    if ( strength > STRENGTH_JOYSTICK_LEAN ) {
-                        lean = MIN_SERVO_LEAN;
-                    }
-
-                }
+                angle_value = angle;
+                strength_value = strength;
             }
         });
 
         // perform seek bar change listener event used for getting the progress value
-        lookBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int progressChangedValue = DEFAULT_LOOK;
-
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                //Brute force buffer clear to allow return to default cuz I iz l33t h@x0R
-                progressChangedValue = progress;
-                look = progressChangedValue;
-                if(lookCount++ >= dataLimiter) {
-//                    sendUpdatedPositionData();
-                    lookCount = 0;
-                }
-            }
-
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
-            }
-
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                look = DEFAULT_LOOK;
-                seekBar.setProgress(look);
-                //Brute force buffer clear to allow return to default cuz I iz l33t h@x0R
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Toast.makeText(PepeControlActivity.this, "Look bar position is :" + progressChangedValue,
-                        Toast.LENGTH_SHORT).show();
-//                sendUpdatedPositionData();
-            }
-        });
-
-        SeekBar leanBar=(SeekBar) findViewById(R.id.leanBar); // initiate the Seekbar
-        leanBar.setMax(MAX_SERVO_LEAN); // 255 maximum value for the Seek bar
-
-        // perform seek bar change listener event used for getting the progress value
-        leanBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                lean = progress;
-                seekBar.setProgress(lean);
-            }
-
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
-            }
-
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-                seekBar.setProgress(lean);
-                Toast.makeText(PepeControlActivity.this, "Lean bar position is :" + lean,
-                        Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
         final Button flapButton = (Button) findViewById(R.id.flap);
         flapButton.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -353,8 +291,6 @@ public class PepeControlActivity extends Activity {
                 return false;
             }
         });
-
-
     }
 
     Runnable mStatusChecker = new Runnable() {
@@ -517,10 +453,36 @@ public class PepeControlActivity extends Activity {
         return intentFilter;
     }
 
+
+
     private int threshold = MAX_SERVO_LOOK;
     private boolean sendUpdatedPositionData() {
 
 //        threshold = MAX_SERVO_LOOK;
+        double distance = Math.cos(angle_value * (Math.PI/180));
+        double value = NORM * distance;
+        look = (int) (MEAN_LOOK + value);
+
+        if ( (angle_value == 0) && (strength_value == 0) )
+        {
+            look = DEFAULT_LOOK;
+        }
+
+        if ( (angle_value > 45) && (angle_value < 135) )
+        {
+            // Forward Tilt
+            if ( strength_value > STRENGTH_JOYSTICK_LEAN  ) {
+                lean = MAX_SERVO_LEAN;
+            }
+        }
+        else if ( ( angle_value > 225) && (angle_value < 325) )
+        {
+            // Backward Tilt
+            if ( strength_value > STRENGTH_JOYSTICK_LEAN ) {
+                lean = MIN_SERVO_LEAN;
+            }
+
+        }
 
         int bin = Math.round((look - MIN_SERVO_LOOK) / STEP_SIZE);
         look = (bin * STEP_SIZE) + MIN_SERVO_LOOK;
