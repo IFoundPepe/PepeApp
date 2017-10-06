@@ -65,6 +65,10 @@ public class PepeControlActivity extends Activity {
     private static final int MIN_SERVO_LEAN = 130;
     private static final int STRENGTH_JOYSTICK_LEAN = 40;
 
+    //  Values for the Flapping Wings
+    private static final int MAX_FLAP = 550;
+    private static final int MIN_FLAP = 335;
+
     // Derived Values
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
@@ -97,7 +101,6 @@ public class PepeControlActivity extends Activity {
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
 
-
     public int strength_value;
     private int angle_value;
     private boolean sendIt = false;
@@ -105,8 +108,8 @@ public class PepeControlActivity extends Activity {
     private int   look = 128;
     private int previousLean = 0;
     private int   lean = 0;
-    private int previousFlap = 0;
-    private int   flap = 0;
+    private int previousFlap = MIN_FLAP;
+    private int   flap = MIN_FLAP;
     private int previousTweet = 0;
     private int  tweet = 0;
 
@@ -207,7 +210,7 @@ public class PepeControlActivity extends Activity {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+        public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pepe_control);
 
@@ -258,18 +261,19 @@ public class PepeControlActivity extends Activity {
 
         // perform seek bar change listener event used for getting the progress value
         final Button flapButton = (Button) findViewById(R.id.flap);
-        flapButton.setOnTouchListener(new OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    Toast.makeText(PepeControlActivity.this, "Flap up", Toast.LENGTH_SHORT).show();
-                    flap = 1;
-//                    sendUpdatedPositionData();
-                }
-                else if (event.getAction() == MotionEvent.ACTION_UP) {
 
-                    Toast.makeText(PepeControlActivity.this, "Flap down", Toast.LENGTH_SHORT).show();
-                    flap = 0;
-//                    sendUpdatedPositionData();
+        flapButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        Toast.makeText(PepeControlActivity.this, "Flap up", Toast.LENGTH_SHORT).show();
+                        flap = MAX_FLAP;
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        Toast.makeText(PepeControlActivity.this, "Flap down", Toast.LENGTH_SHORT).show();
+                        flap = MIN_FLAP;
+                        return true;
                 }
                 return false;
             }
@@ -288,7 +292,7 @@ public class PepeControlActivity extends Activity {
                     tweet = 0;
 //                    sendUpdatedPositionData();
                 }
-                return false;
+                return true;
             }
         });
     }
