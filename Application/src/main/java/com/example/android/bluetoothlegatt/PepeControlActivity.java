@@ -82,7 +82,6 @@ public class PepeControlActivity extends Activity {
 //    private static final int THRESHOLD_1 = ((MAX_SERVO_LOOK - DEFAULT_LOOK) / 2)  + DEFAULT_LOOK;
 //    private static final int THRESHOLD_2 = ((DEFAULT_LOOK - MIN_SERVO_LOOK) / 2)  + MIN_SERVO_LOOK;
 
-    private GameView gameView;
     private JoystickView joystick;
     private TextView mConnectionState;
     private TextView mDataField;
