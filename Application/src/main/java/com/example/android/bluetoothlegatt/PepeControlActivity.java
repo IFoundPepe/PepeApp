@@ -267,11 +267,9 @@ public class PepeControlActivity extends Activity {
             public boolean onTouch(View v, MotionEvent event) {
                 switch(event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        Toast.makeText(PepeControlActivity.this, "Flap up", Toast.LENGTH_SHORT).show();
                         flap = MAX_FLAP;
                         return true;
                     case MotionEvent.ACTION_UP:
-                        Toast.makeText(PepeControlActivity.this, "Flap down", Toast.LENGTH_SHORT).show();
                         flap = MIN_FLAP;
                         return true;
                 }
