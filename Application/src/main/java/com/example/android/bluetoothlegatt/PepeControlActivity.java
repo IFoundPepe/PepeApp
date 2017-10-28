@@ -65,6 +65,10 @@ public class PepeControlActivity extends Activity {
     private static final int MIN_SERVO_LEAN = 130;
     private static final int STRENGTH_JOYSTICK_LEAN = 40;
 
+    private static final int MAX_SERVO_FLAP = 320;
+    private static final int MIN_SERVO_FLAP = 560;
+
+
     // Derived Values
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
@@ -101,14 +105,14 @@ public class PepeControlActivity extends Activity {
     public int strength_value;
     private int angle_value;
     private boolean sendIt = false;
-    private int previousLook = 0;
-    private int   look = 128;
-    private int previousLean = 0;
-    private int   lean = 0;
-    private int previousFlap = 0;
-    private int   flap = 0;
-    private int previousTweet = 0;
-    private int  tweet = 0;
+    private int previousLook = DEFAULT_LOOK;
+    private int   look = DEFAULT_LOOK;
+    private int previousLean = MAX_SERVO_LEAN;
+    private int   lean = MAX_SERVO_LEAN;
+    private int previousFlap = MAX_SERVO_FLAP;
+    private int   flap = MAX_SERVO_FLAP;
+    private int previousTweet = 10;
+    private int  tweet = 10;
 
     private int lookCount = 0;
 
@@ -261,30 +265,32 @@ public class PepeControlActivity extends Activity {
         flapButton.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    Toast.makeText(PepeControlActivity.this, "Flap up", Toast.LENGTH_SHORT).show();
-                    flap = 1;
+                    //Toast.makeText(PepeControlActivity.this, "Flap up", Toast.LENGTH_SHORT).show();
+                    flap = MIN_SERVO_FLAP;
 //                    sendUpdatedPositionData();
                 }
                 else if (event.getAction() == MotionEvent.ACTION_UP) {
 
-                    Toast.makeText(PepeControlActivity.this, "Flap down", Toast.LENGTH_SHORT).show();
-                    flap = 0;
+                    //Toast.makeText(PepeControlActivity.this, "Flap down", Toast.LENGTH_SHORT).show();
+                    flap = MAX_SERVO_FLAP;
 //                    sendUpdatedPositionData();
                 }
                 return false;
             }
         });
 
+        sendUpdatedPositionData();
+
         final Button tweetButton = (Button) findViewById(R.id.tweet);
         tweetButton.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    Toast.makeText(PepeControlActivity.this, "Tweet on", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(PepeControlActivity.this, "Tweet on", Toast.LENGTH_SHORT).show();
                     tweet = 1;
 //                    sendUpdatedPositionData();
                 }
                 else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    Toast.makeText(PepeControlActivity.this, "Tweet off", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(PepeControlActivity.this, "Tweet off", Toast.LENGTH_SHORT).show();
                     tweet = 0;
 //                    sendUpdatedPositionData();
                 }
@@ -472,14 +478,14 @@ public class PepeControlActivity extends Activity {
         {
             // Forward Tilt
             if ( strength_value > STRENGTH_JOYSTICK_LEAN  ) {
-                lean = MAX_SERVO_LEAN;
+                lean = MIN_SERVO_LEAN;
             }
         }
         else if ( ( angle_value > 225) && (angle_value < 325) )
         {
             // Backward Tilt
             if ( strength_value > STRENGTH_JOYSTICK_LEAN ) {
-                lean = MIN_SERVO_LEAN;
+                lean = MAX_SERVO_LEAN;
             }
 
         }
