@@ -285,6 +285,7 @@ public class PepeControlActivity extends Activity {
                    tweet = (int) Math.ceil(Math.random() * NUM_FILES) ;
                    return true;
                 case MotionEvent.ACTION_UP:
+                   v.performClick();
                    tweet = 0;
                    return true;
              }
