@@ -36,7 +36,6 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.SeekBar;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,8 +82,8 @@ public class PepeControlActivity extends Activity {
     // Derived for the lean
     private static final int MEAN_LEAN = (MAX_SERVO_LEAN + MIN_SERVO_LEAN) / 2;
 
-//    private static final int THRESHOLD_1 = ((MAX_SERVO_LOOK - DEFAULT_LOOK) / 2)  + DEFAULT_LOOK;
-//    private static final int THRESHOLD_2 = ((DEFAULT_LOOK - MIN_SERVO_LOOK) / 2)  + MIN_SERVO_LOOK;
+   // Values for tweeting
+   private static final int NUM_FILES = 10;
 
     private JoystickView joystick;
     private TextView mConnectionState;
@@ -135,6 +134,7 @@ public class PepeControlActivity extends Activity {
             }
             // Automatically connects to the device upon successful start-up initialization.
             mBluetoothLeService.connect(mDeviceAddress);
+            tweet = NUM_FILES;
         }
 
         @Override
@@ -270,7 +270,7 @@ public class PepeControlActivity extends Activity {
 //                    sendUpdatedPositionData();
                 }
                 else if (event.getAction() == MotionEvent.ACTION_UP) {
-
+                    v.performClick();
                     //Toast.makeText(PepeControlActivity.this, "Flap down", Toast.LENGTH_SHORT).show();
                     flap = MAX_SERVO_FLAP;
 //                    sendUpdatedPositionData();
@@ -279,24 +279,21 @@ public class PepeControlActivity extends Activity {
             }
         });
 
-        sendUpdatedPositionData();
-
-        final Button tweetButton = (Button) findViewById(R.id.tweet);
-        tweetButton.setOnTouchListener(new OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                   // Toast.makeText(PepeControlActivity.this, "Tweet on", Toast.LENGTH_SHORT).show();
-                    tweet = 1;
-//                    sendUpdatedPositionData();
-                }
-                else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    // Toast.makeText(PepeControlActivity.this, "Tweet off", Toast.LENGTH_SHORT).show();
-                    tweet = 0;
-//                    sendUpdatedPositionData();
-                }
-                return false;
-            }
-        });
+       final Button tweetButton = (Button) findViewById(R.id.tweet);
+       tweetButton.setOnTouchListener(new View.OnTouchListener() {
+          @Override
+          public boolean onTouch(View v, MotionEvent event) {
+             switch(event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                   tweet = (int) Math.ceil(Math.random() * NUM_FILES) ;
+                   return true;
+                case MotionEvent.ACTION_UP:
+                   tweet = 0;
+                   return true;
+             }
+             return false;
+          }
+       });
     }
 
     Runnable mStatusChecker = new Runnable() {
