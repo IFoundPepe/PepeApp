@@ -29,6 +29,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -38,11 +39,12 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import com.example.android.bluetoothlegatt.InputManagerCompat.InputDeviceListener;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 
@@ -52,8 +54,11 @@ import io.github.controlwear.virtual.joystick.android.JoystickView;
  * communicates with {@code BluetoothLeService}, which in turn interacts with the
  * Bluetooth LE API.
  */
-public class PepeControlActivity extends Activity {
+public class PepeControlActivity extends Activity implements InputDeviceListener {
     private final static String TAG = PepeControlActivity.class.getSimpleName();
+
+    // Input manager for Pepe control via controller
+    private InputManagerCompat mInputManager;
 
     // Derived Values
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
@@ -216,8 +221,10 @@ public class PepeControlActivity extends Activity {
                 // do whatever you want
                pepeManager.setAngle_value(angle);
                pepeManager.setStrength_value(strength);
+               pepeManager.calculateLookAndLean();
             }
         });
+
 
         final Button flapButton = (Button) findViewById(R.id.flap);
         flapButton.setOnTouchListener(new OnTouchListener() {
@@ -249,6 +256,60 @@ public class PepeControlActivity extends Activity {
              return false;
           }
        });
+        mInputManager = InputManagerCompat.Factory.getInputManager(this);
+        mInputManager.registerInputDeviceListener(this, null);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Log.d("PEPE DEBUG", "keyCode: " + keyCode);
+        // 99/67(silence), 96/23(tweet), 100/62(flap)
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BUTTON_A: // press X: 96 - do nothing?
+                return true;
+            case KeyEvent.KEYCODE_DPAD_CENTER: // held X: 23 - do nothing?
+                return true;
+            case KeyEvent.KEYCODE_BUTTON_X: // press IOS: 99 - do nothing?
+                return true;
+            case KeyEvent.KEYCODE_DEL: // held IOS: 67 - do nothing?
+                return true;
+            case KeyEvent.KEYCODE_BUTTON_Y: // press triangle: 100
+                Log.d("PEPE DEBUG", "flap up");
+                pepeManager.flapUp();
+                return true;
+            case KeyEvent.KEYCODE_SPACE: // held triangle 62 - do nothing?
+                return true;
+            default:
+                return super.onKeyUp(keyCode, event);
+        }
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        Log.d("PEPE DEBUG", "keyCode: " + keyCode);
+        // 99/67(silence), 96/23(tweet), 100/62(flap)
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BUTTON_A: // press X: 96
+                Log.d("PEPE DEBUG", "tweet");
+                pepeManager.tweet();
+                return true;
+            case KeyEvent.KEYCODE_DPAD_CENTER: // held X: 23 - do nothing?
+                return true;
+            case KeyEvent.KEYCODE_BUTTON_X: // press IOS: 99
+                Log.d("PEPE DEBUG", "silence/automate?");
+                pepeManager.silence();
+                return true;
+            case KeyEvent.KEYCODE_DEL: // held IOS: 67 - do nothing?
+                return true;
+            case KeyEvent.KEYCODE_BUTTON_Y: // press triangle: 100
+                Log.d("PEPE DEBUG", "flap down");
+                pepeManager.flapDown();
+                return true;
+            case KeyEvent.KEYCODE_SPACE: // held triangle 62 - do nothing?
+                return true;
+            default:
+                return super.onKeyUp(keyCode, event);
+        }
     }
 
     Runnable mStatusChecker = new Runnable() {
@@ -415,9 +476,55 @@ public class PepeControlActivity extends Activity {
 
         String data = pepeManager.generateData();
         if((mBluetoothLeService != null) && pepeManager.sendIt()) {
+            Log.d("PEPE DEBUG", "Data: " + data);
             mBluetoothLeService.sendData(data);
         }
 
         return false;
+    }
+
+    @Override
+    public boolean onGenericMotionEvent(MotionEvent event) {
+        Log.d("PEPE DEBUG", "Generic motion event occured!");
+        mInputManager.onGenericMotionEvent(event);
+
+        int eventSource = event.getSource();
+        int pointerIndex = event.getPointerCount() - 1; // since we only care about the last location of the motion
+        Log.d("PEPE EVENT", "to string: " + event.toString());
+        Log.d("PEPE EVENT", "actionToString: " + event.actionToString(event.getAction()));
+        int id = event.getDeviceId();
+        if (-1 != id) {
+
+            int pointerCount = event.getPointerCount();
+            System.out.printf("At time %d:", event.getEventTime());
+            for (int p = 0; p < pointerCount; p++) {
+                // Copy/pasta from sendUpdatedPositionData
+                Log.d("PEPE DEBUG", "Controller data");
+                pepeManager.joystickLook(event.getY(p)); // -0.88 to 1.0
+                if (event.getAxisValue(MotionEvent.AXIS_HAT_X, p) == 1.0) {
+                    pepeManager.leanBack();
+                }
+
+                if (event.getAxisValue(MotionEvent.AXIS_HAT_X, p) == -1.0) {
+                    pepeManager.leanForward();
+                }
+            }
+        }
+        return super.onGenericMotionEvent(event);
+    }
+
+    @Override
+    public void onInputDeviceAdded(int deviceId) {
+        Log.d("PEPE DEBUG", "Input device " + deviceId + " has been added...");
+    }
+
+    @Override
+    public void onInputDeviceChanged(int deviceId) {
+        Log.d("PEPE DEBUG", "Input device " + deviceId + " has been changed...");
+    }
+
+    @Override
+    public void onInputDeviceRemoved(int deviceId) {
+        Log.d("PEPE DEBUG", "Input device " + deviceId + " has been removed...");
     }
 }
