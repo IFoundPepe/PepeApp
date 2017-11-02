@@ -56,7 +56,7 @@ public class PepeBluetoothConnectionManager {
    public String generateData()
    {
       //        threshold = MAX_SERVO_LOOK;
-      double distance = Math.cos(angle_value * (Math.PI/180) * -1);
+      double distance = Math.cos(angle_value * (Math.PI/180) + Math.PI);
       double value = NORM * distance;
       look = (int) (MEAN_LOOK + value);
 
@@ -150,7 +150,8 @@ public class PepeBluetoothConnectionManager {
 
    public void connectTweet()
    {
-      tweet = NUM_FILES;
+      //tweet = NUM_FILES;
+      tweet = 0;
    }
 
    public void tweet()
