@@ -60,7 +60,7 @@ public class PepeControlActivity extends Activity {
     private static final int MIN_SERVO_LOOK = 130;
 
     // Only want up to 90 degrees for the max lean
-    private static final int MAX_SERVO_LEAN = 350;
+    private static final int MAX_SERVO_LEAN = 300;
     private static final int MIN_SERVO_LEAN = 130;
     private static final int STRENGTH_JOYSTICK_LEAN = 40;
 
@@ -83,7 +83,7 @@ public class PepeControlActivity extends Activity {
     private static final int MEAN_LEAN = (MAX_SERVO_LEAN + MIN_SERVO_LEAN) / 2;
 
    // Values for tweeting
-   private static final int NUM_FILES = 10;
+   private static final int NUM_FILES = 9;
 
     private JoystickView joystick;
     private TextView mConnectionState;
@@ -110,10 +110,10 @@ public class PepeControlActivity extends Activity {
     private int   lean = MAX_SERVO_LEAN;
     private int previousFlap = MAX_SERVO_FLAP;
     private int   flap = MAX_SERVO_FLAP;
-    private int previousTweet = 10;
+    private int previousTweet = 0;
     private int  tweet = 10;
 
-    private int lookCount = 0;
+    private int tweetCount = 0;
 
     // only sends data after this number of data points collected
     // intent is to reduce jitter`
@@ -260,7 +260,6 @@ public class PepeControlActivity extends Activity {
             }
         });
 
-        // perform seek bar change listener event used for getting the progress value
         final Button flapButton = (Button) findViewById(R.id.flap);
         flapButton.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -285,7 +284,16 @@ public class PepeControlActivity extends Activity {
           public boolean onTouch(View v, MotionEvent event) {
              switch(event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                   tweet = (int) Math.ceil(Math.random() * NUM_FILES) ;
+                   //tweet = (int) Math.ceil(Math.random() * NUM_FILES) ;
+                    if(tweetCount <= NUM_FILES)
+                    {
+                        tweetCount++;
+                    }
+                    else
+                    {
+                        tweetCount = 1;
+                    }
+                    tweet = tweetCount;
                    return true;
                 case MotionEvent.ACTION_UP:
                    tweet = 0;
