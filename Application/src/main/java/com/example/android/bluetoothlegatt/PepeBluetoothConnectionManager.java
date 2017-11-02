@@ -158,7 +158,7 @@ public class PepeBluetoothConnectionManager {
 
    public void leanForward()
    {
-      this.lean = MAX_SERVO_LEAN;
+      this.lean = MIN_SERVO_LEAN;
    }
 
    public void leanBack()
