@@ -416,7 +416,7 @@ public class PepeControlActivity extends Activity {
 
         String data = pepeManager.generateData();
         if((mBluetoothLeService != null) && pepeManager.sendIt()) {
-            Log.d("PepeData: " + data);
+            Log.d("PEPE DEBUG", "Data: " + data);
             mBluetoothLeService.sendData(data);
         }
 
