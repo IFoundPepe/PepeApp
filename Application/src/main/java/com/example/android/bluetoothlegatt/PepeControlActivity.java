@@ -84,6 +84,8 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
 
     private int mInterval = 10; // 0.5 seconds by default, can be changed later
     private Handler mHandler;
+    private int mAIInterval = 12000; // 0.5 seconds by default, can be changed later
+    private Handler mAIHandler;
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -197,6 +199,7 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 
         mHandler = new Handler();
+        mAIHandler = new Handler();
         startRepeatingTask();
 
         joystick = (JoystickView) findViewById(R.id.joystick);
@@ -331,6 +334,75 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
 
     void stopRepeatingTask() {
         mHandler.removeCallbacks(mStatusChecker);
+    }
+
+    Runnable mPepeAI = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                runPepeAI(); //this function can change value of mInterval.
+            } finally {
+                // 100% guarantee that this always happens, even if
+                // your update method throws an exception
+                mAIHandler.postDelayed(mPepeAI, mAIInterval);
+            }
+        }
+
+
+        private void runPepeAI() {
+            mAIInterval = 12000;
+            final int interval_variance = 8;
+            final int look_roll_variance = 4; // 1-3, nothing; 4, look left; 5, look right
+            final int flap_roll_variance = 5; // 1-3, nothing; 4, flap once; 5, flap twice
+            final int flap_wait_milli = 50;
+
+            int random_variance = (int) Math.ceil(Math.random() * interval_variance);
+            mAIInterval += random_variance; //12000 by default, 16 sec
+
+            try {
+                // Look first if rolled
+                int look_roll = (int) Math.ceil(Math.random() * look_roll_variance);
+                switch (look_roll) {
+                    case 3:
+                        pepeManager.setLook(445); // Look middle right
+                    case 4:
+                        pepeManager.setLook(235); // Look middle left
+                    default:
+                        // Don't look
+                }
+                // Tweet always
+                pepeManager.tweet();
+                // flap last if rolled
+                int flap_roll = (int) Math.ceil(Math.random() * flap_roll_variance);
+                switch (flap_roll) {
+                    case 4:
+                        pepeManager.flapUp();
+                        wait(flap_wait_milli);
+                        pepeManager.flapDown();
+                    case 5:
+                        pepeManager.flapUp();
+                        wait(flap_wait_milli);
+                        pepeManager.flapDown();
+                        wait(flap_wait_milli);
+                        pepeManager.flapUp();
+                        wait(flap_wait_milli);
+                        pepeManager.flapDown();
+                    default:
+                        // Don't flap
+                }
+                // Do not lean, this is auto pepe, we don't want him taking over the world
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    void stopPepeAITask() {
+        mAIHandler.removeCallbacks(mPepeAI);
+    }
+
+    void startPepeAITask() {
+        mPepeAI.run();
     }
 
     @Override
