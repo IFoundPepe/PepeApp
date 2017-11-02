@@ -39,7 +39,6 @@ public class PepeBluetoothConnectionManager {
    private int tweet = NUM_FILES;
    private int previousTweet = 0;
 
-   private BluetoothLeService mBluetoothLeService;
 
    public PepeBluetoothConnectionManager()
    {
@@ -53,10 +52,10 @@ public class PepeBluetoothConnectionManager {
    private String data;
    private boolean sendIt;
 
-   public String generateData()
+   public void calculateLookAndLean()
    {
       //        threshold = MAX_SERVO_LOOK;
-      double distance = Math.cos(angle_value * (Math.PI/180) * -1);
+      double distance = Math.cos(angle_value * (Math.PI/180));
       double value = NORM * distance;
       look = (int) (MEAN_LOOK + value);
 
@@ -83,7 +82,30 @@ public class PepeBluetoothConnectionManager {
 
       int bin = Math.round((look - MIN_SERVO_LOOK) / STEP_SIZE);
       look = (bin * STEP_SIZE) + MIN_SERVO_LOOK;
+   }
 
+   public void joystickLook(double distance_non_normalized )
+   {
+      final double controllerLowerLimit = -0.89;
+      final double controllerUpperLimit = 1.0;
+      double range = controllerUpperLimit + Math.abs(controllerLowerLimit);
+      double distancePercentile = (distance_non_normalized + Math.abs(controllerLowerLimit))/range;
+      double distance = (distancePercentile * 2) - 1; // -1.0 to 1.0 value
+      if (distancePercentile > 0.4 && distancePercentile < 0.6)
+      {
+         distance = 0.0; // Close enough, reset to middle
+      }
+
+      double value = NORM * distance;
+      look = (int) (MEAN_LOOK + value);
+
+      int bin = Math.round((look - MIN_SERVO_LOOK) / STEP_SIZE);
+      look = (bin * STEP_SIZE) + MIN_SERVO_LOOK;
+   }
+
+
+   public String generateData()
+   {
       if ( look < MIN_SERVO_LOOK)
       {
          look = MIN_SERVO_LOOK;
@@ -134,9 +156,16 @@ public class PepeBluetoothConnectionManager {
       this.look = look;
    }
 
-   public void setLean(int lean) {
-      this.lean = lean;
+   public void leanForward()
+   {
+      this.lean = MAX_SERVO_LEAN;
    }
+
+   public void leanBack()
+   {
+      this.lean = MAX_SERVO_LEAN;
+   }
+
 
    public void flapUp()
    {

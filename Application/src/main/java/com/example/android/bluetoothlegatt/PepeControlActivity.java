@@ -216,6 +216,7 @@ public class PepeControlActivity extends Activity {
                 // do whatever you want
                pepeManager.setAngle_value(angle);
                pepeManager.setStrength_value(strength);
+               pepeManager.calculateLookAndLean();
             }
         });
 
@@ -415,6 +416,7 @@ public class PepeControlActivity extends Activity {
 
         String data = pepeManager.generateData();
         if((mBluetoothLeService != null) && pepeManager.sendIt()) {
+            Log.d("PepeData: " + data);
             mBluetoothLeService.sendData(data);
         }
 
