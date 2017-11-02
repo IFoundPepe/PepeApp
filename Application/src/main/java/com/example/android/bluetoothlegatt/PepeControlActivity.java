@@ -296,6 +296,7 @@ public class PepeControlActivity extends Activity {
                     tweet = tweetCount;
                    return true;
                 case MotionEvent.ACTION_UP:
+                   v.performClick();
                    tweet = 0;
                    return true;
              }

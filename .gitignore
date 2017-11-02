@@ -52,3 +52,6 @@ local.properties
 .idea
 .idea\*
 gradle/wrapper/gradle-wrapper.properties
+Application/Application.iml
+PepeApp.iml
+PepeApp.iml
