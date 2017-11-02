@@ -55,38 +55,11 @@ import io.github.controlwear.virtual.joystick.android.JoystickView;
 public class PepeControlActivity extends Activity {
     private final static String TAG = PepeControlActivity.class.getSimpleName();
 
-    // Settings
-    private static final int MAX_SERVO_LOOK = 550;
-    private static final int MIN_SERVO_LOOK = 130;
-
-    // Only want up to 90 degrees for the max lean
-    private static final int MAX_SERVO_LEAN = 300;
-    private static final int MIN_SERVO_LEAN = 130;
-    private static final int STRENGTH_JOYSTICK_LEAN = 40;
-
-    private static final int MAX_SERVO_FLAP = 320;
-    private static final int MIN_SERVO_FLAP = 560;
-
-
     // Derived Values
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
 
-    // Derived for the look
-    private static final int DEFAULT_LOOK = ((MAX_SERVO_LOOK + MIN_SERVO_LOOK) / 2 );
-    private static final int STEPS = 6;
-    private static final int STEP_SIZE = (MAX_SERVO_LOOK - MIN_SERVO_LOOK) / STEPS;
-    private static final int NORM = (MAX_SERVO_LOOK - MIN_SERVO_LOOK)/2;
-    private static final int MEAN_LOOK = (MAX_SERVO_LOOK + MIN_SERVO_LOOK)/2;
-
-    // Derived for the lean
-    private static final int MEAN_LEAN = (MAX_SERVO_LEAN + MIN_SERVO_LEAN) / 2;
-
-   // Values for tweeting
-   private static final int NUM_FILES = 9;
-
     private JoystickView joystick;
-    private TextView mConnectionState;
     private TextView mDataField;
     private String mDeviceName;
     private String mDeviceAddress;
@@ -96,28 +69,13 @@ public class PepeControlActivity extends Activity {
             new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
     private boolean mConnected = false;
     private BluetoothGattCharacteristic mNotifyCharacteristic;
+    private PepeBluetoothConnectionManager pepeManager;
 
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
 
-
-    public int strength_value;
-    private int angle_value;
-    private boolean sendIt = false;
-    private int previousLook = DEFAULT_LOOK;
-    private int   look = DEFAULT_LOOK;
-    private int previousLean = MAX_SERVO_LEAN;
-    private int   lean = MAX_SERVO_LEAN;
-    private int previousFlap = MAX_SERVO_FLAP;
-    private int   flap = MAX_SERVO_FLAP;
-    private int previousTweet = 0;
-    private int  tweet = 10;
-
-    private int tweetCount = 0;
-
     // only sends data after this number of data points collected
-    // intent is to reduce jitter`
-    private int dataLimiter = 5;
+    // intent is to reduce jitter
 
     private int mInterval = 10; // 0.5 seconds by default, can be changed later
     private Handler mHandler;
@@ -134,7 +92,7 @@ public class PepeControlActivity extends Activity {
             }
             // Automatically connects to the device upon successful start-up initialization.
             mBluetoothLeService.connect(mDeviceAddress);
-            tweet = NUM_FILES;
+            pepeManager.connectTweet();
         }
 
         @Override
@@ -219,6 +177,7 @@ public class PepeControlActivity extends Activity {
         mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
         mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
 
+       pepeManager = new PepeBluetoothConnectionManager();
         //TODO: Commented out stuff that isn't displayed on the UI
         // Sets up UI references.
       //  ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
@@ -243,8 +202,8 @@ public class PepeControlActivity extends Activity {
             public boolean onTouch(View v, MotionEvent event) {
                 if ( event.getAction() == MotionEvent.ACTION_UP )
                 {
-                    angle_value = 0;
-                    strength_value = 0;
+                   pepeManager.setAngle_value(0);
+                   pepeManager.setStrength_value(0);
                 }
                 return false;
             }
@@ -255,8 +214,8 @@ public class PepeControlActivity extends Activity {
             @Override
             public void onMove(int angle, int strength) {
                 // do whatever you want
-                angle_value = angle;
-                strength_value = strength;
+               pepeManager.setAngle_value(angle);
+               pepeManager.setStrength_value(strength);
             }
         });
 
@@ -264,15 +223,11 @@ public class PepeControlActivity extends Activity {
         flapButton.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    //Toast.makeText(PepeControlActivity.this, "Flap up", Toast.LENGTH_SHORT).show();
-                    flap = MIN_SERVO_FLAP;
-//                    sendUpdatedPositionData();
+                   pepeManager.flapDown();
                 }
                 else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    v.performClick();
-                    //Toast.makeText(PepeControlActivity.this, "Flap down", Toast.LENGTH_SHORT).show();
-                    flap = MAX_SERVO_FLAP;
-//                    sendUpdatedPositionData();
+                   v.performClick();
+                   pepeManager.flapUp();
                 }
                 return false;
             }
@@ -284,20 +239,11 @@ public class PepeControlActivity extends Activity {
           public boolean onTouch(View v, MotionEvent event) {
              switch(event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                   //tweet = (int) Math.ceil(Math.random() * NUM_FILES) ;
-                    if(tweetCount <= NUM_FILES)
-                    {
-                        tweetCount++;
-                    }
-                    else
-                    {
-                        tweetCount = 1;
-                    }
-                    tweet = tweetCount;
+                   pepeManager.tweet();
                    return true;
                 case MotionEvent.ACTION_UP:
                    v.performClick();
-                   tweet = 0;
+                   pepeManager.silence();
                    return true;
              }
              return false;
@@ -465,79 +411,11 @@ public class PepeControlActivity extends Activity {
         return intentFilter;
     }
 
-
-
-    private int threshold = MAX_SERVO_LOOK;
     private boolean sendUpdatedPositionData() {
 
-//        threshold = MAX_SERVO_LOOK;
-        double distance = Math.cos(angle_value * (Math.PI/180));
-        double value = NORM * distance;
-        look = (int) (MEAN_LOOK + value);
-
-        if ( (angle_value == 0) && (strength_value == 0) )
-        {
-            look = DEFAULT_LOOK;
-        }
-
-        if ( (angle_value > 45) && (angle_value < 135) )
-        {
-            // Forward Tilt
-            if ( strength_value > STRENGTH_JOYSTICK_LEAN  ) {
-                lean = MIN_SERVO_LEAN;
-            }
-        }
-        else if ( ( angle_value > 225) && (angle_value < 325) )
-        {
-            // Backward Tilt
-            if ( strength_value > STRENGTH_JOYSTICK_LEAN ) {
-                lean = MAX_SERVO_LEAN;
-            }
-
-        }
-
-        int bin = Math.round((look - MIN_SERVO_LOOK) / STEP_SIZE);
-        look = (bin * STEP_SIZE) + MIN_SERVO_LOOK;
-
-        if ( look < MIN_SERVO_LOOK)
-        {
-            look = MIN_SERVO_LOOK;
-        }
-
-        if ( lean > MEAN_LEAN )
-        {
-            lean = MAX_SERVO_LEAN;
-        }
-        else // if ( lean < MEAN_LEAN )
-        {
-            lean = MIN_SERVO_LEAN;
-        }
-
-        sendIt = false;
-        if ( (previousLook != look) ||
-             (previousLean != lean) ||
-             (previousFlap != flap) ||
-             (previousTweet != tweet))
-        {
-            sendIt = true;
-        }
-
-        previousLook = look;
-        previousLean = lean;
-        previousFlap = flap;
-        previousTweet = tweet;
-
-        //Write to the Bluetooth service transmit characteristic
-        //Data transmit interface:
-        //      ! == look
-        //      @ == lean
-        //      $ == flap
-        //      # == tweet (see what I did there ;) )
-        if((mBluetoothLeService != null) && sendIt) {
-            mBluetoothLeService.sendData( look + "|" +
-                                          lean + "|" +
-                                          flap + "|" +
-                                          tweet + "%");
+        String data = pepeManager.generateData();
+        if((mBluetoothLeService != null) && pepeManager.sendIt()) {
+            mBluetoothLeService.sendData(data);
         }
 
         return false;
