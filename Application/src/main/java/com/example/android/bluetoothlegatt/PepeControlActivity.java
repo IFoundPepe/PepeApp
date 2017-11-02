@@ -332,7 +332,7 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
         registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         if (mBluetoothLeService != null) {
             final boolean result = mBluetoothLeService.connect(mDeviceAddress);
-            Log.d("TEDDY DEBUG", "Connect request result=" + result);
+            Log.d("PEPE DEBUG", "Connect request result=" + result);
         }
     }
 
@@ -531,14 +531,20 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
         //      @ == lean
         //      $ == flap
         //      # == tweet (see what I did there ;) )
+
         if((mBluetoothLeService != null) && sendIt) {
             if (tweet != 0 ) {
-                Log.d("TEDDY DEBUG", "Tweet: " + tweet);
+                Log.d("PEPE DEBUG", "Tweet: " + tweet);
             }
             mBluetoothLeService.sendData( look + "|" +
                                           lean + "|" +
                                           flap + "|" +
                                           tweet + "%");
+            Log.d("PEPE OUTPUT APP", "look|lean|flap|tweet - " + look + "|" +
+                    lean + "|" +
+                    flap + "|" +
+                    tweet);
+
         }
 
         return false;
@@ -546,7 +552,7 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
 
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
-//        Log.d("TEDDY DEBUG", "Generic motion event occured!");
+        Log.d("PEPE DEBUG", "Generic motion event occured!");
         mInputManager.onGenericMotionEvent(event);
 
         // Check that the event came from a joystick or gamepad since a generic
@@ -556,133 +562,100 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
         String axis_y = event.axisToString(MotionEvent.AXIS_Y);
         int eventSource = event.getSource();
         int pointerIndex = event.getPointerCount() - 1; // since we only care about the last location of the motion
-        Log.d("TEDDY EVENT", "to string: " + event.toString());
-        Log.d("TEDDY EVENT", "actionToString: " + event.actionToString(event.getAction()));
-        Log.d("TEDDY EVENT SOURCE", String.format("Event source: " + eventSource + " - Joystick"));
+        Log.d("PEPE EVENT", "to string: " + event.toString());
+        Log.d("PEPE EVENT", "actionToString: " + event.actionToString(event.getAction()));
+        Log.d("PEPE EVENT SOURCE", String.format("Event source: " + eventSource + " - Joystick"));
         int id = event.getDeviceId();
         if (-1 != id) {
-//            Log.d("TEDDY DEBUG", "Motion event deviceID: " + id);
-            // TODO: Get the action you want from the control (axis information)
-//            if ( event.getAction() == MotionEvent.ACTION_UP )
-//            {
-//                // TODO: Do we have anything to do for action up?
-//                // This should not be needed since the joystick snaps back physically.
-//                Log.d("TEDDY DEBUG", "Action up!");
-//                angle_value = 0;
-//                strength_value = 0;
-//            }
-//            if (event.getAction() == MotionEvent.ACTION_MOVE)
-//            {
-//                Log.d("TEDDY ACTION", "Action move!");
-//                InputDevice.MotionRange mr_x = event.getDevice().getMotionRange(MotionEvent.AXIS_X, eventSource);
-//                InputDevice.MotionRange mr_y = event.getDevice().getMotionRange(MotionEvent.AXIS_Y, eventSource);
-//                Log.d("TEDDY DEBUG", "List of motions...");
-//                Log.d("TEDDY MOTION", "Start to list motions.");
-//                List<InputDevice.MotionRange> mrs = event.getDevice().getMotionRanges();//InputDevice.SOURCE_CLASS_JOYSTICK);
-//                for (InputDevice.MotionRange mr:mrs)
-//                {
-                    // TODO: Can uncomment to get debug for the motion ranges.
-                    // TODO: The case statement doesnt work for some reason. The values are 0, 1, 2, 9 for our axis
-//                    String axis_string = "";
-//                    switch (mr.getAxis()) {
-//                        case MotionEvent.AXIS_X:
-//                                axis_string = "AXIS_X";
-//                        case MotionEvent.AXIS_Y:
-//                            axis_string = "AXIS_Y";
-//                        case MotionEvent.AXIS_PRESSURE:
-//                            axis_string = "AXIS_PRESSURE";
-//                        case MotionEvent.AXIS_VSCROLL:
-//                            axis_string = "AXIS_VSCROLL";
-//                        default:
-//                            axis_string = "need to look it up: " + (Integer.toString(mr.getAxis()));
-//
-//                    }
-//
-//                    Log.d("TEDDY DEBUG", mr.getRange());
-//                    Log.d("TEDDY MOTION RANGE", "Axis (int): " + axis_string);
-//                    Log.d("TEDDY MOTION RANGE", "Min (float): " + Float.toString(mr.getMin()));
-//                    Log.d("TEDDY MOTION RANGE", "Max (float): " + Float.toString(mr.getMax()));
-//                    Log.d("TEDDY MOTION RANGE", "Range (float): " + Float.toString(mr.getRange()));
-//                    Log.d("TEDDY MOTION RANGE", "Resolution (float): " + Float.toString(mr.getResolution()));
-//                }
 
-//                Log.d("TEDDY EVENT", "to string: " + event.toString());
-//                Log.d("TEDDY EVENT", "actionToString: " + event.actionToString(event.getAction()));
-//                Log.d("TEDDY EVENT", "axisToString(x): " + event.axisToString(MotionEvent.AXIS_X));
-//                Log.d("TEDDY EVENT", "axisToString(y): " + event.axisToString(MotionEvent.AXIS_Y));
-//                Log.d("TEDDY EVENT", event.toString());
+            int histSize = event.getHistorySize();
+            int pointerCount = event.getPointerCount();
+            System.out.printf("At time %d:", event.getEventTime());
+            for (int p = 0; p < pointerCount; p++) {
+//                Log.d("PEPE EVENT pointer: ", Float.toString(event.getPointerId(p)));
+//                Log.d("PEPE EVENT X: ", Float.toString(event.getX(p)));// Unused but raw value for lean
+//                Log.d("PEPE EVENT Y: ", Float.toString(event.getY(p)));// -1.0 to 1.0 float value representing head turn.
+//                Log.d("PEPE EVENT XH: ", Float.toString(event.getAxisValue(MotionEvent.AXIS_HAT_X, p))); // THIS IS THE LEAN VALUE!!!! AS IS!!!
 
-//                Log.d("TEDDY EVENT", Float.toString(event.getAxisValue(MotionEvent.AXIS_X)));
-//                Log.d("TEDDY EVENT", Float.toString(event.getAxisValue(MotionEvent.AXIS_Y)));
-//                Log.d("TEDDY EVENT",event.getAxisValue(0));
-//                Log.d("TEDDY EVENT",event.getAxisValue(0, ));
-//                float min_x = mr_x.getMin();
-//                float max_x = mr_x.getMax();
-//                float min_y = mr_y.getMin();
-//                float max_y = mr_y.getMax();
-//                float raw_x = event.getRawX();
-//                float raw_y = event.getRawY();
-//                MotionEvent my_event = event;
-                // do whatever you want ???
-
-//                float axis_x = event.getAxisValue(MotionEvent.AXIS_RX, pointerIndex);
-//                float axis_y = event.getAxisValue(MotionEvent.AXIS_RY, pointerIndex);
-
-//                float orientation = event.getAxisValue(MotionEvent.AXIS_ORIENTATION, pointerIndex);
-//                event.getAxisValue(MotionEvent.AXIS_);
-//                float rx = event.getAxisValue(MotionEvent.AXIS_RX, pointerIndex);
-//                float ry = event.getAxisValue(MotionEvent.AXIS_RX, pointerIndex);
-//                float axis_y = event.getAxisValue(MotionEvent.AXIS_Y, pointerIndex);
-//                float thing = event.get;
-//                Log.d("TEDDY DEBUG", "List of motion ranges: " + event.getDevice().getMotionRange(InputDevice.SOURCE_CLASS_JOYSTICK));
-
-//                if(mr_o != null) {
-//                    Log.d("TEDDY DEBUG", "MR Orientation: " + mr_o.toString());
-//                }
-//                else {
-//                    Log.d("TEDDY DEBUG", "NULL");
-//                }
-
-
-//                  Log.d("TEDDY DEBUG", "axis_x: " + axis_x + ", axis_y: " + axis_y);
-//                Log.d("TEDDY DEBUG", "x min/max: " + min_x + "/" + max_x);
-//                Log.d("TEDDY DEBUG", "y min/max: " + min_y + "/" + max_y);
-//                Log.d("TEDDY DEBUG", "raw x: " + raw_x, Toast);
-//                Log.d("TEDDY DEBUG", "raw y: " + raw_y, Toast);
-//            }
-            List<InputDevice.MotionRange> ranges = event.getDevice().getMotionRanges();
-            Iterator<InputDevice.MotionRange> iterRange = ranges.iterator();
-            while (iterRange.hasNext())
-            {
-                InputDevice.MotionRange cur = iterRange.next();
-//                Log.d("TEDDY MOTION MR: ", (cur.));
-                Log.d("TEDDY MOTION AXIS: ", MotionEvent.axisToString(cur.getAxis()));
-                Log.d("TEDDY MOTION min: ", Float.toString(cur.getMin()));
-                Log.d("TEDDY MOTION max: ", Float.toString(cur.getMax()));
-
-                Log.d("TEDDY MOTION value: ", Float.toString(event.getAxisValue(cur.getAxis(), pointerIndex)));
-            }
-
-
-
-            if (event.getAction() == MotionEvent.ACTION_HOVER_MOVE) {
-                int histSize = event.getHistorySize();
-                int pointerCount = event.getPointerCount();
-                System.out.printf("At time %d:", event.getEventTime());
-                for (int p = 0; p < pointerCount; p++) {
-                    Log.d("TEDDY EVENT pointer: ", Float.toString(event.getPointerId(p)));
-                    Log.d("TEDDY EVENT X: ", Float.toString(event.getX(p)));
-                    Log.d("TEDDY EVENT Y: ", Float.toString(event.getY(p)));
+                // Copy/pasta from sendUpdatedPositionData
+                threshold = MAX_SERVO_LOOK;
+//                double distance = Math.cos(angle_value * (Math.PI/180));
+                double distance_non_normalized = event.getY(p); // -0.88 to 1.0
+                final double controllerLowerLimit = -0.89;
+                final double controllerUpperLimit = 1.0;
+                double range = controllerUpperLimit + Math.abs(controllerLowerLimit);
+                double distancePercentile = (distance_non_normalized + Math.abs(controllerLowerLimit))/range;
+                double distance = (distancePercentile * 2) - 1; // -1.0 to 1.0 value
+                if (distancePercentile > 0.4 && distancePercentile < 0.6)
+                {
+                    distance = 0.0; // Close enough, reset to middle
                 }
-//  Log.d("TEDDY EVENT", "axisToString(x): " + axis_x);
-//                Log.d("TEDDY EVENT", axis_x + ": " + event.getAxisValue(MotionEvent.AXIS_X, pointerIndex));
-//                int x_value = event.getDevice().getMotionRange(MotionEvent.AXIS_X, eventSource).getAxis();
-//
-//                Log.d("TEDDY EVENT", "axisToString(y): " + axis_y);
-//                Log.d("TEDDY EVENT", axis_y + ": " + event.getAxisValue(MotionEvent.AXIS_Y, pointerIndex));
-            }
-            // TODO: Make call to pepe control here
 
+                // TODO: Still having issue with reset to default
+//                Log.d("PEPE OUTPUT", "distance: " + distance);
+                double value = NORM * distance;// NORM Is the move range
+                look = (int) (MEAN_LOOK + value);// MEAN_LOOK is the servo value for neutral
+
+                if (event.getAxisValue(MotionEvent.AXIS_HAT_X, p) == 1.0) {
+                    lean = MAX_SERVO_LEAN;
+                }
+
+                if (event.getAxisValue(MotionEvent.AXIS_HAT_X, p) == -1.0) {
+                    lean = MIN_SERVO_LEAN;
+                }
+                // end copy pasta replace for lean
+
+                int bin = Math.round((look - MIN_SERVO_LOOK) / STEP_SIZE);
+                look = (bin * STEP_SIZE) + MIN_SERVO_LOOK;
+
+                if ( look < MIN_SERVO_LOOK)
+                {
+                    look = MIN_SERVO_LOOK;
+                }
+
+                if ( lean > MEAN_LEAN )
+                {
+                    lean = MAX_SERVO_LEAN;
+                }
+                else // if ( lean < MEAN_LEAN )
+                {
+                    lean = MIN_SERVO_LEAN;
+                }
+
+                sendIt = false;
+                if ( (previousLook != look) ||
+                     (previousLean != lean) ||
+                     (previousFlap != flap) ||
+                     (previousTweet != tweet))
+                {
+                    sendIt = true;
+                }
+
+                previousLook = look;
+                previousLean = lean;
+                previousFlap = flap;
+                previousTweet = tweet;
+
+                //Write to the Bluetooth service transmit characteristic
+                //Data transmit interface:
+                //      ! == look
+                //      @ == lean
+                //      $ == flap
+                //      # == tweet (see what I did there ;) )
+                if((mBluetoothLeService != null) && sendIt) {
+                    if (tweet != 0 ) {
+                        Log.d("PEPE DEBUG", "Tweet: " + tweet);
+                    }
+                    mBluetoothLeService.sendData( look + "|" +
+                                                       lean + "|" +
+                                                       flap + "|" +
+                                                       tweet + "%");
+                    Log.d("PEPE OUTPUT CONT", "look|lean|flap|tweet - " + look + "|" +
+                            lean + "|" +
+                            flap + "|" +
+                            tweet);
+                }
+            }
         }
         return super.onGenericMotionEvent(event);
     }
@@ -690,26 +663,26 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
     @Override
     public void onInputDeviceAdded(int deviceId) {
         // Internal OS one up counter of the controller upon connection
-        Log.d("TEDDY DEBUG", "Input device " + deviceId + " has been added...");
+        Log.d("PEPE DEBUG", "Input device " + deviceId + " has been added...");
         // Magicsee R1
-//        Log.d("TEDDY DEBUG", "Name: " + InputDevice.getDevice(deviceId).getName());
+//        Log.d("PEPE DEBUG", "Name: " + InputDevice.getDevice(deviceId).getName());
         // Descriptor is a pointer
-        //Log.d("TEDDY DEBUG", "Descriptor: " + InputDevice.getDevice(deviceId).getDescriptor());
+        //Log.d("PEPE DEBUG", "Descriptor: " + InputDevice.getDevice(deviceId).getDescriptor());
         // Controller is count
-        //Log.d("TEDDY DEBUG", "Controller Number: " + InputDevice.getDevice(deviceId).getControllerNumber());
+        //Log.d("PEPE DEBUG", "Controller Number: " + InputDevice.getDevice(deviceId).getControllerNumber());
         // 90 ----97
-//        Log.d("TEDDY DEBUG", "ID: " + InputDevice.getDevice(deviceId).getId());
+//        Log.d("PEPE DEBUG", "ID: " + InputDevice.getDevice(deviceId).getId());
         // 2
-//        Log.d("TEDDY DEBUG", "Keyboard Type: " + InputDevice.getDevice(deviceId).getKeyboardType());
+//        Log.d("PEPE DEBUG", "Keyboard Type: " + InputDevice.getDevice(deviceId).getKeyboardType());
     }
 
     @Override
     public void onInputDeviceChanged(int deviceId) {
-        Log.d("TEDDY DEBUG", "Input device " + deviceId + " has been changed...");
+        Log.d("PEPE DEBUG", "Input device " + deviceId + " has been changed...");
     }
 
     @Override
     public void onInputDeviceRemoved(int deviceId) {
-        Log.d("TEDDY DEBUG", "Input device " + deviceId + " has been removed...");
+        Log.d("PEPE DEBUG", "Input device " + deviceId + " has been removed...");
     }
 }
