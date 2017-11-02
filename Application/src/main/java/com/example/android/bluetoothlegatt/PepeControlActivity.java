@@ -85,6 +85,9 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
     private int mInterval = 10; // 0.5 seconds by default, can be changed later
     private Handler mHandler;
 
+    // matain if PepAI is active
+    private boolean PepAIState = false;
+
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
 
@@ -256,6 +259,31 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
              return false;
           }
        });
+
+       // PepAI
+        final Button pepaiButton = (Button) findViewById(R.id.PepAI);
+        pepaiButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if ( event.getAction() == MotionEvent.ACTION_UP )
+                {
+                    if(PepAIState)
+                    {
+                        stopPepeAITask();
+                        startRepeatingTask();
+                        PepAIState = false;
+                    }
+                    else
+                    {
+                        stopRepeatingTask();
+                        startPepeAITask();
+                        PepAIState = false;
+                    }
+                }
+                return true;
+            }
+        });
+
         mInputManager = InputManagerCompat.Factory.getInputManager(this);
         mInputManager.registerInputDeviceListener(this, null);
     }

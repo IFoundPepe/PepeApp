@@ -34,8 +34,8 @@ public class PepeBluetoothConnectionManager {
    private int previousLook = DEFAULT_LOOK;
    private int lean = MAX_SERVO_LEAN;
    private int previousLean = MAX_SERVO_LEAN;
-   private int flap = MAX_SERVO_FLAP;
-   private int previousFlap = MAX_SERVO_FLAP;
+   private int flap = MIN_SERVO_FLAP;
+   private int previousFlap = MIN_SERVO_FLAP;
    private int tweet = NUM_FILES;
    private int previousTweet = 0;
 
@@ -197,6 +197,11 @@ public class PepeBluetoothConnectionManager {
          tweetCount = 1;
       }
       tweet = tweetCount;
+   }
+
+   public void tweetRand()
+   {
+      tweet = (int) Math.ceil(Math.random() * NUM_FILES) ;
    }
 
    public void silence()
