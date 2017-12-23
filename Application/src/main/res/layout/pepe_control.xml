@@ -66,7 +66,7 @@
         custom:JV_borderWidth="4dp"
         custom:JV_fixedCenter="false"
         android:layout_marginBottom="67dp"
-        custom:layout_constraintBottom_toTopOf="@+id/silence"
+        custom:layout_constraintBottom_toTopOf="@+id/PepAI"
         android:layout_marginLeft="8dp"
         custom:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="8dp"
