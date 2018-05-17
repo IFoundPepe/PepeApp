@@ -17,7 +17,6 @@
 package com.example.android.bluetoothlegatt;
 
 import android.app.Activity;
-import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -30,7 +29,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
-import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
@@ -39,8 +37,6 @@ import com.pepedyne.pepe.bluetoothlegatt.BluetoothCallbackInf;
 import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeService;
 import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProvider;
 import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProviderImpl;
-
-import java.util.ArrayList;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 
@@ -73,11 +69,14 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
 
     private int mInterval = 10; // 0.5 seconds by default, can be changed later
     private Handler mHandler;
-    private int mAIInterval = 12000; // 0.5 seconds by default, can be changed later
-    private Handler mAIHandler;
 
     // matain if PepAI is active
     private boolean PepAIState = false;
+    final int       PepAIIntervalVariance = 300;  //number of wake up intervals
+    private int     PepAIActionCounter = 0;
+
+    boolean needToFlap = false;
+    private int flapCounter = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -98,7 +97,6 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
         mHandler = new Handler();
-        mAIHandler = new Handler();
         startRepeatingTask();
 
         joystick = (JoystickView) findViewById(R.id.joystick);
@@ -132,11 +130,11 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
         flapButton.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                   pepeManager.flapDown();
+                   pepeManager.flapUp();
                 }
                 else if (event.getAction() == MotionEvent.ACTION_UP) {
                    v.performClick();
-                   pepeManager.flapUp();
+                   pepeManager.flapDown();
                 }
                 return false;
             }
@@ -168,15 +166,13 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
                 {
                     if(PepAIState)
                     {
-                        stopPepeAITask();
-                        startRepeatingTask();
+                        Log.d("PEPE DEBUG", "PepAI stopped");
                         PepAIState = false;
                     }
                     else
                     {
-                        stopRepeatingTask();
-                        startPepeAITask();
-                        PepAIState = false;
+                        Log.d("PEPE DEBUG", "PepAI started");
+                        PepAIState = true;
                     }
                 }
                 return true;
@@ -203,6 +199,7 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
             case KeyEvent.KEYCODE_BUTTON_Y: // press triangle: 100
                 Log.d("PEPE DEBUG", "flap up");
                 pepeManager.flapUp();
+                pepeManager.silence();
                 return true;
             case KeyEvent.KEYCODE_SPACE: // held triangle 62 - do nothing?
                 return true;
@@ -223,14 +220,23 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
             case KeyEvent.KEYCODE_DPAD_CENTER: // held X: 23 - do nothing?
                 return true;
             case KeyEvent.KEYCODE_BUTTON_X: // press IOS: 99
-                Log.d("PEPE DEBUG", "silence/automate?");
-                pepeManager.silence();
+                if(PepAIState)
+                {
+                    Log.d("PEPE DEBUG", "PepAI stopped");
+                    PepAIState = false;
+                }
+                else
+                {
+                    Log.d("PEPE DEBUG", "PepAI started");
+                    PepAIState = true;
+                }
                 return true;
             case KeyEvent.KEYCODE_DEL: // held IOS: 67 - do nothing?
                 return true;
             case KeyEvent.KEYCODE_BUTTON_Y: // press triangle: 100
                 Log.d("PEPE DEBUG", "flap down");
                 pepeManager.flapDown();
+                pepeManager.silence();
                 return true;
             case KeyEvent.KEYCODE_SPACE: // held triangle 62 - do nothing?
                 return true;
@@ -244,6 +250,12 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
         public void run() {
             try {
                 sendUpdatedPositionData(); //this function can change value of mInterval.
+                PepAIActionCounter++;
+                if(PepAIState && (PepAIActionCounter >= PepAIIntervalVariance))
+                {
+                    runPepeAI();
+                    PepAIActionCounter = 0;
+                }
             } finally {
                 // 100% guarantee that this always happens, even if
                 // your update method throws an exception
@@ -260,74 +272,65 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
         mHandler.removeCallbacks(mStatusChecker);
     }
 
-    Runnable mPepeAI = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                runPepeAI(); //this function can change value of mInterval.
-            } finally {
-                // 100% guarantee that this always happens, even if
-                // your update method throws an exception
-                mAIHandler.postDelayed(mPepeAI, mAIInterval);
-            }
+     private void runPepeAI() {
+         final int interval_variance = 8;
+         final int look_roll_variance = 4; // 1-3, nothing; 4, look left; 5, look right
+         final int flap_roll_variance = 5; // 1-3, nothing; 4, flap once; 5, flap twice
+         final int flap_wait_milli = 350;
+
+         int random_variance = (int) Math.ceil(Math.random() * interval_variance);
+
+             // Look first if rolled
+             int look_roll = (int) Math.ceil(Math.random() * look_roll_variance);
+             Log.d("PEPE DEBUG", "lookroll == " + look_roll);
+             switch (look_roll) {
+                 case 3:
+                     pepeManager.setLook(445); // Look middle right
+                     sendAIPositionData();
+                 case 4:
+                     pepeManager.setLook(235); // Look middle left
+                     sendAIPositionData();
+                 default:
+                     pepeManager.setLook(340); // Don't look
+                     sendAIPositionData();
+             }
+
+             // Tweet always
+             pepeManager.tweetRand();
+             // flap last if rolled
+             int flap_roll = (int) Math.ceil(Math.random() * flap_roll_variance);
+
+             Log.d("PEPE DEBUG", "flaproll == " + flap_roll);
+             switch (flap_roll) {
+                 case 4:
+                     Log.d("PEPE DEBUG", "flap once");
+                     pepeManager.flapUp();
+                     sendAIPositionData();
+                     android.os.SystemClock.sleep(flap_wait_milli);
+                     pepeManager.flapDown();
+                     pepeManager.silence();
+                     sendAIPositionData();
+                     android.os.SystemClock.sleep(flap_wait_milli + (flap_wait_milli/2) );
+                     pepeManager.flapUp();
+                     sendAIPositionData();
+                     android.os.SystemClock.sleep(flap_wait_milli);
+                     pepeManager.flapDown();
+                     pepeManager.silence();
+                     sendAIPositionData();
+
+                 case 5:
+                     Log.d("PEPE DEBUG", "flap once");
+                     pepeManager.flapUp();
+                     sendAIPositionData();
+                     android.os.SystemClock.sleep(flap_wait_milli);
+                     pepeManager.flapDown();
+                     pepeManager.silence();
+                     sendAIPositionData();
+
+                 default:
+                      // Don't flap
+             }
         }
-
-
-        private void runPepeAI() {
-            mAIInterval = 12000;
-            final int interval_variance = 8;
-            final int look_roll_variance = 4; // 1-3, nothing; 4, look left; 5, look right
-            final int flap_roll_variance = 5; // 1-3, nothing; 4, flap once; 5, flap twice
-            final int flap_wait_milli = 50;
-
-            int random_variance = (int) Math.ceil(Math.random() * interval_variance);
-            mAIInterval += random_variance; //12000 by default, 16 sec
-
-            try {
-                // Look first if rolled
-                int look_roll = (int) Math.ceil(Math.random() * look_roll_variance);
-                switch (look_roll) {
-                    case 3:
-                        pepeManager.setLook(445); // Look middle right
-                    case 4:
-                        pepeManager.setLook(235); // Look middle left
-                    default:
-                        // Don't look
-                }
-                // Tweet always
-                pepeManager.tweet();
-                // flap last if rolled
-                int flap_roll = (int) Math.ceil(Math.random() * flap_roll_variance);
-                switch (flap_roll) {
-                    case 4:
-                        pepeManager.flapUp();
-                        wait(flap_wait_milli);
-                        pepeManager.flapDown();
-                    case 5:
-                        pepeManager.flapUp();
-                        wait(flap_wait_milli);
-                        pepeManager.flapDown();
-                        wait(flap_wait_milli);
-                        pepeManager.flapUp();
-                        wait(flap_wait_milli);
-                        pepeManager.flapDown();
-                    default:
-                        // Don't flap
-                }
-                // Do not lean, this is auto pepe, we don't want him taking over the world
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    };
-
-    void stopPepeAITask() {
-        mAIHandler.removeCallbacks(mPepeAI);
-    }
-
-    void startPepeAITask() {
-        mPepeAI.run();
-    }
 
     @Override
     protected void onResume() {
@@ -431,6 +434,15 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
         return false;
     }
 
+    private void sendAIPositionData()
+    {
+        String data = pepeManager.generateData();
+        if((bluetoothLeServiceProvider != null) && pepeManager.sendIt()) {
+            Log.d("PEPE DEBUG", "Data: " + data);
+            bluetoothLeServiceProvider.send(data);
+        }
+    }
+
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
         Log.d("PEPE DEBUG", "Generic motion event occured!");
@@ -449,12 +461,15 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
                 // Copy/pasta from sendUpdatedPositionData
                 Log.d("PEPE DEBUG", "Controller data");
                 pepeManager.joystickLook(event.getY(p)); // -0.88 to 1.0
+                pepeManager.silence();
                 if (event.getAxisValue(MotionEvent.AXIS_HAT_X, p) == 1.0) {
                     pepeManager.leanBack();
+                    pepeManager.silence();
                 }
 
                 if (event.getAxisValue(MotionEvent.AXIS_HAT_X, p) == -1.0) {
                     pepeManager.leanForward();
+                    pepeManager.silence();
                 }
             }
         }

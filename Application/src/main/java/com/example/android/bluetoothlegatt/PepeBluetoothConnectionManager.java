@@ -14,8 +14,8 @@ public class PepeBluetoothConnectionManager {
    private static final int MIN_SERVO_LEAN = 130;
    private static final int STRENGTH_JOYSTICK_LEAN = 40;
 
-   private static final int MAX_SERVO_FLAP = 320;
-   private static final int MIN_SERVO_FLAP = 560;
+   private static final int MIN_SERVO_FLAP = 320;
+   private static final int MAX_SERVO_FLAP = 560;
 
    // Derived for the look
    private static final int DEFAULT_LOOK = ((MAX_SERVO_LOOK + MIN_SERVO_LOOK) / 2 );
@@ -34,8 +34,8 @@ public class PepeBluetoothConnectionManager {
    private int previousLook = DEFAULT_LOOK;
    private int lean = MAX_SERVO_LEAN;
    private int previousLean = MAX_SERVO_LEAN;
-   private int flap = MIN_SERVO_FLAP;
-   private int previousFlap = MIN_SERVO_FLAP;
+   private int flap = MAX_SERVO_FLAP;
+   private int previousFlap = MAX_SERVO_FLAP;
    private int tweet = NUM_FILES;
    private int previousTweet = 0;
 
