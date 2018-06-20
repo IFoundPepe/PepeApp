@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.bluetoothlegatt;
+package com.pepedyne.pepe.controller;
 
 import android.app.Activity;
 import android.app.ListActivity;
@@ -35,7 +35,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.example.android.bluetoothlegatt.R;
 
 import java.util.ArrayList;
 
