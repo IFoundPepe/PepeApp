@@ -38,15 +38,15 @@
     <application android:label="@string/app_name"
         android:icon="@drawable/pepe"
         android:theme="@android:style/Theme.Holo.Light">
-        <activity android:name="com.example.android.pepedyne.pepe.controller.DeviceScanActivity"
+        <activity android:name="com.pepedyne.pepe.controller.DeviceScanActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.example.android.pepedyne.pepe.controller.DeviceControlActivity"/>
-        <activity android:name="com.example.android.pepedyne.pepe.controller.PepeControlActivity"/>
+        <activity android:name="com.pepedyne.pepe.controller.DeviceControlActivity"/>
+        <activity android:name="com.pepedyne.pepe.controller.PepeControlActivity"/>
         <service android:name="com.pepedyne.pepe.bluetoothlegatt.BluetoothLeService" android:enabled="true"/>
     </application>
 
