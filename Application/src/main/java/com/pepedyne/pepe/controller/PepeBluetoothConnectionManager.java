@@ -49,7 +49,7 @@ public class PepeBluetoothConnectionManager {
    // App Joystick Values
    private double angle_value;
    private double strength_value;
-   private String data;
+   private String data = "";
    private boolean sendIt;
 
    public void calculateLookAndLean()

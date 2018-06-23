@@ -197,7 +197,10 @@ public class BluetoothLeServiceProviderImpl implements BluetoothLeServiceProvide
    @Override
    public void send(String data)
    {
-      mBluetoothLeService.sendData(data);
+      if (mBluetoothLeService != null )
+      {
+         mBluetoothLeService.sendData(data);
+      }
    }
 
    private static IntentFilter makeGattUpdateIntentFilter() {
