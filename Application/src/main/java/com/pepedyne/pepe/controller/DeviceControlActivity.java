@@ -25,6 +25,7 @@ import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
+import com.example.android.bluetoothlegatt.R;
 import com.pepedyne.pepe.bluetoothlegatt.BluetoothCallbackInf;
 import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProvider;
 import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProviderImpl;
@@ -51,7 +52,7 @@ public class DeviceControlActivity extends Activity implements BluetoothCallback
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      setContentView(com.example.android.controller.R.layout.gatt_services_characteristics);
+      setContentView(R.layout.gatt_services_characteristics);
 
       final Intent intent = getIntent();
       mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
@@ -61,11 +62,11 @@ public class DeviceControlActivity extends Activity implements BluetoothCallback
       bluetoothLeServiceProvider.registerCallback(this);
 
       // Sets up UI references.
-      ((TextView) findViewById(com.example.android.controller.R.id.device_address)).setText(mDeviceAddress);
-      mGattServicesList = (ExpandableListView) findViewById(com.example.android.controller.R.id.gatt_services_list);
+      ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
+      mGattServicesList = (ExpandableListView) findViewById(R.id.gatt_services_list);
       mGattServicesList.setOnChildClickListener(bluetoothLeServiceProvider.getListener());
-      mConnectionState = (TextView) findViewById(com.example.android.controller.R.id.connection_state);
-      mDataField = (TextView) findViewById(com.example.android.controller.R.id.data_value);
+      mConnectionState = (TextView) findViewById(R.id.connection_state);
+      mDataField = (TextView) findViewById(R.id.data_value);
 
       getActionBar().setTitle(mDeviceName);
       getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -92,16 +93,16 @@ public class DeviceControlActivity extends Activity implements BluetoothCallback
 
    @Override
    public boolean onCreateOptionsMenu(Menu menu) {
-      getMenuInflater().inflate(com.example.android.controller.R.menu.gatt_services, menu);
+      getMenuInflater().inflate(R.menu.gatt_services, menu);
       if (bluetoothLeServiceProvider.isConnected())
       {
-         menu.findItem(com.example.android.controller.R.id.menu_connect).setVisible(false);
-         menu.findItem(com.example.android.controller.R.id.menu_disconnect).setVisible(true);
+         menu.findItem(R.id.menu_connect).setVisible(false);
+         menu.findItem(R.id.menu_disconnect).setVisible(true);
       }
       else
       {
-         menu.findItem(com.example.android.controller.R.id.menu_connect).setVisible(true);
-         menu.findItem(com.example.android.controller.R.id.menu_disconnect).setVisible(false);
+         menu.findItem(R.id.menu_connect).setVisible(true);
+         menu.findItem(R.id.menu_disconnect).setVisible(false);
       }
       return true;
    }
@@ -110,10 +111,10 @@ public class DeviceControlActivity extends Activity implements BluetoothCallback
    public boolean onOptionsItemSelected(MenuItem item) {
       switch (item.getItemId())
       {
-         case com.example.android.controller.R.id.menu_connect:
+         case R.id.menu_connect:
             bluetoothLeServiceProvider.connect(mDeviceAddress);
             return true;
-         case com.example.android.controller.R.id.menu_disconnect:
+         case R.id.menu_disconnect:
             bluetoothLeServiceProvider.disconnect();
             return true;
          case android.R.id.home:
@@ -137,7 +138,7 @@ public class DeviceControlActivity extends Activity implements BluetoothCallback
    @Override
    public void clearUserInterface() {
       mGattServicesList.setAdapter((SimpleExpandableListAdapter) null);
-      mDataField.setText(com.example.android.controller.R.string.no_data);
+      mDataField.setText(R.string.no_data);
    }
 
    @Override
