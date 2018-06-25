@@ -1,6 +1,5 @@
 package com.pepedyne.pepe.controller;
 
-import com.pepedyne.pepe.servos.RotationServo;
 import com.pepedyne.pepe.servos.Servo;
 import com.pepedyne.pepe.servos.ServoCollection;
 import com.pepedyne.pepe.servos.StandardServo;
@@ -31,22 +30,26 @@ public class PepeBluetoothConnectionManager {
    private static final int STEP_SIZE = (MAX_SERVO_LOOK - MIN_SERVO_LOOK) / STEPS;
 
    private ServoCollection collection;
+   private Servo flap;
+   private Servo tweet;
+   private Servo lean;
+   private Servo look;
 
    public PepeBluetoothConnectionManager()
    {
       sendIt = false;
       collection = new ServoCollection();
 
-      Servo flap = new StandardServo("flap", MIN_SERVO_FLAP, MAX_SERVO_FLAP);
+      flap = new StandardServo("flap", MIN_SERVO_FLAP, MAX_SERVO_FLAP);
       collection.registerServo(flap);
 
-      Servo tweet = new TweetServo("tweet", 0, NUM_FILES);
+      tweet = new TweetServo("tweet", 0, NUM_FILES);
       collection.registerServo(tweet);
 
-      Servo lean = new TweetServo("lean", MIN_SERVO_LEAN, MAX_SERVO_LEAN);
+      lean = new StandardServo("lean", MIN_SERVO_LEAN, MAX_SERVO_LEAN);
       collection.registerServo(lean);
 
-      Servo look = new TweetServo("look", MIN_SERVO_LOOK, MAX_SERVO_LOOK);
+      look = new StandardServo("look", MIN_SERVO_LOOK, MAX_SERVO_LOOK);
       collection.registerServo(look);
    }
 
@@ -59,32 +62,32 @@ public class PepeBluetoothConnectionManager {
    public void calculateLookAndLean()
    {
       double distance = Math.cos(angle_value * (Math.PI/180) + Math.PI);
-      double value = ((RotationServo) collection.getServoByName("look")).getNorm() * distance;
-      int look = (int) (((RotationServo) collection.getServoByName("look")).getMean() + value);
+      double value = collection.getServoByName("look").getLimit().getNorm() * distance;
+      int look = (int) (collection.getServoByName("look").getLimit().getMean() + value);
       int lean = 0;
 
       if ( (angle_value == 0) && (strength_value == 0) )
       {
-         look = ((RotationServo) collection.getServoByName("look")).getMean();
+         look = this.look.getLimit().getMean();
       }
 
       if ( (angle_value > 45) && (angle_value < 135) )
       {
          // Forward Tilt
          if ( strength_value > STRENGTH_JOYSTICK_LEAN  ) {
-            lean = collection.getServoByName("lean").getMin();
+            lean = this.lean.getLimit().getMin();
          }
       }
       else if ( ( angle_value > 225) && (angle_value < 325) )
       {
          // Backward Tilt
          if ( strength_value > STRENGTH_JOYSTICK_LEAN ) {
-            lean = collection.getServoByName("lean").getMax();
+            lean = this.lean.getLimit().getMax();
          }
       }
 
-      int bin = Math.round((look - collection.getServoByName("look").getMin()) / STEP_SIZE);
-      look = (bin * STEP_SIZE) + collection.getServoByName("look").getMin();
+      int bin = Math.round((look - this.look.getLimit().getMin()) / STEP_SIZE);
+      look = (bin * STEP_SIZE) + this.look.getLimit().getMin();
       this.setLook(look);
       this.setLean(lean);
    }
@@ -101,11 +104,11 @@ public class PepeBluetoothConnectionManager {
          distance = 0.0; // Close enough, reset to middle
       }
 
-      double value = ((RotationServo) collection.getServoByName("look")).getNorm() * distance;
-      int look = (int) (((RotationServo) collection.getServoByName("look")).getMean() + value);
+      double value = this.look.getLimit().getNorm() * distance;
+      int look = (int) (this.look.getLimit().getMean() + value);
 
-      int bin = Math.round((look - collection.getServoByName("look").getMin()) / STEP_SIZE);
-      look = (bin * STEP_SIZE) + collection.getServoByName("look").getMin();
+      int bin = Math.round((look - this.look.getLimit().getMin()) / STEP_SIZE);
+      look = (bin * STEP_SIZE) + this.look.getLimit().getMin();
       this.setLook(look);
    }
 
@@ -113,18 +116,18 @@ public class PepeBluetoothConnectionManager {
    public String generateData()
    {
       sendIt = false;
-      if ( collection.getServoByName("look").isChanged() ||
-              collection.getServoByName("lean").isChanged() ||
-              collection.getServoByName("flap").isChanged() ||
-              collection.getServoByName("tweet").isChanged() )
+      if ( this.look.isChanged() ||
+           this.lean.isChanged() ||
+           this.flap.isChanged() ||
+           this.tweet.isChanged() )
       {
          sendIt = true;
       }
 
-      collection.getServoByName("look").step();
-      collection.getServoByName("lean").step();
-      collection.getServoByName("flap").step();
-      collection.getServoByName("tweet").step();
+      this.look.step();
+      this.lean.step();
+      this.flap.step();
+      this.tweet.step();
 
       //Write to the Bluetooth service transmit characteristic
       //Data transmit interface:
@@ -132,10 +135,10 @@ public class PepeBluetoothConnectionManager {
       //      @ == lean
       //      $ == flap
       //      # == tweet (see what I did there ;)
-      data = collection.getServoByName("look").generateData() + "|" +
-              collection.getServoByName("lean").generateData() + "|" +
-              collection.getServoByName("flap").generateData() + "|" +
-              collection.getServoByName("tweet").generateData() + "%";
+      data = this.look.generateData() + "|" +
+              this.lean.generateData() + "|" +
+              this.flap.generateData() + "|" +
+              this.tweet.generateData() + "%";
       return data;
    }
 
@@ -145,52 +148,52 @@ public class PepeBluetoothConnectionManager {
    }
 
    public void setLook(int look) {
-      collection.getServoByName("look").setCurrent(look);;
+      this.look.setCurrent(look);;
    }
 
    public void setLean(int lean) {
-      collection.getServoByName("lean").setCurrent(lean);;
+      this.lean.setCurrent(lean);;
    }
 
    public void leanForward()
    {
-      ((StandardServo) collection.getServoByName("lean")).setMin();
+      ((StandardServo) this.lean).setMin();
    }
 
    public void leanBack()
    {
-      ((StandardServo) collection.getServoByName("lean")).setMax();
+      ((StandardServo) this.lean).setMax();
    }
 
 
    public void flapUp()
    {
-      ((StandardServo) collection.getServoByName("flap")).setMax();
+      ((StandardServo) this.flap).setMax();
    }
 
    public void flapDown()
    {
-      ((StandardServo) collection.getServoByName("flap")).setMin();
+      ((StandardServo) this.flap).setMin();
    }
 
    public void connectTweet()
    {
-      ((TweetServo) collection.getServoByName("tweet")).silence();
+      ((TweetServo) this.tweet).silence();
    }
 
    public void tweet()
    {
-      ((TweetServo) collection.getServoByName("tweet")).tweet();
+      ((TweetServo) this.tweet).tweet();
    }
 
    public void tweetRand()
    {
-      ((TweetServo) collection.getServoByName("tweet")).tweetRand();
+      ((TweetServo) this.tweet).tweetRand();
    }
 
    public void silence()
    {
-      ((TweetServo) collection.getServoByName("tweet")).silence();
+      ((TweetServo) this.tweet).silence();
    }
 
    public void setAngle_value(double angle_value) {

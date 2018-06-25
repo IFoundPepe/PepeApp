@@ -1,12 +1,9 @@
 package com.pepedyne.pepe.servos;
 
 public interface ServoInterface {
-
-   public String getName();
-   public int getMin();
-   public int getMax();
-   public boolean isChanged();
-   public void step();
-   public int generateData();
-   public void setCurrent(int value);
+   String getName();
+   boolean isChanged();
+   void step();
+   int generateData();
+   void setCurrent(int value);
 }

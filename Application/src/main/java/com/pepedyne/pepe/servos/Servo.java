@@ -1,30 +1,32 @@
 package com.pepedyne.pepe.servos;
 
+import com.pepedyne.pepe.limits.Limit;
+import com.pepedyne.pepe.limits.ServoLimit;
+
 public abstract class Servo implements ServoInterface {
    private String name;
    protected int current;
    protected int previous;
-   private int min;
-   private int max;
+   private Limit limit;
 
    public Servo(String name, int min, int max){
       this.name = name;
-      this.min = min;
-      this.max = max;
       current = max;
       previous = min;
+      this.limit = new ServoLimit(min, max);
    }
 
    public String getName() {
       return this.name;
    }
 
-   public int getMin() {
-      return min;
+   public Limit getLimit()
+   {
+      return limit;
    }
 
-   public int getMax() {
-      return max;
+   public void setLimit(Limit limit) {
+      this.limit = limit;
    }
 
    public boolean isChanged() {
