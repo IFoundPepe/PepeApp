@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PreferenceScreen  xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- opens a subscreen of settings -->
+    <PreferenceCategory android:title="Servo Settings">
+        <PreferenceScreen android:title="Tweet Servo Settings">
+            <EditTextPreference
+                android:key="@string/tweet_servo_min_key"
+                android:defaultValue="@string/tweet_servo_min_default"
+                android:title="@string/tweet_servo_min"
+                android:dialogTitle="@string/tweet_servo_min"
+                android:summary="@string/tweet_servo_min_default"/>
+            <EditTextPreference
+                android:key="@string/tweet_servo_max_key"
+                android:defaultValue="@string/tweet_servo_max_default"
+                android:title="@string/tweet_servo_max"
+                android:dialogTitle="@string/tweet_servo_max"
+                android:summary="@string/tweet_servo_max_default"/>
+        </PreferenceScreen>
+
+        <PreferenceScreen android:title="Flap Servo Settings">
+            <EditTextPreference
+                android:key="@string/flap_servo_min_key"
+                android:defaultValue="@string/flap_servo_min_default"
+                android:title="@string/flap_servo_min"
+                android:dialogTitle="@string/flap_servo_min"
+                android:summary="@string/flap_servo_min_default"/>
+            <EditTextPreference
+                android:key="@string/flap_servo_max_key"
+                android:defaultValue="@string/flap_servo_max_default"
+                android:title="@string/flap_servo_max"
+                android:dialogTitle="@string/flap_servo_max"
+                android:summary="@string/flap_servo_max_default"/>
+        </PreferenceScreen>
+
+        <PreferenceScreen android:title="Lean Servo Settings">
+            <EditTextPreference
+                android:key="@string/lean_servo_min_key"
+                android:defaultValue="@string/lean_servo_min_default"
+                android:title="@string/lean_servo_min"
+                android:dialogTitle="@string/lean_servo_min"
+                android:summary="@string/lean_servo_min_default"/>
+            <EditTextPreference
+                android:key="@string/lean_servo_max_key"
+                android:defaultValue="@string/lean_servo_max_default"
+                android:title="@string/lean_servo_max"
+                android:dialogTitle="@string/lean_servo_max"
+                android:summary="@string/lean_servo_max_default"/>
+        </PreferenceScreen>
+
+        <PreferenceScreen android:title="Look Servo Settings">
+            <EditTextPreference
+                android:key="@string/look_servo_min_key"
+                android:defaultValue="@string/look_servo_min_default"
+                android:title="@string/look_servo_min"
+                android:dialogTitle="@string/look_servo_min"
+                android:summary="@string/look_servo_min_default"/>
+            <EditTextPreference
+                android:key="@string/look_servo_max_key"
+                android:defaultValue="@string/look_servo_max_default"
+                android:title="@string/look_servo_max"
+                android:dialogTitle="@string/look_servo_max"
+                android:summary="@string/look_servo_max_default"/>
+        </PreferenceScreen>
+
+    </PreferenceCategory>
+</PreferenceScreen>

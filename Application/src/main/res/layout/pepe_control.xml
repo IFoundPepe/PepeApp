@@ -51,7 +51,6 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/seekBar2"
         app:layout_constraintVertical_bias="0.522" />
 
     <io.github.controlwear.virtual.joystick.android.JoystickView
@@ -59,26 +58,47 @@
         android:id="@+id/joystick"
         android:layout_width="385dp"
         android:layout_height="389dp"
+        android:layout_marginBottom="67dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        custom:JV_backgroundColor="#b9b9b9"
+        custom:JV_borderColor="#000000"
+        custom:JV_borderWidth="4dp"
         custom:JV_buttonColor="#020202"
         custom:JV_buttonSizeRatio="15%"
-        custom:JV_borderColor="#000000"
-        custom:JV_backgroundColor="#b9b9b9"
-        custom:JV_borderWidth="4dp"
         custom:JV_fixedCenter="false"
-        android:layout_marginBottom="67dp"
         custom:layout_constraintBottom_toTopOf="@+id/PepAI"
-        android:layout_marginLeft="8dp"
+        custom:layout_constraintHorizontal_bias="0.487"
         custom:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginRight="8dp"
         custom:layout_constraintRight_toRightOf="parent"
         custom:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="8dp" />
+        custom:layout_constraintVertical_bias="0.113"/>
 
     <android.support.constraint.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/guideline"
         app:layout_constraintGuide_begin="20dp"
-        android:orientation="vertical" />/
+        android:orientation="vertical" />
+
+    <Button
+        android:id="@+id/settingsButton"
+        android:layout_width="98dp"
+        android:layout_height="39dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Settings"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.967"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.017"/>
+
+    /
+
 
 </android.support.constraint.ConstraintLayout>

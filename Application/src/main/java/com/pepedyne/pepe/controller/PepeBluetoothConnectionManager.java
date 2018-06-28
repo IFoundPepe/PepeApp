@@ -1,9 +1,17 @@
 package com.pepedyne.pepe.controller;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.Preference;
+
+import com.example.android.bluetoothlegatt.R;
+import com.pepedyne.pepe.limits.ServoLimit;
 import com.pepedyne.pepe.servos.Servo;
 import com.pepedyne.pepe.servos.ServoCollection;
 import com.pepedyne.pepe.servos.StandardServo;
 import com.pepedyne.pepe.servos.TweetServo;
+
 
 /**
  * Created by Jeremy on 11/1/2017.
@@ -11,23 +19,11 @@ import com.pepedyne.pepe.servos.TweetServo;
 
 public class PepeBluetoothConnectionManager {
 
-   private static final int MAX_SERVO_LOOK = 550;
-   private static final int MIN_SERVO_LOOK = 130;
-
    // Only want up to 90 degrees for the max lean
-   private static final int MAX_SERVO_LEAN = 300;
-   private static final int MIN_SERVO_LEAN = 130;
    private static final int STRENGTH_JOYSTICK_LEAN = 40;
-
-   private static final int MIN_SERVO_FLAP = 320;
-   private static final int MAX_SERVO_FLAP = 560;
-
-   // Values for tweeting
-   private static final int NUM_FILES = 9;
 
    // Derived for the look
    private static final int STEPS = 6;
-   private static final int STEP_SIZE = (MAX_SERVO_LOOK - MIN_SERVO_LOOK) / STEPS;
 
    private ServoCollection collection;
    private Servo flap;
@@ -35,22 +31,35 @@ public class PepeBluetoothConnectionManager {
    private Servo lean;
    private Servo look;
 
-   public PepeBluetoothConnectionManager()
+   private Activity activity;
+
+   public PepeBluetoothConnectionManager(Context context)
    {
+      this.activity = (Activity) context;
+
       sendIt = false;
       collection = new ServoCollection();
 
-      flap = new StandardServo("flap", MIN_SERVO_FLAP, MAX_SERVO_FLAP);
+      flap = new StandardServo("flap",
+              Integer.parseInt(activity.getString(R.string.flap_servo_min_default)),
+              Integer.parseInt(activity.getString(R.string.flap_servo_max_default)));
       collection.registerServo(flap);
 
-      tweet = new TweetServo("tweet", 0, NUM_FILES);
+      tweet = new TweetServo("tweet",
+              Integer.parseInt(activity.getString(R.string.tweet_servo_min_default)),
+              Integer.parseInt(activity.getString(R.string.tweet_servo_max_default)));
       collection.registerServo(tweet);
 
-      lean = new StandardServo("lean", MIN_SERVO_LEAN, MAX_SERVO_LEAN);
+      lean = new StandardServo("lean",
+              Integer.parseInt(activity.getString(R.string.lean_servo_min_default)),
+              Integer.parseInt(activity.getString(R.string.lean_servo_max_default)));
       collection.registerServo(lean);
 
-      look = new StandardServo("look", MIN_SERVO_LOOK, MAX_SERVO_LOOK);
+      look = new StandardServo("look",
+              Integer.parseInt(activity.getString(R.string.look_servo_min_default)),
+              Integer.parseInt(activity.getString(R.string.look_servo_max_default)));
       collection.registerServo(look);
+
    }
 
    // App Joystick Values
@@ -58,6 +67,56 @@ public class PepeBluetoothConnectionManager {
    private double strength_value;
    private String data = "";
    private boolean sendIt;
+
+//   @Override
+//   public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
+//   {
+//      if (key.equals(activity.getString(R.string.tweet_servo_min_key)))
+//      {
+//         // Set summary to be the user-description for the selected value
+//         System.out.println("Updated Tweet Min: " + sharedPreferences.getString(key, ""));
+//      }
+//      else if (key.equals(activity.getString(R.string.tweet_servo_min_key)))
+//      {
+//         // Set summary to be the user-description for the selected value
+//         System.out.println("Updated Tweet Max: " + sharedPreferences.getString(key, ""));
+//      }
+//      else if (key.equals(activity.getString(R.string.flap_servo_min_key)))
+//      {
+//         // Set summary to be the user-description for the selected value
+//         System.out.println("Updated Flap Min: " + sharedPreferences.getString(key, ""));
+//      }
+//      else if (key.equals(activity.getString(R.string.flap_servo_max_key)))
+//      {
+//         // Set summary to be the user-description for the selected value
+//         System.out.println("Updated Flap Max: " + sharedPreferences.getString(key, ""));
+//      }
+//      else if (key.equals(activity.getString(R.string.look_servo_min_key)))
+//      {
+//         // Set summary to be the user-description for the selected value
+//         System.out.println("Updated Look Min: " + sharedPreferences.getString(key, ""));
+//      }
+//      else if (key.equals(activity.getString(R.string.look_servo_max_key)))
+//      {
+//         // Set summary to be the user-description for the selected value
+//         System.out.println("Updated Look Max: " + sharedPreferences.getString(key, ""));
+//      }
+//      else if (key.equals(activity.getString(R.string.lean_servo_min_key)))
+//      {
+//         // Set summary to be the user-description for the selected value
+//         System.out.println("Updated Lean Min: " + sharedPreferences.getString(key, ""));
+//      }
+//      else if (key.equals(activity.getString(R.string.lean_servo_max_key)))
+//      {
+//         // Set summary to be the user-description for the selected value
+//         System.out.println("Updated Lean Max: " + sharedPreferences.getString(key, ""));
+//      }
+//   }
+
+   private void setServoLimits(String servoKey, int min, int max)
+   {
+      collection.getServoByName(servoKey).setLimit(new ServoLimit(min, max));
+   }
 
    public void calculateLookAndLean()
    {
@@ -86,8 +145,8 @@ public class PepeBluetoothConnectionManager {
          }
       }
 
-      int bin = Math.round((look - this.look.getLimit().getMin()) / STEP_SIZE);
-      look = (bin * STEP_SIZE) + this.look.getLimit().getMin();
+      int bin = Math.round((look - this.look.getLimit().getMin()) / (this.look.getLimit().getRange() / STEPS));
+      look = (bin * (this.look.getLimit().getRange() / STEPS) ) + this.look.getLimit().getMin();
       this.setLook(look);
       this.setLean(lean);
    }
@@ -107,8 +166,8 @@ public class PepeBluetoothConnectionManager {
       double value = this.look.getLimit().getNorm() * distance;
       int look = (int) (this.look.getLimit().getMean() + value);
 
-      int bin = Math.round((look - this.look.getLimit().getMin()) / STEP_SIZE);
-      look = (bin * STEP_SIZE) + this.look.getLimit().getMin();
+      int bin = Math.round((look - this.look.getLimit().getMin()) / (this.look.getLimit().getRange() / STEPS));
+      look = (bin * (this.look.getLimit().getRange() / STEPS)) + this.look.getLimit().getMin();
       this.setLook(look);
    }
 

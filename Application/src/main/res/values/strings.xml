@@ -39,4 +39,34 @@
     <string name="Lean_Label">Lean</string>
     <string name="Flap_Button">Flap</string>
     <string name="Tweet_Button">Tweet</string>
+
+    <!-- Servo Strings! -->
+    <string name="tweet_servo_min">Tweet Servo Min</string>
+    <string name="tweet_servo_min_key">pref_key_tweet_servo_min</string>
+    <string name="tweet_servo_max">Tweet Servo Max</string>>
+    <string name="tweet_servo_max_key">pref_key_tweet_servo_max</string>
+    <string name="tweet_servo_min_default">0</string>
+    <string name="tweet_servo_max_default">9</string>
+
+    <string name="flap_servo_min">Flap Servo Min</string>
+    <string name="flap_servo_min_key">pref_key_flap_servo_min</string>
+    <string name="flap_servo_max">Flap Servo Max</string>>
+    <string name="flap_servo_max_key">pref_key_flap_servo_max</string>
+    <string name="flap_servo_min_default">320</string>
+    <string name="flap_servo_max_default">560</string>
+
+    <string name="lean_servo_min">Lean Servo Min</string>
+    <string name="lean_servo_min_key">pref_key_lean_servo_min</string>
+    <string name="lean_servo_max">Lean Servo Max</string>>
+    <string name="lean_servo_max_key">pref_key_lean_servo_max</string>
+    <string name="lean_servo_min_default">130</string>
+    <string name="lean_servo_max_default">300</string>
+
+    <string name="look_servo_min">Look Servo Min</string>
+    <string name="look_servo_min_key">pref_key_look_servo_min</string>
+    <string name="look_servo_max">Look Servo Max</string>>
+    <string name="look_servo_max_key">pref_key_look_servo_max</string>
+    <string name="look_servo_min_default">130</string>
+    <string name="look_servo_max_default">550</string>
+
 </resources>

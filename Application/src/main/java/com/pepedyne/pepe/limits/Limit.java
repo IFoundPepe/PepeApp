@@ -5,4 +5,5 @@ public interface Limit {
    int getMax();
    int getMean();
    int getNorm();
+   int getRange();
 }

@@ -46,7 +46,8 @@
             </intent-filter>
         </activity>
         <activity android:name="com.pepedyne.pepe.controller.DeviceControlActivity"/>
-        <activity android:name="com.pepedyne.pepe.controller.PepeControlActivity"/>
+        <activity android:name="com.pepedyne.pepe.controller.PepeControlActivity" />
+        <activity android:name="com.pepedyne.pepe.settings.SettingsActivity"/>
         <service android:name="com.pepedyne.pepe.bluetoothlegatt.BluetoothLeService" android:enabled="true"/>
     </application>
 

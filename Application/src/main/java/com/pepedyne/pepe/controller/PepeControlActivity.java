@@ -16,11 +16,14 @@
 
 package com.pepedyne.pepe.controller;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.Preference;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -33,11 +36,12 @@ import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
 import com.example.android.bluetoothlegatt.R;
-import com.pepedyne.pepe.controller.InputManagerCompat.InputDeviceListener;
 import com.pepedyne.pepe.bluetoothlegatt.BluetoothCallbackInf;
 import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeService;
 import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProvider;
 import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProviderImpl;
+import com.pepedyne.pepe.controller.InputManagerCompat.InputDeviceListener;
+import com.pepedyne.pepe.settings.SettingsActivity;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 
@@ -76,6 +80,7 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
    final int PepAIIntervalVariance = 300;  //number of wake up intervals
    private int PepAIActionCounter = 0;
 
+   @SuppressLint("ClickableViewAccessibility")
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -89,7 +94,7 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
       bluetoothLeServiceProvider.registerCallback(this);
       bluetoothLeServiceProvider.onCreate(this);
 
-      pepeManager = new PepeBluetoothConnectionManager();
+      pepeManager = new PepeBluetoothConnectionManager(this);
 
       getActionBar().setTitle(mDeviceName);
       getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -122,7 +127,6 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
             pepeManager.calculateLookAndLean();
          }
       });
-
 
       final Button flapButton = (Button) findViewById(R.id.flap);
       flapButton.setOnTouchListener(new OnTouchListener() {
@@ -179,6 +183,19 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
             return true;
          }
       });
+
+      final Button editSettings = (Button) findViewById(R.id.settingsButton);
+      editSettings.setOnTouchListener(new View.OnTouchListener() {
+           @Override
+           public boolean onTouch(View v, MotionEvent event) {
+              if (event.getAction() == MotionEvent.ACTION_UP)
+              {
+                 final Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                 startActivity(intent);
+              }
+              return true;
+           }
+        });
 
       mInputManager = InputManagerCompat.Factory.getInputManager(this);
       mInputManager.registerInputDeviceListener(this, null);
