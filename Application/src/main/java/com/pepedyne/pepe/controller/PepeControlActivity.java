@@ -20,10 +20,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.Preference;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -357,6 +355,7 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
    @Override
    protected void onResume() {
       super.onResume();
+      pepeManager.reset();
       bluetoothLeServiceProvider.onResume(this);
    }
 

@@ -3,7 +3,6 @@ package com.pepedyne.pepe.settings;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.preference.Preference;
 
 import com.example.android.bluetoothlegatt.R;
@@ -12,7 +11,9 @@ import java.util.Map;
 
 public class SettingsActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+   // PreferenceFragment (extends)
    private SettingsFragment settingsFragment;
+
    @Override
    protected void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -20,12 +21,6 @@ public class SettingsActivity extends Activity implements SharedPreferences.OnSh
       // Display the fragment as the main content.
       getFragmentManager().beginTransaction()
               .replace(android.R.id.content, settingsFragment).commit();
-   }
-
-   private void updateSummary(EditTextPreference preference) {
-      // set the EditTextPreference's summary value to its current text
-      System.out.println("******* " + preference.getText() + ", " + preference.getFragment());
-      preference.setSummary(preference.getText());
    }
 
    @Override
@@ -53,8 +48,7 @@ public class SettingsActivity extends Activity implements SharedPreferences.OnSh
    }
 
    @Override
-   public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
-   {
+   public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
       if (key.equals(this.getString(R.string.tweet_servo_min_key)))
       {
          // Set summary to be the user-description for the selected value

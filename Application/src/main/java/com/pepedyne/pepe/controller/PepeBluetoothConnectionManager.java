@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.Preference;
+import android.preference.PreferenceManager;
 
 import com.example.android.bluetoothlegatt.R;
 import com.pepedyne.pepe.limits.ServoLimit;
@@ -41,25 +42,45 @@ public class PepeBluetoothConnectionManager {
       collection = new ServoCollection();
 
       flap = new StandardServo("flap",
-              Integer.parseInt(activity.getString(R.string.flap_servo_min_default)),
-              Integer.parseInt(activity.getString(R.string.flap_servo_max_default)));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_servo_min_key))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_servo_max_key))));
       collection.registerServo(flap);
 
       tweet = new TweetServo("tweet",
-              Integer.parseInt(activity.getString(R.string.tweet_servo_min_default)),
-              Integer.parseInt(activity.getString(R.string.tweet_servo_max_default)));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.tweet_servo_min_key))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.tweet_servo_max_key))));
       collection.registerServo(tweet);
 
       lean = new StandardServo("lean",
-              Integer.parseInt(activity.getString(R.string.lean_servo_min_default)),
-              Integer.parseInt(activity.getString(R.string.lean_servo_max_default)));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.lean_servo_min_key))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.lean_servo_max_key))));
       collection.registerServo(lean);
 
       look = new StandardServo("look",
-              Integer.parseInt(activity.getString(R.string.look_servo_min_default)),
-              Integer.parseInt(activity.getString(R.string.look_servo_max_default)));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_min_key))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_max_key))));
       collection.registerServo(look);
+   }
 
+   private String getPreference(String key)
+   {
+      return PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext()).getString(key, "null");
+   }
+
+   public void reset()
+   {
+      this.setServoLimits("flap",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_servo_min_key))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_servo_max_key))));
+      this.setServoLimits("tweet",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.tweet_servo_min_key))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.tweet_servo_max_key))));
+      this.setServoLimits("lean",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.lean_servo_min_key))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.lean_servo_max_key))));
+      this.setServoLimits("look",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_min_key))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_max_key))));
    }
 
    // App Joystick Values
@@ -68,53 +89,9 @@ public class PepeBluetoothConnectionManager {
    private String data = "";
    private boolean sendIt;
 
-//   @Override
-//   public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
-//   {
-//      if (key.equals(activity.getString(R.string.tweet_servo_min_key)))
-//      {
-//         // Set summary to be the user-description for the selected value
-//         System.out.println("Updated Tweet Min: " + sharedPreferences.getString(key, ""));
-//      }
-//      else if (key.equals(activity.getString(R.string.tweet_servo_min_key)))
-//      {
-//         // Set summary to be the user-description for the selected value
-//         System.out.println("Updated Tweet Max: " + sharedPreferences.getString(key, ""));
-//      }
-//      else if (key.equals(activity.getString(R.string.flap_servo_min_key)))
-//      {
-//         // Set summary to be the user-description for the selected value
-//         System.out.println("Updated Flap Min: " + sharedPreferences.getString(key, ""));
-//      }
-//      else if (key.equals(activity.getString(R.string.flap_servo_max_key)))
-//      {
-//         // Set summary to be the user-description for the selected value
-//         System.out.println("Updated Flap Max: " + sharedPreferences.getString(key, ""));
-//      }
-//      else if (key.equals(activity.getString(R.string.look_servo_min_key)))
-//      {
-//         // Set summary to be the user-description for the selected value
-//         System.out.println("Updated Look Min: " + sharedPreferences.getString(key, ""));
-//      }
-//      else if (key.equals(activity.getString(R.string.look_servo_max_key)))
-//      {
-//         // Set summary to be the user-description for the selected value
-//         System.out.println("Updated Look Max: " + sharedPreferences.getString(key, ""));
-//      }
-//      else if (key.equals(activity.getString(R.string.lean_servo_min_key)))
-//      {
-//         // Set summary to be the user-description for the selected value
-//         System.out.println("Updated Lean Min: " + sharedPreferences.getString(key, ""));
-//      }
-//      else if (key.equals(activity.getString(R.string.lean_servo_max_key)))
-//      {
-//         // Set summary to be the user-description for the selected value
-//         System.out.println("Updated Lean Max: " + sharedPreferences.getString(key, ""));
-//      }
-//   }
-
    private void setServoLimits(String servoKey, int min, int max)
    {
+      System.out.println("Set Servo Limit: " + servoKey + ", Min: " + min + ", Max: " + max);
       collection.getServoByName(servoKey).setLimit(new ServoLimit(min, max));
    }
 
