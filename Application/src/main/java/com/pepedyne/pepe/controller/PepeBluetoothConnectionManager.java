@@ -1,10 +1,8 @@
 package com.pepedyne.pepe.controller;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 
 import com.example.android.bluetoothlegatt.R;
 import com.pepedyne.pepe.limits.ServoLimit;
@@ -32,55 +30,57 @@ public class PepeBluetoothConnectionManager {
    private Servo lean;
    private Servo look;
 
-   private Activity activity;
+   private AppCompatActivity activity;
 
    public PepeBluetoothConnectionManager(Context context)
    {
-      this.activity = (Activity) context;
+      this.activity = (AppCompatActivity) context;
 
       sendIt = false;
       collection = new ServoCollection();
+      System.out.println("R String: " + R.string.flap_servo_min_key);
+      System.out.println("Get String: " + activity.getString(R.string.flap_servo_min_key));
 
       flap = new StandardServo("flap",
-              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_servo_min_key))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_servo_max_key))));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_servo_min_key), activity.getString(R.string.flap_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_servo_max_key), activity.getString(R.string.flap_servo_max_default))));
       collection.registerServo(flap);
 
       tweet = new TweetServo("tweet",
-              Integer.parseInt(this.getPreference(activity.getString(R.string.tweet_servo_min_key))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.tweet_servo_max_key))));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.tweet_servo_min_key), activity.getString(R.string.tweet_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.tweet_servo_max_key), activity.getString(R.string.tweet_servo_max_default))));
       collection.registerServo(tweet);
 
       lean = new StandardServo("lean",
-              Integer.parseInt(this.getPreference(activity.getString(R.string.lean_servo_min_key))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.lean_servo_max_key))));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.lean_servo_min_key), activity.getString(R.string.lean_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.lean_servo_max_key), activity.getString(R.string.lean_servo_max_default))));
       collection.registerServo(lean);
 
       look = new StandardServo("look",
-              Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_min_key))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_max_key))));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_min_key), activity.getString(R.string.look_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_max_key), activity.getString(R.string.look_servo_max_default))));
       collection.registerServo(look);
    }
 
-   private String getPreference(String key)
+   private String getPreference(String key, String defaultValue)
    {
-      return PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext()).getString(key, "null");
+      return PreferenceManager.getDefaultSharedPreferences(activity.getBaseContext()).getString(key, defaultValue);
    }
 
    public void reset()
    {
       this.setServoLimits("flap",
-              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_servo_min_key))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_servo_max_key))));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_servo_min_key), activity.getString(R.string.flap_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_servo_max_key), activity.getString(R.string.flap_servo_max_default))));
       this.setServoLimits("tweet",
-              Integer.parseInt(this.getPreference(activity.getString(R.string.tweet_servo_min_key))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.tweet_servo_max_key))));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.tweet_servo_min_key), activity.getString(R.string.tweet_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.tweet_servo_max_key), activity.getString(R.string.tweet_servo_max_default))));
       this.setServoLimits("lean",
-              Integer.parseInt(this.getPreference(activity.getString(R.string.lean_servo_min_key))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.lean_servo_max_key))));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.lean_servo_min_key), activity.getString(R.string.lean_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.lean_servo_max_key), activity.getString(R.string.lean_servo_max_default))));
       this.setServoLimits("look",
-              Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_min_key))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_max_key))));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_min_key), activity.getString(R.string.look_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_max_key), activity.getString(R.string.look_servo_max_default))));
    }
 
    // App Joystick Values

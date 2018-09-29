@@ -16,9 +16,9 @@
 
 package com.pepedyne.pepe.controller;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ExpandableListView;
@@ -36,7 +36,7 @@ import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProviderImpl;
  * communicates with {@code BluetoothLeService}, which in turn interacts with the
  * Bluetooth LE API.
  */
-public class DeviceControlActivity extends Activity implements BluetoothCallbackInf {
+public class DeviceControlActivity extends AppCompatActivity implements BluetoothCallbackInf {
    private final static String TAG = DeviceControlActivity.class.getSimpleName();
 
    public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
@@ -68,8 +68,8 @@ public class DeviceControlActivity extends Activity implements BluetoothCallback
       mConnectionState = (TextView) findViewById(R.id.connection_state);
       mDataField = (TextView) findViewById(R.id.data_value);
 
-      getActionBar().setTitle(mDeviceName);
-      getActionBar().setDisplayHomeAsUpEnabled(true);
+      getSupportActionBar().setTitle(mDeviceName);
+      getSupportActionBar().setDisplayHomeAsUpEnabled(true);
       bluetoothLeServiceProvider.onCreate(this);
    }
 

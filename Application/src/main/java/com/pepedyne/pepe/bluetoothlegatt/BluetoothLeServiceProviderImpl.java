@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ExpandableListView;
@@ -43,7 +44,7 @@ public class BluetoothLeServiceProviderImpl implements BluetoothLeServiceProvide
    private ExpandableListView.OnChildClickListener servicesListClickListner;
    private ServiceConnection mServiceConnection;
 
-   public BluetoothLeServiceProviderImpl(Activity activity)
+   public BluetoothLeServiceProviderImpl(AppCompatActivity activity)
    {
       this.initBroadcastReceiver(activity);
       this.initOnChildClickListener();
@@ -55,7 +56,7 @@ public class BluetoothLeServiceProviderImpl implements BluetoothLeServiceProvide
       return servicesListClickListner;
    }
 
-   private void initBroadcastReceiver(final Activity activity)
+   private void initBroadcastReceiver(final AppCompatActivity activity)
    {
       // Handles various events fired by the Service.
       // ACTION_GATT_CONNECTED: connected to a GATT server.
@@ -86,7 +87,7 @@ public class BluetoothLeServiceProviderImpl implements BluetoothLeServiceProvide
       };
    }
 
-   private void initServiceConnection(final Activity activity) {
+   private void initServiceConnection(final AppCompatActivity activity) {
       mServiceConnection = new ServiceConnection() {
 
          @Override
@@ -217,7 +218,7 @@ public class BluetoothLeServiceProviderImpl implements BluetoothLeServiceProvide
    // Demonstrates how to iterate through the supported GATT Services/Characteristics.
    // In this sample, we populate the data structure that is bound to the ExpandableListView
    // on the UI.
-   private SimpleExpandableListAdapter displayGattServices(Activity activity, List<BluetoothGattService> gattServices) {
+   private SimpleExpandableListAdapter displayGattServices(AppCompatActivity activity, List<BluetoothGattService> gattServices) {
       if (gattServices == null) return null;
       String uuid;
       String unknownServiceString = activity.getResources().getString(R.string.unknown_service);

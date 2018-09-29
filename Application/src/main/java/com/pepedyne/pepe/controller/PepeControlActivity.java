@@ -17,31 +17,27 @@
 package com.pepedyne.pepe.controller;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
 import com.example.android.bluetoothlegatt.R;
 import com.pepedyne.pepe.bluetoothlegatt.BluetoothCallbackInf;
-import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeService;
 import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProvider;
 import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProviderImpl;
 import com.pepedyne.pepe.controller.InputManagerCompat.InputDeviceListener;
 import com.pepedyne.pepe.settings.SettingsActivity;
-
-import io.github.controlwear.virtual.joystick.android.JoystickView;
+import com.pepedyne.pepe.views.PepeJoyStickView;
 
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
@@ -49,7 +45,7 @@ import io.github.controlwear.virtual.joystick.android.JoystickView;
  * communicates with {@code BluetoothLeService}, which in turn interacts with the
  * Bluetooth LE API.
  */
-public class PepeControlActivity extends Activity implements InputDeviceListener, BluetoothCallbackInf {
+public class PepeControlActivity extends AppCompatActivity implements InputDeviceListener, BluetoothCallbackInf {
    private final static String TAG = PepeControlActivity.class.getSimpleName();
 
    // Input manager for Pepe control via controller
@@ -59,7 +55,7 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
    public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
    public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
 
-   private JoystickView joystick;
+   private PepeJoyStickView joystick;
    private TextView mDataField;
    private String mDeviceName;
    private String mDeviceAddress;
@@ -78,6 +74,10 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
    final int PepAIIntervalVariance = 300;  //number of wake up intervals
    private int PepAIActionCounter = 0;
 
+   public PepeBluetoothConnectionManager getPepeManager() {
+      return pepeManager;
+   }
+
    @SuppressLint("ClickableViewAccessibility")
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -94,120 +94,92 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
 
       pepeManager = new PepeBluetoothConnectionManager(this);
 
-      getActionBar().setTitle(mDeviceName);
-      getActionBar().setDisplayHomeAsUpEnabled(true);
+      getSupportActionBar().setTitle(mDeviceName);
+      getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
       mHandler = new Handler();
       startRepeatingTask();
 
-      joystick = (JoystickView) findViewById(R.id.joystick);
+      joystick = findViewById(R.id.joystick);
+      joystick.initialize();
 
-      joystick.setOnTouchListener(new JoystickView.OnTouchListener() {
-
-         @Override
-         public boolean onTouch(View v, MotionEvent event) {
-            if (event.getAction() == MotionEvent.ACTION_UP)
-            {
-               pepeManager.setAngle_value(0);
-               pepeManager.setStrength_value(0);
-            }
-            return false;
-         }
-
-      });
-      joystick.setOnMoveListener(new JoystickView.OnMoveListener() {
-
-         @Override
-         public void onMove(int angle, int strength) {
-            // do whatever you want
-            pepeManager.setAngle_value(angle);
-            pepeManager.setStrength_value(strength);
-            pepeManager.calculateLookAndLean();
-         }
-      });
-
-      final Button flapButton = (Button) findViewById(R.id.flap);
-      flapButton.setOnTouchListener(new OnTouchListener() {
-         public boolean onTouch(View v, MotionEvent event) {
-            if (event.getAction() == MotionEvent.ACTION_DOWN)
-            {
-               pepeManager.flapUp();
-            }
-            else if (event.getAction() == MotionEvent.ACTION_UP)
-            {
-               v.performClick();
-               pepeManager.flapDown();
-            }
-            return false;
-         }
-      });
-
-      final Button tweetButton = (Button) findViewById(R.id.tweet);
-      tweetButton.setOnTouchListener(new View.OnTouchListener() {
-         @Override
-         public boolean onTouch(View v, MotionEvent event) {
-            switch (event.getAction())
-            {
-               case MotionEvent.ACTION_DOWN:
-                  pepeManager.tweet();
-                  return true;
-               case MotionEvent.ACTION_UP:
-                  v.performClick();
-                  pepeManager.silence();
-                  return true;
-            }
-            return false;
-         }
-      });
+      findViewById(R.id.flap);
+      findViewById(R.id.tweet);
 
       // PepAI
-      final Button pepaiButton = (Button) findViewById(R.id.PepAI);
-      pepaiButton.setOnTouchListener(new View.OnTouchListener() {
-         @Override
-         public boolean onTouch(View v, MotionEvent event) {
-            if (event.getAction() == MotionEvent.ACTION_UP)
+      final Button pepaiButton = findViewById(R.id.PepAI);
+      pepaiButton.setOnTouchListener((v, event) -> {
+         if (event.getAction() == MotionEvent.ACTION_UP)
+         {
+            if (PepAIState)
             {
-               if (PepAIState)
-               {
-                  Log.d("PEPE DEBUG", "PepAI stopped");
-                  PepAIState = false;
-               }
-               else
-               {
-                  Log.d("PEPE DEBUG", "PepAI started");
-                  PepAIState = true;
-               }
+               Log.i("PEPE DEBUG", "PepAI stopped");
+               PepAIState = false;
             }
-            return true;
+            else
+            {
+               Log.i("PEPE DEBUG", "PepAI started");
+               PepAIState = true;
+            }
          }
+         return true;
       });
 
-      final Button editSettings = (Button) findViewById(R.id.settingsButton);
-      editSettings.setOnTouchListener(new View.OnTouchListener() {
-           @Override
-           public boolean onTouch(View v, MotionEvent event) {
-              if (event.getAction() == MotionEvent.ACTION_UP)
-              {
-                 final Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-                 startActivity(intent);
-              }
-              return true;
-           }
-        });
+      final Button editSettings = findViewById(R.id.settingsButton);
+      editSettings.setOnTouchListener((v, event) -> {
+         if (event.getAction() == MotionEvent.ACTION_UP)
+         {
+            final Intent intent1 = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(intent1);
+         }
+         return true;
+      });
 
       mInputManager = InputManagerCompat.Factory.getInputManager(this);
       mInputManager.registerInputDeviceListener(this, null);
    }
 
+   private void debugDevice(InputDevice device) {
+      Log.i("PEPE DEBUG", "Device Name: " + device.getName());
+      Log.i("PEPE DEBUG", "ProductId: " + device.getProductId());
+      Log.i("PEPE DEBUG", "Controller Number: " + device.getControllerNumber());
+      Log.i("PEPE DEBUG", "Sources: " + device.getSources());
+   }
+
+   private void debugKeyEvent(KeyEvent event) {
+      Log.i("\tPEPE DEBUG","--------------------------");
+      Log.d("PEPE DEBUG", "keyDown keyCode: " + event.getKeyCode());
+      Log.i("\tPEPE DEBUG", "KeyEvent DeviceId: " + event.getDeviceId());
+      Log.i("\tPEPE DEBUG", "KeyEvent Id: " + event.getDevice().getId());
+      Log.i("\tPEPE DEBUG", "KeyEvent getFlags: " + event.getFlags());
+      Log.i("\tPEPE DEBUG", "KeyEvent getDownTime: " + event.getDownTime());
+
+      Log.i("\tPEPE DEBUG", "KeyEvent getCharacters: " + event.getCharacters());
+      Log.i("\tPEPE DEBUG", "KeyEvent MetaState: " + event.getMetaState());
+      Log.i("\tPEPE DEBUG", "KeyEvent getModifiers: " + event.getModifiers());
+      Log.i("\tPEPE DEBUG", "KeyEvent getRepeatCount: " + event.getRepeatCount());
+
+      Log.i("\tPEPE DEBUG", "KeyEvent getAction: " + event.getAction());
+   }
+
+   // Activity's "onKeyDown" is not always fired
+   // but dispatch key event is.
    @Override
-   public boolean onKeyDown(int keyCode, KeyEvent event) {
-      Log.d("PEPE DEBUG", "keyCode: " + keyCode);
+   public boolean dispatchKeyEvent(KeyEvent event) {
+      this.debugKeyEvent(event);
+
       // 99/67(silence), 96/23(tweet), 100/62(flap)
-      switch (keyCode)
+      switch (event.getKeyCode())
       {
          case KeyEvent.KEYCODE_BUTTON_A: // press X: 96 - do nothing?
+            if (event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() < 1)
+            {
+               Log.d("PEPE DEBUG", "tweet");
+               pepeManager.tweet();
+            }
             return true;
          case KeyEvent.KEYCODE_DPAD_CENTER: // held X: 23 - do nothing?
+         case KeyEvent.KEYCODE_BUTTON_B: // press JoyCon X - 97
             return true;
          case KeyEvent.KEYCODE_BUTTON_X: // press IOS: 99 - do nothing?
             return true;
@@ -221,13 +193,13 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
          case KeyEvent.KEYCODE_SPACE: // held triangle 62 - do nothing?
             return true;
          default:
-            return super.onKeyUp(keyCode, event);
+            return super.dispatchKeyEvent(event);
       }
    }
 
    @Override
    public boolean onKeyUp(int keyCode, KeyEvent event) {
-      Log.d("PEPE DEBUG", "keyCode: " + keyCode);
+      Log.d("PEPE DEBUG", "keyUp keyCode: " + keyCode);
       // 99/67(silence), 96/23(tweet), 100/62(flap)
       switch (keyCode)
       {
@@ -438,15 +410,6 @@ public class PepeControlActivity extends Activity implements InputDeviceListener
    @Override
    public void setServiceList(SimpleExpandableListAdapter adapter) {
 
-   }
-
-   private static IntentFilter makeGattUpdateIntentFilter() {
-      final IntentFilter intentFilter = new IntentFilter();
-      intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
-      intentFilter.addAction(BluetoothLeService.ACTION_GATT_DISCONNECTED);
-      intentFilter.addAction(BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED);
-      intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
-      return intentFilter;
    }
 
    private boolean sendUpdatedPositionData() {

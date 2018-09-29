@@ -1,15 +1,15 @@
 package com.pepedyne.pepe.settings;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.support.v7.app.AppCompatActivity;
 
 import com.example.android.bluetoothlegatt.R;
 
 import java.util.Map;
 
-public class SettingsActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
    // PreferenceFragment (extends)
    private SettingsFragment settingsFragment;
