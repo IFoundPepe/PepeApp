@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 
 import com.pepedyne.pepe.controller.PepeControlActivity;
 
@@ -14,11 +13,11 @@ public class TweetButton extends AppCompatButton {
       init();
    }
 
-   public TweetButton(Context context, AttributeSet attrs)
-   {
+   public TweetButton(Context context, AttributeSet attrs) {
       super(context, attrs);
       init();
    }
+
    public TweetButton(Context context, AttributeSet attrs, int defStyle) {
       super(context, attrs, defStyle);
       init();
@@ -31,11 +30,11 @@ public class TweetButton extends AppCompatButton {
          switch (event.getAction())
          {
             case MotionEvent.ACTION_DOWN:
-               host.getPepeManager().tweet();
+               host.getDispatcher().tweet();
                return true;
             case MotionEvent.ACTION_UP:
                v.performClick();
-               host.getPepeManager().silence();
+               host.getDispatcher().silence();
                return true;
          }
          return false;

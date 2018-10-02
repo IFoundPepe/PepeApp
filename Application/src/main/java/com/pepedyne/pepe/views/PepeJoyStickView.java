@@ -3,7 +3,6 @@ package com.pepedyne.pepe.views;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 
 import com.pepedyne.pepe.controller.PepeControlActivity;
 
@@ -13,10 +12,12 @@ public class PepeJoyStickView extends JoystickView {
 
    public PepeJoyStickView(Context context) {
       super(context);
+      this.initialize();
    }
 
    public PepeJoyStickView(Context context, AttributeSet attrs, int defStyleAttr) {
       super(context, attrs, defStyleAttr);
+      this.initialize();
    }
 
    public PepeJoyStickView(Context context, AttributeSet attrs) {
@@ -29,31 +30,21 @@ public class PepeJoyStickView extends JoystickView {
       return super.performClick();
    }
 
-   public void initialize() {
+   private void initialize() {
       final PepeControlActivity host = (PepeControlActivity) this.getContext();
 
-      this.setOnTouchListener(new JoystickView.OnTouchListener() {
-
-         @Override
-         public boolean onTouch(View v, MotionEvent event) {
-            if (event.getAction() == MotionEvent.ACTION_UP)
-            {
-               host.getPepeManager().setAngle_value(0);
-               host.getPepeManager().setStrength_value(0);
-               performClick();
-            }
-            return false;
+      this.setOnTouchListener((v, event) -> {
+         if (event.getAction() == MotionEvent.ACTION_UP)
+         {
+            host.getDispatcher().setMove(0, 0);
+            performClick();
          }
-
+         return false;
       });
 
-      this.setOnMoveListener(new JoystickView.OnMoveListener() {
-         @Override
-         public void onMove(int angle, int strength) {
-            host.getPepeManager().setAngle_value(angle);
-            host.getPepeManager().setStrength_value(strength);
-            host.getPepeManager().calculateLookAndLean();
-         }
+      this.setOnMoveListener((angle, strength) -> {
+         host.getDispatcher().setMove(strength, angle);
+         host.getDispatcher().calculate();
       });
    }
 }

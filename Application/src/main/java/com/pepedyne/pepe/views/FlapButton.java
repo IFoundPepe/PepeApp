@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 
 import com.pepedyne.pepe.controller.PepeControlActivity;
 
@@ -24,18 +23,18 @@ public class FlapButton extends AppCompatButton {
       init();
    }
 
-   private void init(){
+   private void init() {
       final PepeControlActivity host = (PepeControlActivity) this.getContext();
 
       this.setOnTouchListener((v, event) -> {
          if (event.getAction() == MotionEvent.ACTION_DOWN)
          {
-            host.getPepeManager().flapUp();
+            host.getDispatcher().flapUp();
          }
          else if (event.getAction() == MotionEvent.ACTION_UP)
          {
             v.performClick();
-            host.getPepeManager().flapDown();
+            host.getDispatcher().flapDown();
          }
          return false;
       });

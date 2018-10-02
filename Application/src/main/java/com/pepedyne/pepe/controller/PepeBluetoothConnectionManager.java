@@ -151,15 +151,6 @@ public class PepeBluetoothConnectionManager {
 
    public String generateData()
    {
-      sendIt = false;
-      if ( this.look.isChanged() ||
-           this.lean.isChanged() ||
-           this.flap.isChanged() ||
-           this.tweet.isChanged() )
-      {
-         sendIt = true;
-      }
-
       this.look.step();
       this.lean.step();
       this.flap.step();
@@ -180,6 +171,14 @@ public class PepeBluetoothConnectionManager {
 
    public boolean sendIt()
    {
+      sendIt = false;
+      if ( this.look.isChanged() ||
+           this.lean.isChanged() ||
+           this.flap.isChanged() ||
+           this.tweet.isChanged() )
+      {
+         sendIt = true;
+      }
       return sendIt;
    }
 

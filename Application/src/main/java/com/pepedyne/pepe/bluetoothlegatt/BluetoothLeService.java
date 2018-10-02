@@ -67,8 +67,6 @@ public class BluetoothLeService extends Service {
    public static final String UUID_SERVICE = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
    public static final String UUID_RX = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
    public static final String UUID_TX = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
-   public static final String UUID_DFU = "00001530-1212-EFDE-1523-785FEABCD123";
-   public static final int kTxMaxCharacters = 20;
 
    public final static UUID UUID_HEART_RATE_MEASUREMENT =
            UUID.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT);
@@ -371,7 +369,7 @@ public class BluetoothLeService extends Service {
       }
       /*get the read characteristic from the service*/
       BluetoothGattCharacteristic mReadCharacteristic = mCustomService.getCharacteristic(UUID.fromString(UUID_RX));
-      if (mBluetoothGatt.readCharacteristic(mReadCharacteristic) == false)
+      if (!mBluetoothGatt.readCharacteristic(mReadCharacteristic))
       {
          Log.w(TAG, "Failed to read characteristic");
       }
@@ -404,7 +402,7 @@ public class BluetoothLeService extends Service {
       //}
       mWriteCharacteristic.setValue(data);
 
-      if (mBluetoothGatt.writeCharacteristic(mWriteCharacteristic) == false)
+      if (!mBluetoothGatt.writeCharacteristic(mWriteCharacteristic))
       {
          Log.w(TAG, "Failed to write characteristic");
       }

@@ -38,7 +38,7 @@
         app:layout_constraintVertical_bias="0.522"
         app:layout_constraintHorizontal_bias="0.056" />
 
-    <Button
+    <com.pepedyne.pepe.views.PepeAIButton
         android:id="@+id/PepAI"
         android:layout_width="88dp"
         android:layout_height="48dp"
@@ -52,6 +52,11 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintVertical_bias="0.522" />
+
+    <com.pepedyne.pepe.views.JoyConView
+        android:id="@+id/joycon"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
     <com.pepedyne.pepe.views.PepeJoyStickView
         xmlns:custom="http://schemas.android.com/apk/res-auto"
@@ -82,7 +87,7 @@
         app:layout_constraintGuide_begin="20dp"
         android:orientation="vertical" />
 
-    <Button
+    <com.pepedyne.pepe.views.SettingsButton
         android:id="@+id/settingsButton"
         android:layout_width="98dp"
         android:layout_height="39dp"
@@ -97,8 +102,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.017"/>
-
-    /
-
 
 </android.support.constraint.ConstraintLayout>

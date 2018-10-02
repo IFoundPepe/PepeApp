@@ -114,11 +114,7 @@ public class BluetoothLeServiceProviderImpl implements BluetoothLeServiceProvide
       // demonstrates 'Read' and 'Notify' features.  See
       // http://d.android.com/reference/android/bluetooth/BluetoothGatt.html for the complete
       // list of supported characteristic features.
-      servicesListClickListner =
-           new ExpandableListView.OnChildClickListener() {
-              @Override
-              public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
-                                          int childPosition, long id) {
+      servicesListClickListner = (parent, v, groupPosition, childPosition, id) -> {
                  if (mGattCharacteristics != null)
                  {
                     final BluetoothGattCharacteristic characteristic =
@@ -145,8 +141,7 @@ public class BluetoothLeServiceProviderImpl implements BluetoothLeServiceProvide
                     return true;
                  }
                  return false;
-              }
-           };
+              };
    }
 
    @Override
