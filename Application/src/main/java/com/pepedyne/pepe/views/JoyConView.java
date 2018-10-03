@@ -1,7 +1,6 @@
 package com.pepedyne.pepe.views;
 
 import android.content.Context;
-import android.hardware.input.InputManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.InputDevice;
@@ -9,7 +8,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.pepedyne.pepe.controller.InputManagerCompat;
 import com.pepedyne.pepe.controller.PepeControlActivity;
 import com.pepedyne.pepe.dispatch.PepeDispatcher;
 

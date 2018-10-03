@@ -227,6 +227,7 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
       keyMapper.put("pepeAIUp", KeyEvent.KEYCODE_BUTTON_B); // 97
       keyMapper.put("pepeAIDown", KeyEvent.KEYCODE_BACK); // 4
 
+      // B Button on JoyCon
       keyMapper.put("bbuttonUp", KeyEvent.KEYCODE_BUTTON_C); // 98
       keyMapper.put("bbuttonDown", KeyEvent.KEYCODE_DPAD_CENTER); // 23
    }
