@@ -18,7 +18,6 @@ package com.pepedyne.pepe.controller;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.hardware.input.InputManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -26,9 +25,11 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
@@ -38,7 +39,8 @@ import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProvider;
 import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProviderImpl;
 import com.pepedyne.pepe.dispatch.PepeDispatcher;
 import com.pepedyne.pepe.dispatch.SendDataHandler;
-import com.pepedyne.pepe.views.JoyConView;
+
+import java.util.HashMap;
 
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
@@ -59,6 +61,7 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
    private PepeDispatcher pepeDispatcher;
    private Handler handler;
    private HandlerThread handlerThread;
+   private HashMap<String, Integer> keyMapper;
 
    public PepeDispatcher getDispatcher() {
       return pepeDispatcher;
@@ -102,7 +105,7 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
             bluetoothLeServiceProvider.send(msg.obj.toString());
          }
       };
-
+      this.initKeyMapper();
 //      JoyConView joycon = findViewById(R.id.joycon);
 //      setContentView(joycon);
 //      joycon.setFocusable(true);
@@ -212,37 +215,159 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
 //      Log.i("\tPEPE DEBUG", "KeyEvent getAction: " + event.getAction());
 //   }
 
+   private void initKeyMapper() {
+      keyMapper = new HashMap<>();
+      // A Button on JoyCon
+      keyMapper.put("tweet", KeyEvent.KEYCODE_BUTTON_A); // 96 (Up and Down)
+
+      // Y Button on JoyCon
+      keyMapper.put("flap", KeyEvent.KEYCODE_BUTTON_X); // 99 (Up and Down)
+
+      // X Button on JoyCon
+      keyMapper.put("pepeAIUp", KeyEvent.KEYCODE_BUTTON_B); // 97
+      keyMapper.put("pepeAIDown", KeyEvent.KEYCODE_BACK); // 4
+
+      keyMapper.put("bbuttonUp", KeyEvent.KEYCODE_BUTTON_C); // 98
+      keyMapper.put("bbuttonDown", KeyEvent.KEYCODE_DPAD_CENTER); // 23
+   }
+
    @Override
    public boolean dispatchKeyEvent(KeyEvent event) {
 //   public boolean onKeyDown(int keyCode, KeyEvent event) {
 //      this.debugKeyEvent(event);
 
-      // 99/67(silence), 96/23(tweet), 100/62(flap)
-      switch (event.getKeyCode())
+      if (event.getRepeatCount() < 1)
       {
-         case KeyEvent.KEYCODE_BUTTON_A: // press X: 96 - do nothing?
-            if (event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() < 1)
+         if (event.getKeyCode() == keyMapper.get("tweet"))
+         {
+            if (event.getAction() == KeyEvent.ACTION_DOWN)
             {
-               Log.d("PEPE DEBUG", "tweet");
                pepeDispatcher.tweet();
+               return true;
             }
+            else if (event.getAction() == KeyEvent.ACTION_UP)
+            {
+               pepeDispatcher.silence();
+               return true;
+            }
+         }
+         else if (event.getKeyCode() == keyMapper.get("flap"))
+         {
+            if (event.getAction() == KeyEvent.ACTION_DOWN)
+            {
+               pepeDispatcher.flapUp();
+               return true;
+            }
+            else if (event.getAction() == KeyEvent.ACTION_UP)
+            {
+               pepeDispatcher.flapDown();
+               return true;
+            }
+         }
+         else if (event.getKeyCode() == keyMapper.get("pepeAIUp"))
+         {
+            // Do Nothing
+         }
+         else if (event.getKeyCode() == keyMapper.get("pepeAIDown"))
+         {
+            pepeDispatcher.toggleAI();
             return true;
-         case KeyEvent.KEYCODE_DPAD_CENTER: // held X: 23 - do nothing?
-         case KeyEvent.KEYCODE_BUTTON_B: // press JoyCon X - 97
-            return true;
-         case KeyEvent.KEYCODE_BUTTON_X: // press IOS: 99 - do nothing?
-            return true;
-         case KeyEvent.KEYCODE_DEL: // held IOS: 67 - do nothing?
-            return true;
-         case KeyEvent.KEYCODE_BUTTON_Y: // press triangle: 100
-            Log.d("PEPE DEBUG", "flap up");
-            pepeDispatcher.flapUp();
-            pepeDispatcher.silence();
-            return true;
-         case KeyEvent.KEYCODE_SPACE: // held triangle 62 - do nothing?
-            return true;
-         default:
-            return super.dispatchKeyEvent(event);
+         }
+         else if (event.getKeyCode() == keyMapper.get("bbuttonUp"))
+         {
+            // Do Nothing
+         }
+         else if (event.getKeyCode() == keyMapper.get("bbuttonDown"))
+         {
+            // Do Nothing
+
+         }
       }
+      return super.dispatchKeyEvent(event);
    }
+
+   @Override
+   public boolean onGenericMotionEvent(MotionEvent event) {
+      // Check that the event came from a game controller
+      if ((event.getSource() & InputDevice.SOURCE_JOYSTICK) ==
+              InputDevice.SOURCE_JOYSTICK &&
+              event.getAction() == MotionEvent.ACTION_MOVE) {
+
+         // Process all historical movement samples in the batch
+         final int historySize = event.getHistorySize();
+
+         // Process the movements starting from the
+         // earliest historical position in the batch
+         for (int i = 0; i < historySize; i++) {
+            // Process the event at historical position i
+            processJoystickInput(event, i);
+         }
+
+         // Process the current movement sample in the batch (position -1)
+         processJoystickInput(event, -1);
+         return true;
+      }
+      return super.onGenericMotionEvent(event);
+   }
+
+   private void processJoystickInput(MotionEvent event,
+                                     int historyPos) {
+
+      InputDevice mInputDevice = event.getDevice();
+
+      // Calculate the horizontal distance to move by
+      // using the input value from one of these physical controls:
+      // the left control stick, hat axis, or the right control stick.
+      float x = getCenteredAxis(event, mInputDevice,
+              MotionEvent.AXIS_X, historyPos);
+      if (x == 0) {
+         x = getCenteredAxis(event, mInputDevice,
+                 MotionEvent.AXIS_HAT_X, historyPos);
+      }
+      if (x == 0) {
+         x = getCenteredAxis(event, mInputDevice,
+                 MotionEvent.AXIS_Z, historyPos);
+      }
+
+      // Calculate the vertical distance to move by
+      // using the input value from one of these physical controls:
+      // the left control stick, hat switch, or the right control stick.
+      float y = getCenteredAxis(event, mInputDevice,
+              MotionEvent.AXIS_Y, historyPos);
+      if (y == 0) {
+         y = getCenteredAxis(event, mInputDevice,
+                 MotionEvent.AXIS_HAT_Y, historyPos);
+      }
+      if (y == 0) {
+         y = getCenteredAxis(event, mInputDevice,
+                 MotionEvent.AXIS_RZ, historyPos);
+      }
+
+      // Update the ship object based on the new x and y values
+      System.out.println("************************ (x,y): " + x + ", " + y );
+   }
+
+   private static float getCenteredAxis(MotionEvent event,
+                                        InputDevice device, int axis, int historyPos) {
+      final InputDevice.MotionRange range =
+              device.getMotionRange(axis, event.getSource());
+
+      // A joystick at rest does not always report an absolute position of
+      // (0,0). Use the getFlat() method to determine the range of values
+      // bounding the joystick axis center.
+      if (range != null) {
+         final float flat = range.getFlat();
+         final float value =
+                 historyPos < 0 ? event.getAxisValue(axis):
+                         event.getHistoricalAxisValue(axis, historyPos);
+
+         // Ignore axis values that are within the 'flat' region of the
+         // joystick axis center.
+         if (Math.abs(value) > flat) {
+            return value;
+         }
+      }
+      return 0;
+   }
+
 }
