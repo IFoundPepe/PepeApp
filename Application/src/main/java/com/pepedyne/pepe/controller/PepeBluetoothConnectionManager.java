@@ -22,7 +22,7 @@ public class PepeBluetoothConnectionManager {
    private static final int STRENGTH_JOYSTICK_LEAN = 40;
 
    // Derived for the look
-   private static final int STEPS = 4;
+   private static final int STEPS = 15;
 
    private ServoCollection collection;
    private Servo flap;

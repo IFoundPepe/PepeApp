@@ -48,6 +48,7 @@ public class BluetoothLeService extends Service {
    private String mBluetoothDeviceAddress;
    private BluetoothGatt mBluetoothGatt;
    private int mConnectionState = STATE_DISCONNECTED;
+   private boolean ableToSend = true;
 
    private static final int STATE_DISCONNECTED = 0;
    private static final int STATE_CONNECTING = 1;
@@ -116,6 +117,15 @@ public class BluetoothLeService extends Service {
          if (status == BluetoothGatt.GATT_SUCCESS)
          {
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
+         }
+      }
+
+      @Override
+      public void onCharacteristicWrite(BluetoothGatt gatt,
+                                        BluetoothGattCharacteristic characteristic, int status){
+         if ( status == BluetoothGatt.GATT_SUCCESS)
+         {
+            ableToSend = true;
          }
       }
 
@@ -240,7 +250,7 @@ public class BluetoothLeService extends Service {
       }
 
       // Previously connected device.  Try to reconnect.
-      if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress)
+      if (address.equals(mBluetoothDeviceAddress)
               && mBluetoothGatt != null)
       {
          Log.d(TAG, "Trying to use an existing mBluetoothGatt for connection.");
@@ -402,9 +412,13 @@ public class BluetoothLeService extends Service {
       //}
       mWriteCharacteristic.setValue(data);
 
-      if (!mBluetoothGatt.writeCharacteristic(mWriteCharacteristic))
+      if (ableToSend)
       {
-         Log.w(TAG, "Failed to write characteristic");
+         ableToSend = false;
+         if (!mBluetoothGatt.writeCharacteristic(mWriteCharacteristic))
+         {
+            Log.w(TAG, "Failed to write characteristic");
+         }
       }
    }
 
