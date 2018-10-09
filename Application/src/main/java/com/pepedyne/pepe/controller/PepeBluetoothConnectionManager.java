@@ -99,13 +99,13 @@ public class PepeBluetoothConnectionManager {
    {
       double distance = Math.cos(angle_value * (Math.PI/180) + Math.PI);
       double value = collection.getServoByName("look").getLimit().getNorm() * distance;
-      int look = (int) (collection.getServoByName("look").getLimit().getMean() + value);
+//      int look = (int) (collection.getServoByName("look").getLimit().getMean() + value);
       int lean = 0;
 
-      if ( (angle_value == 0) && (strength_value == 0) )
-      {
-         look = this.look.getLimit().getMean();
-      }
+//      if ( (angle_value == 0) && (strength_value == 0) )
+//      {
+//         look = this.look.getLimit().getMean();
+//      }
 
       if ( (angle_value > 45) && (angle_value < 135) )
       {
@@ -121,9 +121,13 @@ public class PepeBluetoothConnectionManager {
             lean = this.lean.getLimit().getMax();
          }
       }
+      int look = (int) angle_value;
+      if (angle_value > 180) {
+         look = 360 - (int)angle_value;
+      }
 
-      int bin = Math.round((look - this.look.getLimit().getMin()) / (this.look.getLimit().getRange() / STEPS));
-      look = (bin * (this.look.getLimit().getRange() / STEPS) ) + this.look.getLimit().getMin();
+//      int bin = Math.round((look - this.look.getLimit().getMin()) / (this.look.getLimit().getRange() / STEPS));
+//      look = (bin * (this.look.getLimit().getRange() / STEPS) ) + this.look.getLimit().getMin();
       this.setLook(look);
       this.setLean(lean);
    }
@@ -183,11 +187,11 @@ public class PepeBluetoothConnectionManager {
    }
 
    public void setLook(int look) {
-      this.look.setCurrent(look);;
+      this.look.setCurrent(look);
    }
 
    public void setLean(int lean) {
-      this.lean.setCurrent(lean);;
+      this.lean.setCurrent(lean);
    }
 
    public void leanForward()
