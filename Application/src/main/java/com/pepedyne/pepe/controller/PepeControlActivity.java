@@ -61,7 +61,8 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
    private PepeDispatcher pepeDispatcher;
    private Handler handler;
    private HandlerThread handlerThread;
-   private HashMap<String, Integer> keyMapper;
+   private HashMap<String, Integer> keyMapperLeftJoyCon;
+   private HashMap<String, Integer> keyMapperRightJoyCon;
 
    public PepeDispatcher getDispatcher() {
       return pepeDispatcher;
@@ -199,92 +200,417 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
    }
 
 
-//   private void debugKeyEvent(KeyEvent event) {
-//      Log.i("\tPEPE DEBUG","--------------------------");
-//      Log.d("PEPE DEBUG", "keyDown keyCode: " + event.getKeyCode());
-//      Log.i("\tPEPE DEBUG", "KeyEvent DeviceId: " + event.getDeviceId());
-//      Log.i("\tPEPE DEBUG", "KeyEvent Id: " + event.getDevice().getId());
-//      Log.i("\tPEPE DEBUG", "KeyEvent getFlags: " + event.getFlags());
-//      Log.i("\tPEPE DEBUG", "KeyEvent getDownTime: " + event.getDownTime());
-//
-//      Log.i("\tPEPE DEBUG", "KeyEvent getCharacters: " + event.getCharacters());
-//      Log.i("\tPEPE DEBUG", "KeyEvent MetaState: " + event.getMetaState());
-//      Log.i("\tPEPE DEBUG", "KeyEvent getModifiers: " + event.getModifiers());
-//      Log.i("\tPEPE DEBUG", "KeyEvent getRepeatCount: " + event.getRepeatCount());
-//
-//      Log.i("\tPEPE DEBUG", "KeyEvent getAction: " + event.getAction());
-//   }
+   private void debugKeyEvent(KeyEvent event) {
+      Log.i("\tPEPE DEBUG","--------------------------");
+      Log.d("PEPE DEBUG", "keyDown keyCode: " + event.getKeyCode());
+      Log.i("\tPEPE DEBUG", "KeyEvent DeviceId: " + event.getDeviceId());
+      Log.i("\tPEPE DEBUG", "KeyEvent Id: " + event.getDevice().getId());
+      Log.i("\tPEPE DEBUG", "KeyEvent getFlags: " + event.getFlags());
+      Log.i("\tPEPE DEBUG", "KeyEvent getDownTime: " + event.getDownTime());
+
+      Log.i("\tPEPE DEBUG", "KeyEvent getCharacters: " + event.getCharacters());
+      Log.i("\tPEPE DEBUG", "KeyEvent MetaState: " + event.getMetaState());
+      Log.i("\tPEPE DEBUG", "KeyEvent getModifiers: " + event.getModifiers());
+      Log.i("\tPEPE DEBUG", "KeyEvent getRepeatCount: " + event.getRepeatCount());
+
+      Log.i("\tPEPE DEBUG", "KeyEvent getAction: " + event.getAction());
+   }
 
    private void initKeyMapper() {
-      keyMapper = new HashMap<>();
-      // A Button on JoyCon
-      keyMapper.put("tweet", KeyEvent.KEYCODE_BUTTON_A); // 96 (Up and Down)
+      // ====Left JoyCon====
+      keyMapperLeftJoyCon = new HashMap<>();
+      // up arrow, Left JoyCon
+      keyMapperLeftJoyCon.put("upArrowDown", 98); // 98
+      keyMapperLeftJoyCon.put("upArrowUp", 23); // 23
+      // down arrow, Left JoyCon
+      keyMapperLeftJoyCon.put("downArrowDown", 97); // 97
+      keyMapperLeftJoyCon.put("downArrowUp", 4); // 4
+      // left arrow, Left JoyCon
+      keyMapperLeftJoyCon.put("leftArrow", 96); // 96 (Up and Down)
+      // right arrow, Left JoyCon
+      keyMapperLeftJoyCon.put("rightArrow", 99); // 99 (Up and Down)
+      // L button, Left JoyCon
+      keyMapperLeftJoyCon.put("LbuttonDown", 107); // 107
+      keyMapperLeftJoyCon.put("LbuttonUp", 23); // 23
+      // ZL button, Left JoyCon
+      keyMapperLeftJoyCon.put("ZLbutton", 1050); // 1050 (Up and Down)
+      // minus button, Left JoyCon
+      keyMapperLeftJoyCon.put("minusButton", 104); // 104 (Up and Down)
+      // SL button, Right JoyCon
+      keyMapperLeftJoyCon.put("SLbutton", 100); // 100 - Same as SL
+      // SR button, Right JoyCon
+      keyMapperLeftJoyCon.put("SRbutton", 101); // 101 - Same as SR
 
-      // Y Button on JoyCon
-      keyMapper.put("flap", KeyEvent.KEYCODE_BUTTON_X); // 99 (Up and Down)
-
-      // X Button on JoyCon
-      keyMapper.put("pepeAIUp", KeyEvent.KEYCODE_BUTTON_B); // 97
-      keyMapper.put("pepeAIDown", KeyEvent.KEYCODE_BACK); // 4
-
-      // B Button on JoyCon
-      keyMapper.put("bbuttonUp", KeyEvent.KEYCODE_BUTTON_C); // 98
-      keyMapper.put("bbuttonDown", KeyEvent.KEYCODE_DPAD_CENTER); // 23
+      // ====Right JoyCon====
+      keyMapperRightJoyCon = new HashMap<>();
+      // X Button, Right JoyCon
+      keyMapperRightJoyCon.put("XbuttonDown", 97); // 97 - Same as down arrow press
+      keyMapperRightJoyCon.put("XbuttonUp", 4); // 4 - Same as down arrow release
+      // B Button, Right JoyCon
+      keyMapperRightJoyCon.put("BbuttonDown", 98); // 98 - Same as R button press
+      keyMapperRightJoyCon.put("BbuttonUp", 23); // 23 - Same as R button release
+      // Y Button, Right JoyCon
+      keyMapperRightJoyCon.put("Ybutton", 99); // 99 (Up and Down) - Same as right arrow
+      // A Button, Right JoyCon
+      keyMapperRightJoyCon.put("Abutton", 96); // 96 (Up and Down) - Same as left arrow
+      // R Button, Right JoyCon
+      keyMapperRightJoyCon.put("RbuttonDown", 107); // 107 - Same as B button press
+      keyMapperRightJoyCon.put("RbuttonUp", 23); // 23 - Same as B button release
+      // ZR Button, Right JoyCon
+      keyMapperRightJoyCon.put("ZRbutton", 1050); // 1050 (Up and Down) - Same as ZL
+      // plus button, Right JoyCon
+      keyMapperRightJoyCon.put("plusButton", 105); // 105 (Up and Down)
+      // SR button, Right JoyCon
+      keyMapperRightJoyCon.put("SRbutton", 101); // 101 - Same as SR
+      // SL button, Right JoyCon
+      keyMapperRightJoyCon.put("SLbutton", 100); // 100 - Same as SL
    }
 
    @Override
    public boolean dispatchKeyEvent(KeyEvent event) {
 //   public boolean onKeyDown(int keyCode, KeyEvent event) {
-//      this.debugKeyEvent(event);
+      this.debugKeyEvent(event);
 
       if (event.getRepeatCount() < 1)
       {
-         if (event.getKeyCode() == keyMapper.get("tweet"))
+         // Determin which JoyCon was the source of the event
+         if(event.getDevice().getProductId() == 8198) // Left JoyCon event
          {
-            if (event.getAction() == KeyEvent.ACTION_DOWN)
-            {
-               pepeDispatcher.tweet();
-               return true;
-            }
-            else if (event.getAction() == KeyEvent.ACTION_UP)
-            {
-               pepeDispatcher.silence();
-               return true;
-            }
+//             Log.i("\tPEPE DEBUG", "JoyCon: LEFT");
+            return executeLeftJoyConKeyEvent(event);
          }
-         else if (event.getKeyCode() == keyMapper.get("flap"))
+         else if(event.getDevice().getProductId() == 8199) // Right JoyCon event
          {
-            if (event.getAction() == KeyEvent.ACTION_DOWN)
-            {
-               pepeDispatcher.flapUp();
-               return true;
-            }
-            else if (event.getAction() == KeyEvent.ACTION_UP)
-            {
-               pepeDispatcher.flapDown();
-               return true;
-            }
-         }
-         else if (event.getKeyCode() == keyMapper.get("pepeAIUp"))
-         {
-            // Do Nothing
-         }
-         else if (event.getKeyCode() == keyMapper.get("pepeAIDown"))
-         {
-            pepeDispatcher.toggleAI();
-            return true;
-         }
-         else if (event.getKeyCode() == keyMapper.get("bbuttonUp"))
-         {
-            // Do Nothing
-         }
-         else if (event.getKeyCode() == keyMapper.get("bbuttonDown"))
-         {
-            // Do Nothing
-
+//             Log.i("\tPEPE DEBUG", "JoyCon: RIGHT");
+            return executeRightJoyConKeyEvent(event);
          }
       }
       return super.dispatchKeyEvent(event);
+   }
+
+   private boolean executeLeftJoyConKeyEvent(KeyEvent event) {
+//======LEFT JOYCON KEY CODES======
+//      upArrowDown
+//      upArrowUp
+//      downArrowDown
+//      downArrowUp
+//      leftArrow
+//      rightArrow
+//      LbuttonDown
+//      LbuttonUp
+//      ZLbutton
+//      minusButton
+//      SLbutton
+//      SRbutton
+
+      int keyCode = event.getKeyCode();
+      if (keyCode == keyMapperLeftJoyCon.get("upArrowDown"))
+      {
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: upArrowDown - LEFT - Action Down");
+            // Do Nothing
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: upArrowDown - LEFT - Action Up");
+            // Do Nothing
+         }
+      }
+      else if (keyCode == keyMapperLeftJoyCon.get("downArrowDown"))
+      {
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: downArrowDown - LEFT - Action Down");
+            // Do Nothing
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: downArrowDown - LEFT - Action Up");
+            // Do Nothing
+         }
+      }
+      else if (keyCode == keyMapperLeftJoyCon.get("leftArrow"))
+      {
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: leftArrowDown - LEFT - Action Down");
+            // Do Nothing
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: leftArrowDown - LEFT - Action Up");
+            // Do Nothing
+         }
+      }
+      else if (keyCode == keyMapperLeftJoyCon.get("rightArrow"))
+      {
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: rightArrowDown - LEFT - Action Down");
+            // Do Nothing
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: rightArrowDown - LEFT - Action Up");
+            // Do Nothing
+         }
+      }
+      else if (keyCode == keyMapperLeftJoyCon.get("LbuttonDown"))
+      {
+         // TODO: What do we want this to do? - Should this be for the wings?
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: LbuttonDown - LEFT - Action Down");
+// TODO: Enable after button debug
+//            // TODO: Make sure if flaps the correct wing
+//            // TODO: This may cause repetitive flaps. Do we invert logic?
+//            pepeDispatcher.flapUp(); // Leftt Flap Up
+//            return true;
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+// TODO: Enable after button debug
+            Log.i("\tPEPE DEBUG", "JoyCon: LbuttonDown - LEFT - Action Up");
+//            pepeDispatcher.flapDown(); // Left Flap Down
+//            return true;
+         }
+      }
+      else if (keyCode == keyMapperLeftJoyCon.get("ZLbutton"))
+      {
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: ZLbutton - LEFT - Action Down");
+            // Do Nothing
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: ZLbutton - LEFT - Action Up");
+            // Do Nothing
+         }
+      }
+      else if (keyCode == keyMapperLeftJoyCon.get("minusButton"))
+      {
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: minusButton - LEFT - Action Down");
+// TODO: Enable this after debugging
+//            // TODO: Do we want to use + to start AI and - to disable AI?
+//            // TODO: Maybe check state of pepeAI with getAIstate()
+//            pepeDispatcher.runPepeAI();
+//            return true;
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: minusButton - LEFT - Action Up");
+            // Do Nothing
+         }
+      }
+      else if (keyCode == keyMapperLeftJoyCon.get("SLbutton"))
+      {
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: SLbutton - LEFT - Action Down");
+            // Do Nothing
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: SLbutton - LEFT - Action Up");
+            // Do Nothing
+         }
+      }
+      else if (keyCode == keyMapperLeftJoyCon.get("SRbutton"))
+      {
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: ZRbutton - LEFT - Action Down");
+            // Do Nothing
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: ZRbutton - LEFT - Action Up");
+            // Do Nothing
+         }
+      }
+      else
+      {
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: Undefined - LEFT - Action Down");
+            // Do Nothing
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: Undefined - LEFT - Action Up");
+            // Do Nothing
+         }
+      }
+      return true;
+      //      return super.dispatchKeyEvent(event);
+   }
+
+   private boolean executeRightJoyConKeyEvent(KeyEvent event) {
+//======RIGHT JOYCON KEY CODES======
+//      XbuttonDown
+//      XbuttonUp
+//      BbuttonDown
+//      BbuttonUp
+//      Ybutton
+//      Abutton
+//      RbuttonDown
+//      RbuttonUp
+//      ZRbutton
+//      plusButton
+//      SRbutton
+//      SLbutton
+
+      int keyCode = event.getKeyCode();
+      if (keyCode == keyMapperRightJoyCon.get("XbuttonDown"))
+      {
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: XbuttonDown - RIGHT - Action Down");
+// TODO: Enable this after debugging
+            // TODO: This may cause repetitive tweets. Do we invert logic?
+//            pepeDispatcher.tweet();
+//            return true;
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: XbuttonDown - RIGHT - Action Up");
+// TODO: Enable this after debugging
+//            pepeDispatcher.silence();
+//            return true;
+         }
+      }
+      else if (keyCode == keyMapperRightJoyCon.get("BbuttonDown"))
+      {
+         // TODO: What will this do?
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: BbuttonDown - RIGHT - Action Down");
+            // Do Nothing
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: BbuttonDown - RIGHT - Action Up");
+            // Do Nothing
+         }
+      }
+      else if (keyCode == keyMapperRightJoyCon.get("Ybutton"))
+      {
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: Ybutton - RIGHT - Action Down");
+            // Do Nothing
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: Ybutton - RIGHT - Action Up");
+            // Do Nothing
+         }
+      }
+      else if (keyCode == keyMapperRightJoyCon.get("Abutton"))
+      {
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: Abutton - RIGHT - Action Down");
+            // Do Nothing
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: Abutton - RIGHT - Action Up");
+            // Do Nothing
+         }
+      }
+      else if (keyCode == keyMapperRightJoyCon.get("RbuttonDown"))
+      {
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: RbuttonDown - RIGHT - Action Down");
+// TODO: Enable after button debug
+//            // TODO: Make sure if flaps the correct wing
+//            // TODO: This may cause repetitive flaps. Do we invert logic?
+//            pepeDispatcher.flapUp(); // Right Flap Up
+//            return true;
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: RbuttonDown - RIGHT - Action Up");
+// TODO: Enable after button debug
+//            pepeDispatcher.flapDown(); // Right Flap Down
+//            return true;
+         }
+      }
+      else if (keyCode == keyMapperRightJoyCon.get("ZRbutton"))
+      {
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: ZRbutton - RIGHT - Action Down");
+            // Do Nothing
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: ZRbutton - RIGHT - Action Up");
+            // Do Nothing
+         }
+      }
+      else if (keyCode == keyMapperRightJoyCon.get("plusButton"))
+      {
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: plusButton - RIGHT - Action Down");
+            // TODO: Do we want to use + to start AI and - to disable AI?
+            // TODO: Maybe check state of pepeAI with getAIstate()
+            pepeDispatcher.runPepeAI();
+            return true;
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: plusButton - RIGHT - Action Up");
+            // Do Nothing
+         }
+      }
+      else if (keyCode == keyMapperRightJoyCon.get("SRbutton"))
+      {
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: SRbutton - RIGHT - Action Down");
+            // Do Nothing
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: SRbutton - RIGHT - Action Up");
+            // Do Nothing
+         }      }
+      else if (keyCode == keyMapperRightJoyCon.get("SLbutton"))
+      {
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: SLbutton - RIGHT - Action Down");
+            // Do Nothing
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: SLbutton - RIGHT - Action Up");
+            // Do Nothing
+         }      }
+      else
+      {
+         // TODO: Undefined keycode!!!!
+         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: Undefined - RIGHT - Action Down");
+            // Do Nothing
+         }
+         else if (event.getAction() == KeyEvent.ACTION_UP)
+         {
+            Log.i("\tPEPE DEBUG", "JoyCon: Undefined - RIGHT - Action Up");
+            // Do Nothing
+         }
+      }
+      return true;
+//      return super.dispatchKeyEvent(event);
    }
 
    @Override
@@ -314,6 +640,8 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
    private void processJoystickInput(MotionEvent event,
                                      int historyPos) {
 
+      // TODO: Investigate if this can be used in conjunction with the productID
+      // TODO: to do the look/turn handling
       InputDevice mInputDevice = event.getDevice();
 
       // Calculate the horizontal distance to move by
