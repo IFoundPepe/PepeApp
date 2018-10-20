@@ -215,6 +215,21 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
 
       Log.i("\tPEPE DEBUG", "KeyEvent getAction: " + event.getAction());
    }
+   private void debugMotionEvent(MotionEvent event) {
+      Log.i("\tPEPE DEBUG","--------------------------");
+      Log.d("PEPE DEBUG", "MotionEvent Device: " + event.getDevice());
+      Log.i("\tPEPE DEBUG", "MotionEvent DeviceId: " + event.getDeviceId());
+      Log.i("\tPEPE DEBUG", "MotionEvent Id: " + event.getDevice().getId());
+      Log.i("\tPEPE DEBUG", "MotionEvent getFlags: " + event.getFlags());
+      Log.i("\tPEPE DEBUG", "MotionEvent getDownTime: " + event.getDownTime());
+
+      Log.i("\tPEPE DEBUG", "MotionEvent getHistorySize: " + event.getHistorySize());
+      Log.i("\tPEPE DEBUG", "MotionEvent getPointerCount: " + event.getPointerCount());
+//      Log.i("\tPEPE DEBUG", "MotionEvent getPointerCount: " + event.getAxisValue(MotionEvent.AXIS_X, Motion));
+      Log.i("\tPEPE DEBUG", "MotionEvent MetaState: " + event.getMetaState());
+//
+//      Log.i("\tPEPE DEBUG", "KeyEvent getAction: " + event.getAction());
+   }
 
    private void initKeyMapper() {
       // ====Left JoyCon====
@@ -286,6 +301,57 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
          }
       }
       return super.dispatchKeyEvent(event);
+   }
+
+   @Override
+   public boolean dispatchGenericMotionEvent(MotionEvent event) {
+//   public boolean onKeyDown(int keyCode, KeyEvent event) {
+//      this.debugMotionEvent(event);
+
+      // Determin which JoyCon was the source of the event
+      if(event.getDevice().getProductId() == 8198) // Left JoyCon event
+      {
+//         Log.i("\tPEPE DEBUG", "JoyCon: LEFT");
+         return executeLeftJoyConMotionEvent(event);
+      }
+      else if(event.getDevice().getProductId() == 8199) // Right JoyCon event
+      {
+//        Log.i("\tPEPE DEBUG", "JoyCon: RIGHT");
+         return executeRightJoyConMotionEvent(event);
+      }
+      return super.dispatchGenericMotionEvent(event);
+   }
+
+   private boolean executeLeftJoyConMotionEvent(MotionEvent event) {
+      // Collect Information about motion
+      Log.i("\tPEPE DEBUG", "JoyCon: LEFT, MotionEvent - AxisValue - AXIS_X: "
+              + event.getAxisValue(MotionEvent.AXIS_X));
+      Log.i("\tPEPE DEBUG", "JoyCon: LEFT, MotionEvent - AxisValue - AXIS_HAT_X: "
+              + event.getAxisValue(MotionEvent.AXIS_HAT_X));
+      Log.i("\tPEPE DEBUG", "JoyCon: LEFT, MotionEvent - AxisValue - AXIS_Y "
+              + event.getAxisValue(MotionEvent.AXIS_Y));
+      Log.i("\tPEPE DEBUG", "JoyCon: LEFT, MotionEvent - AxisValue - AXIS_HAT_Y: "
+              + event.getAxisValue(MotionEvent.AXIS_HAT_Y));
+
+      Log.i("\tPEPE DEBUG", "JoyCon: LEFT, MotionEvent - historicalSize - AXIS_HAT_Y: "
+              + event.getHistorySize());
+
+      for (int i = event.getHistorySize()-1; i >= 0; i--) {
+         Log.i("\tPEPE DEBUG", "JoyCon: LEFT, MotionEvent - historical axis value [" + i + "] : "
+                 + i + " " + event.getHistoricalAxisValue(MotionEvent.AXIS_X, i));
+      }
+
+      // Get Value X
+      // Get Value Y
+      // Send The stuff
+      return true;
+   }
+
+   private boolean executeRightJoyConMotionEvent(MotionEvent event) {
+      // Get Value X
+      // Get Value Y
+      // Send The stuff
+      return true;
    }
 
    private boolean executeLeftJoyConKeyEvent(KeyEvent event) {
@@ -582,7 +648,8 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
          {
             Log.i("\tPEPE DEBUG", "JoyCon: SRbutton - RIGHT - Action Up");
             // Do Nothing
-         }      }
+         }
+      }
       else if (keyCode == keyMapperRightJoyCon.get("SLbutton"))
       {
          if (event.getAction() == KeyEvent.ACTION_DOWN)
@@ -594,7 +661,8 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
          {
             Log.i("\tPEPE DEBUG", "JoyCon: SLbutton - RIGHT - Action Up");
             // Do Nothing
-         }      }
+         }
+      }
       else
       {
          // TODO: Undefined keycode!!!!
