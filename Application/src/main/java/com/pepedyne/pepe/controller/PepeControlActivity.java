@@ -675,10 +675,8 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
    private void processJoystickInput(MotionEvent event,
                                      int historyPos) {
 //      Log.i("\tPEPE DEBUG", "JoyCon: processJoystickInput");
-      // TODO: Investigate if this can be used in conjunction with the productID
-      // TODO: to do the look/turn handling
       InputDevice mInputDevice = event.getDevice();
-
+// TODO: Map the motion to pepe actions
       if(event.getDevice().getProductId() == 8198) // Left JoyCon event
       {
          Log.i("\tPEPE DEBUG", "JoyCon: LEFT");
@@ -744,20 +742,19 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
             Log.i("\tPEPE DEBUG", "JoyCon: joystick(Horizontal): center");
          }else if(y == 1) {
             // Right
-            Log.i("\tPEPE DEBUG", "JoyCon: joystick(Horizontal): righ");
+            Log.i("\tPEPE DEBUG", "JoyCon: joystick(Horizontal): right");
          }
       }
 
-//      String controlButton1 = "X (left stick)";
+      // TODO: Check other AXIS values below? I have spent A LOT of time doing this with not much luck
+      // Begin google code block commented out
 //      float x = getCenteredAxis(event, mInputDevice,
 //              MotionEvent.AXIS_X, historyPos);
 //      if (x == 0) {
-//          controlButton1 = "Up/center/down, (-1/0/1) Left Stick | Down/center/Up Right stick";
 //         x = getCenteredAxis(event, mInputDevice,
 //                 MotionEvent.AXIS_HAT_X, historyPos);
 //      }
 //      if (x == 0) {
-//          controlButton1 = "Center Left Stick";
 //         x = getCenteredAxis(event, mInputDevice,
 //                 MotionEvent.AXIS_Z, historyPos);
 //      }
@@ -765,23 +762,18 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
 //      // Calculate the vertical distance to move by
 //      // using the input value from one of these physical controls:
 //      // the left control stick, hat switch, or the right control stick.
-//      String controlButton2 = "Y (left stick)";
 //      float y = getCenteredAxis(event, mInputDevice,
 //              MotionEvent.AXIS_Y, historyPos);
 //      if (y == 0) {
-//          controlButton2 = "Left/center/right, (1/0/-1) Left stick | Right/center/left Right stick";
 //         y = getCenteredAxis(event, mInputDevice,
 //                 MotionEvent.AXIS_HAT_Y, historyPos);
 //      }
 //      if (y == 0) {
-//          controlButton2 = "RZ(right stick)";
 //         y = getCenteredAxis(event, mInputDevice,
 //                 MotionEvent.AXIS_RZ, historyPos);
 //      }
 //
 //      // Update the ship object based on the new x and y values
-//      Log.i("\tPEPE DEBUG", "JoyCon: processJoystickInput (" + controlButton1 + "," + controlButton2 + "): " + x + ", " + y);
-//      System.out.println("************************ (" + controlButton1 + "," + controlButton2 + "): " + x + ", " + y );
 
    }
 
