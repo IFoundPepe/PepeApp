@@ -307,51 +307,13 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
    public boolean dispatchGenericMotionEvent(MotionEvent event) {
 //   public boolean onKeyDown(int keyCode, KeyEvent event) {
 //      this.debugMotionEvent(event);
+      if(onGenericMotionEvent(event))
+      {
+//          Log.i("\tPEPE DEBUG", "JoyCon: WE DID IT!!!");
+          return true;
+      }
 
-      // Determin which JoyCon was the source of the event
-      if(event.getDevice().getProductId() == 8198) // Left JoyCon event
-      {
-//         Log.i("\tPEPE DEBUG", "JoyCon: LEFT");
-         return executeLeftJoyConMotionEvent(event);
-      }
-      else if(event.getDevice().getProductId() == 8199) // Right JoyCon event
-      {
-//        Log.i("\tPEPE DEBUG", "JoyCon: RIGHT");
-         return executeRightJoyConMotionEvent(event);
-      }
       return super.dispatchGenericMotionEvent(event);
-   }
-
-   private boolean executeLeftJoyConMotionEvent(MotionEvent event) {
-      // Collect Information about motion
-      Log.i("\tPEPE DEBUG", "JoyCon: LEFT, MotionEvent - AxisValue - AXIS_X: "
-              + event.getAxisValue(MotionEvent.AXIS_X));
-      Log.i("\tPEPE DEBUG", "JoyCon: LEFT, MotionEvent - AxisValue - AXIS_HAT_X: "
-              + event.getAxisValue(MotionEvent.AXIS_HAT_X));
-      Log.i("\tPEPE DEBUG", "JoyCon: LEFT, MotionEvent - AxisValue - AXIS_Y "
-              + event.getAxisValue(MotionEvent.AXIS_Y));
-      Log.i("\tPEPE DEBUG", "JoyCon: LEFT, MotionEvent - AxisValue - AXIS_HAT_Y: "
-              + event.getAxisValue(MotionEvent.AXIS_HAT_Y));
-
-      Log.i("\tPEPE DEBUG", "JoyCon: LEFT, MotionEvent - historicalSize - AXIS_HAT_Y: "
-              + event.getHistorySize());
-
-      for (int i = event.getHistorySize()-1; i >= 0; i--) {
-         Log.i("\tPEPE DEBUG", "JoyCon: LEFT, MotionEvent - historical axis value [" + i + "] : "
-                 + i + " " + event.getHistoricalAxisValue(MotionEvent.AXIS_X, i));
-      }
-
-      // Get Value X
-      // Get Value Y
-      // Send The stuff
-      return true;
-   }
-
-   private boolean executeRightJoyConMotionEvent(MotionEvent event) {
-      // Get Value X
-      // Get Value Y
-      // Send The stuff
-      return true;
    }
 
    private boolean executeLeftJoyConKeyEvent(KeyEvent event) {
@@ -690,6 +652,11 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
 
          // Process all historical movement samples in the batch
          final int historySize = event.getHistorySize();
+         // If a Joystick
+         Log.i("\tPEPE DEBUG", "JoyCon: InputDevice: " + event.getSource());
+
+         // Determin which JoyCon was the source of the event
+        Log.i("\tPEPE DEBUG", "JoyCon: historical size - " + historySize);
 
          // Process the movements starting from the
          // earliest historical position in the batch
@@ -707,41 +674,115 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
 
    private void processJoystickInput(MotionEvent event,
                                      int historyPos) {
-
+//      Log.i("\tPEPE DEBUG", "JoyCon: processJoystickInput");
       // TODO: Investigate if this can be used in conjunction with the productID
       // TODO: to do the look/turn handling
       InputDevice mInputDevice = event.getDevice();
 
-      // Calculate the horizontal distance to move by
-      // using the input value from one of these physical controls:
-      // the left control stick, hat axis, or the right control stick.
-      float x = getCenteredAxis(event, mInputDevice,
-              MotionEvent.AXIS_X, historyPos);
-      if (x == 0) {
-         x = getCenteredAxis(event, mInputDevice,
-                 MotionEvent.AXIS_HAT_X, historyPos);
+      if(event.getDevice().getProductId() == 8198) // Left JoyCon event
+      {
+         Log.i("\tPEPE DEBUG", "JoyCon: LEFT");
+// NOTE: This is wrong...straight from Google...This is the vertical motion for JoyCon
+         // Calculate the horizontal distance to move by
+         // using the input value from one of these physical controls:
+         // the left control stick, hat axis, or the right control stick.
+         float x = getCenteredAxis(event, mInputDevice, MotionEvent.AXIS_HAT_X, historyPos);
+         if(x == -1){
+            // Up
+            Log.i("\tPEPE DEBUG", "JoyCon: joystick(Vertical): up");
+         }else if(x == 0){
+            // Center
+            Log.i("\tPEPE DEBUG", "JoyCon: joystick(Vertical): center");
+         }else if(x == 1) {
+            // Down
+            Log.i("\tPEPE DEBUG", "JoyCon: joystick(Vertical): down");
+         }
+// NOTE: This is wrong...straight from Google...This is the Horizontal motion for JoyCon
+         // Calculate the vertical distance to move by
+         // using the input value from one of these physical controls:
+         // the left control stick, hat switch, or the right control stick.
+         float y = getCenteredAxis(event, mInputDevice, MotionEvent.AXIS_HAT_Y, historyPos);
+         if(y == -1){
+            // Right
+            Log.i("\tPEPE DEBUG", "JoyCon: joystick(Horizontal): right");
+         }else if(y == 0){
+            // Center
+            Log.i("\tPEPE DEBUG", "JoyCon: joystick(Horizontal): center");
+         }else if(y == 1) {
+            // Left
+            Log.i("\tPEPE DEBUG", "JoyCon: joystick(Horizontal): left");
+         }
       }
-      if (x == 0) {
-         x = getCenteredAxis(event, mInputDevice,
-                 MotionEvent.AXIS_Z, historyPos);
+      else if(event.getDevice().getProductId() == 8199) // Right JoyCon event
+      {
+         Log.i("\tPEPE DEBUG", "JoyCon: RIGHT");
+// NOTE: This is wrong...straight from Google...This is the vertical motion for JoyCon
+         // Calculate the horizontal distance to move by
+         // using the input value from one of these physical controls:
+         // the left control stick, hat axis, or the right control stick.
+         float x = getCenteredAxis(event, mInputDevice, MotionEvent.AXIS_HAT_X, historyPos);
+         if(x == -1){
+            // Down
+            Log.i("\tPEPE DEBUG", "JoyCon: joystick(Vertical): down");
+         }else if(x == 0){
+            // Center
+            Log.i("\tPEPE DEBUG", "JoyCon: joystick(Vertical): center");
+         }else if(x == 1) {
+            // Up
+            Log.i("\tPEPE DEBUG", "JoyCon: joystick(Vertical): up");
+         }
+// NOTE: This is wrong...straight from Google...This is the Horizontal motion for JoyCon
+         // Calculate the vertical distance to move by
+         // using the input value from one of these physical controls:
+         // the left control stick, hat switch, or the right control stick.
+         float y = getCenteredAxis(event, mInputDevice, MotionEvent.AXIS_HAT_Y, historyPos);
+         if(y == -1){
+            // left
+            Log.i("\tPEPE DEBUG", "JoyCon: joystick(Horizontal): left");
+         }else if(y == 0){
+            // Center
+            Log.i("\tPEPE DEBUG", "JoyCon: joystick(Horizontal): center");
+         }else if(y == 1) {
+            // Right
+            Log.i("\tPEPE DEBUG", "JoyCon: joystick(Horizontal): righ");
+         }
       }
 
-      // Calculate the vertical distance to move by
-      // using the input value from one of these physical controls:
-      // the left control stick, hat switch, or the right control stick.
-      float y = getCenteredAxis(event, mInputDevice,
-              MotionEvent.AXIS_Y, historyPos);
-      if (y == 0) {
-         y = getCenteredAxis(event, mInputDevice,
-                 MotionEvent.AXIS_HAT_Y, historyPos);
-      }
-      if (y == 0) {
-         y = getCenteredAxis(event, mInputDevice,
-                 MotionEvent.AXIS_RZ, historyPos);
-      }
+//      String controlButton1 = "X (left stick)";
+//      float x = getCenteredAxis(event, mInputDevice,
+//              MotionEvent.AXIS_X, historyPos);
+//      if (x == 0) {
+//          controlButton1 = "Up/center/down, (-1/0/1) Left Stick | Down/center/Up Right stick";
+//         x = getCenteredAxis(event, mInputDevice,
+//                 MotionEvent.AXIS_HAT_X, historyPos);
+//      }
+//      if (x == 0) {
+//          controlButton1 = "Center Left Stick";
+//         x = getCenteredAxis(event, mInputDevice,
+//                 MotionEvent.AXIS_Z, historyPos);
+//      }
+//
+//      // Calculate the vertical distance to move by
+//      // using the input value from one of these physical controls:
+//      // the left control stick, hat switch, or the right control stick.
+//      String controlButton2 = "Y (left stick)";
+//      float y = getCenteredAxis(event, mInputDevice,
+//              MotionEvent.AXIS_Y, historyPos);
+//      if (y == 0) {
+//          controlButton2 = "Left/center/right, (1/0/-1) Left stick | Right/center/left Right stick";
+//         y = getCenteredAxis(event, mInputDevice,
+//                 MotionEvent.AXIS_HAT_Y, historyPos);
+//      }
+//      if (y == 0) {
+//          controlButton2 = "RZ(right stick)";
+//         y = getCenteredAxis(event, mInputDevice,
+//                 MotionEvent.AXIS_RZ, historyPos);
+//      }
+//
+//      // Update the ship object based on the new x and y values
+//      Log.i("\tPEPE DEBUG", "JoyCon: processJoystickInput (" + controlButton1 + "," + controlButton2 + "): " + x + ", " + y);
+//      System.out.println("************************ (" + controlButton1 + "," + controlButton2 + "): " + x + ", " + y );
 
-      // Update the ship object based on the new x and y values
-      System.out.println("************************ (x,y): " + x + ", " + y );
    }
 
    private static float getCenteredAxis(MotionEvent event,
