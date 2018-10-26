@@ -2,6 +2,7 @@ package com.pepedyne.pepe.controller;
 
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 
 import com.pepedyne.pepe.dispatch.PepeDispatcher;
 
@@ -68,22 +69,19 @@ public class JoyConButtonHandler {
    }
 
    public static void debugKeyEvent(KeyEvent event) {
-      Log.i("\tPEPE DEBUG","--------------------------");
       Log.d("PEPE DEBUG", "keyDown keyCode: " + event.getKeyCode());
-      Log.i("\tPEPE DEBUG", "KeyEvent DeviceId: " + event.getDeviceId());
-      Log.i("\tPEPE DEBUG", "KeyEvent Id: " + event.getDevice().getId());
-      Log.i("\tPEPE DEBUG", "KeyEvent getFlags: " + event.getFlags());
-      Log.i("\tPEPE DEBUG", "KeyEvent getDownTime: " + event.getDownTime());
-
-      Log.i("\tPEPE DEBUG", "KeyEvent getCharacters: " + event.getCharacters());
-      Log.i("\tPEPE DEBUG", "KeyEvent MetaState: " + event.getMetaState());
-      Log.i("\tPEPE DEBUG", "KeyEvent getModifiers: " + event.getModifiers());
-      Log.i("\tPEPE DEBUG", "KeyEvent getRepeatCount: " + event.getRepeatCount());
-
-      Log.i("\tPEPE DEBUG", "KeyEvent getAction: " + event.getAction());
+      Log.d("\tPEPE DEBUG", "KeyEvent DeviceId: " + event.getDeviceId());
+      Log.d("\tPEPE DEBUG", "KeyEvent Id: " + event.getDevice().getId());
+      Log.d("\tPEPE DEBUG", "KeyEvent getFlags: " + event.getFlags());
+      Log.d("\tPEPE DEBUG", "KeyEvent getDownTime: " + event.getDownTime());
+      Log.d("\tPEPE DEBUG", "KeyEvent getCharacters: " + event.getCharacters());
+      Log.d("\tPEPE DEBUG", "KeyEvent MetaState: " + event.getMetaState());
+      Log.d("\tPEPE DEBUG", "KeyEvent getModifiers: " + event.getModifiers());
+      Log.d("\tPEPE DEBUG", "KeyEvent getRepeatCount: " + event.getRepeatCount());
+      Log.d("\tPEPE DEBUG", "KeyEvent getAction: " + event.getAction());
    }
 
-   public static boolean  executeLeftJoyConKeyEvent(KeyEvent event, PepeDispatcher dispatcher) {
+   public static boolean  executeLeftJoyConKeyEvent(KeyEvent event, PepeDispatcher dispatcher, View view) {
 //======LEFT JOYCON KEY CODES======
 //      upArrowDown
 //      upArrowUp
@@ -244,7 +242,7 @@ public class JoyConButtonHandler {
       //      return super.dispatchKeyEvent(event);
    }
 
-   public static boolean executeRightJoyConKeyEvent(KeyEvent event, PepeDispatcher dispatcher) {
+   public static boolean executeRightJoyConKeyEvent(KeyEvent event, PepeDispatcher dispatcher, View view) {
 //======RIGHT JOYCON KEY CODES======
 //      XbuttonDown
 //      XbuttonUp
@@ -309,11 +307,13 @@ public class JoyConButtonHandler {
       {
          if (event.getAction() == KeyEvent.ACTION_DOWN)
          {
+            view.getKeyDispatcherState().startTracking(event, view);
             Log.i("\tPEPE DEBUG", "JoyCon: Abutton - RIGHT - Action Down");
             // Do Nothing
          }
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
+            view.getKeyDispatcherState().handleUpEvent(event);
             Log.i("\tPEPE DEBUG", "JoyCon: Abutton - RIGHT - Action Up");
             // Do Nothing
          }
@@ -357,7 +357,7 @@ public class JoyConButtonHandler {
             Log.i("\tPEPE DEBUG", "JoyCon: plusButton - RIGHT - Action Down");
             // TODO: Do we want to use + to start AI and - to disable AI?
             // TODO: Maybe check state of pepeAI with getAIstate()
-            dispatcher.runPepeAI();
+//            dispatcher.runPepeAI();
             return true;
          }
          else if (event.getAction() == KeyEvent.ACTION_UP)

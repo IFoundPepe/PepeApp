@@ -18,6 +18,7 @@ package com.pepedyne.pepe.controller;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.hardware.input.InputManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -25,10 +26,12 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
@@ -38,6 +41,9 @@ import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProvider;
 import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProviderImpl;
 import com.pepedyne.pepe.dispatch.PepeDispatcher;
 import com.pepedyne.pepe.dispatch.SendDataHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
@@ -60,6 +66,7 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
    private PepeDispatcher pepeDispatcher;
    private Handler handler;
    private HandlerThread handlerThread;
+   private View myView;
 
    public PepeDispatcher getDispatcher() {
       return pepeDispatcher;
@@ -89,6 +96,13 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
       findViewById(R.id.tweet);
       findViewById(R.id.PepAI);
       findViewById(R.id.settingsButton);
+      myView = findViewById(R.id.joycon);
+//      setContentView(myView);
+
+//      List<Integer> list = getGameControllerIds();
+//      for ( int i = 0; i < list.size(); i++ ) {
+//         Log.i("\tPEPE_DEBGU", "Controller: " + list.get(i));
+//      }
 
       handlerThread = new HandlerThread("MyHandlerThread");
       handlerThread.start();
@@ -103,6 +117,8 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
             bluetoothLeServiceProvider.send(msg.obj.toString());
          }
       };
+
+      myView.requestFocus();
    }
 
    @Override
@@ -191,23 +207,30 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
       return false;
    }
 
-   @Override
-   public boolean dispatchKeyEvent(KeyEvent event) {
-//   public boolean onKeyDown(int keyCode, KeyEvent event) {
-      JoyConButtonHandler.debugKeyEvent(event);
-      if (event.getRepeatCount() < 1)
-      {
-         // Determine which JoyCon was the source of the event
-         if (event.getDevice().getProductId() == PRODUCT_ID_LEFT_JOYCON) // Left JoyCon event
-         {
-            return JoyConButtonHandler.executeLeftJoyConKeyEvent(event, pepeDispatcher);
-         }
-         else if (event.getDevice().getProductId() == PRODUCT_ID_RIGHT_JOYCON) // Right JoyCon event
-         {
-            return JoyConButtonHandler.executeRightJoyConKeyEvent(event, pepeDispatcher);
+   public ArrayList<Integer> getGameControllerIds() {
+      ArrayList<Integer> gameControllerDeviceIds = new ArrayList<Integer>();
+      int[] deviceIds = InputDevice.getDeviceIds();
+      for (int deviceId : deviceIds) {
+         InputDevice dev = InputDevice.getDevice(deviceId);
+         int sources = dev.getSources();
+
+         // Verify that the device has gamepad buttons, control sticks, or both.
+         if (((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD)
+                 || ((sources & InputDevice.SOURCE_JOYSTICK)
+                 == InputDevice.SOURCE_JOYSTICK)) {
+            // This device is a game controller. Store its device ID.
+            if (!gameControllerDeviceIds.contains(deviceId)) {
+               gameControllerDeviceIds.add(deviceId);
+            }
          }
       }
-      return super.dispatchKeyEvent(event);
+      return gameControllerDeviceIds;
+   }
+
+   @Override
+   public boolean dispatchKeyEvent(KeyEvent event) {
+//      myView.requestFocus();
+      return myView.dispatchKeyEvent(event);
    }
 
    @Override
@@ -221,11 +244,12 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
 
    @Override
    public boolean onGenericMotionEvent(MotionEvent event) {
+      myView.requestFocus();
       // Check that the event came from a game controller
-      if (JoyConStickHandler.handleJoystickInput(event))
-      {
-         return true;
-      }
+//      if (JoyConStickHandler.handleJoystickInput(event))
+//      {
+//         return true;
+//      }
       return super.onGenericMotionEvent(event);
    }
 }

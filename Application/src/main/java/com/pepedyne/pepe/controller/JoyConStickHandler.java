@@ -1,5 +1,6 @@
 package com.pepedyne.pepe.controller;
 
+import android.util.Log;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 
@@ -70,7 +71,7 @@ public class JoyConStickHandler {
       }
 
       // Update the ship object based on the new x and y values
-      System.out.println("************************ (x,y): " + x + ", " + y );
+      Log.i("PEPE_DEBUG", "************************ (x,y): " + x + ", " + y );
    }
 
    private static float getCenteredAxis(MotionEvent event,
@@ -97,16 +98,16 @@ public class JoyConStickHandler {
    }
 
    private static void debugMotionEvent(MotionEvent event) {
-      System.out.println("PEPE DEBUG--------------------------");
-      System.out.println("PEPE DEBUG MotionEvent Device: " + event.getDevice());
-      System.out.println("PEPE DEBUG MotionEvent DeviceId: " + event.getDeviceId());
-      System.out.println("PEPE DEBUG MotionEvent Id: " + event.getDevice().getId());
-      System.out.println("PEPE DEBUG MotionEvent getFlags: " + event.getFlags());
-      System.out.println("PEPE DEBUG MotionEvent getDownTime: " + event.getDownTime());
-      System.out.println("PEPE DEBUG MotionEvent getHistorySize: " + event.getHistorySize());
-      System.out.println("PEPE DEBUG MotionEvent getPointerCount: " + event.getPointerCount());
-//      System.out.println("\tPEPE DEBUG MotionEvent getPointerCount: " + event.getAxisValue(MotionEvent.AXIS_X, Motion));
-      System.out.println("PEPE DEBUG MotionEvent MetaState: " + event.getMetaState());
-//      System.out.println("\tPEPE DEBUG KeyEvent getAction: " + event.getAction());
+      Log.d ("\tPEPE_DEBUG", "--------------------------");
+      Log.d ("\tPEPE_DEBUG", " MotionEvent Device: " + event.getDevice());
+      Log.d ("\tPEPE_DEBUG", " MotionEvent DeviceId: " + event.getDeviceId());
+      Log.d ("\tPEPE_DEBUG", " MotionEvent Id: " + event.getDevice().getId());
+      Log.d ("\tPEPE_DEBUG", " MotionEvent getFlags: " + event.getFlags());
+      Log.d ("\tPEPE_DEBUG", " MotionEvent getDownTime: " + event.getDownTime());
+      Log.d ("\tPEPE_DEBUG", " MotionEvent getHistorySize: " + event.getHistorySize());
+      Log.d ("\tPEPE_DEBUG", " MotionEvent getPointerCount: " + event.getPointerCount());
+//      Log.d ("\tPEPE DEBUG MotionEvent getPointerCount: " + event.getAxisValue(MotionEvent.AXIS_X, Motion));
+      Log.d ("\tPEPE_DEBUG", " MotionEvent MetaState: " + event.getMetaState());
+//      Log.d ("\tPEPE DEBUG KeyEvent getAction: " + event.getAction());
    }
 }
