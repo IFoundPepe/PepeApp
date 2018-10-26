@@ -265,10 +265,10 @@ public class JoyConButtonHandler {
          if (event.getAction() == KeyEvent.ACTION_DOWN)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: XbuttonDown - RIGHT - Action Down");
-// TODO: Enable this after debugging
+            // TODO: Enable this after debugging
             // TODO: This may cause repetitive tweets. Do we invert logic?
-//            pepeDispatcher.tweet();
-//            return true;
+            //            pepeDispatcher.tweet();
+            //            return true;
          }
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
@@ -405,6 +405,5 @@ public class JoyConButtonHandler {
          }
       }
       return true;
-//      return super.dispatchKeyEvent(event);
    }
 }

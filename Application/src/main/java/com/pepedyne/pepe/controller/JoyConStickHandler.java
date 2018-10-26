@@ -6,26 +6,35 @@ import android.view.MotionEvent;
 public class JoyConStickHandler {
 
    public static boolean handleJoystickInput(MotionEvent event) {
+      debugMotionEvent(event);
       // Process all historical movement samples in the batch
-      final int historySize = event.getHistorySize();
+      if ((event.getSource() & InputDevice.SOURCE_JOYSTICK) ==
+              InputDevice.SOURCE_JOYSTICK &&
+              event.getAction() == MotionEvent.ACTION_MOVE)
+      {
+         final int historySize = event.getHistorySize();
 
-      // Process the movements starting from the
-      // earliest historical position in the batch
-      for (int i = 0; i < historySize; i++) {
-         // Process the event at historical position i
-         JoyConStickHandler.processJoystickInput(event, i);
-         for (int j = 0; j < event.getPointerCount(); j++) {
-            System.out.println("Historical (x,y): " + event.getHistoricalX(j,i) + ", " +
-            event.getHistoricalY(j,i));
+         // Process the movements starting from the
+         // earliest historical position in the batch1
+         for (int i = 0; i < historySize; i++) {
+            // Process the event at historical position i
+            JoyConStickHandler.processJoystickInput(event, i);
+            for (int j = 0; j < event.getPointerCount(); j++) {
+               // There are never historical events
+               System.out.println("****** Processing Historical Event");
+            }
          }
-      }
 
-      // Process the current movement sample in the batch (position -1)
-      JoyConStickHandler.processJoystickInput(event, -1);
+         float deltaX = event.getAxisValue(MotionEvent.AXIS_X);
+         float deltaY = event.getAxisValue(MotionEvent.AXIS_Y);
+         System.out.println("(x,y): " + deltaX + ", " + deltaY);
+         // Process the current movement sample in the batch (position -1)
+         JoyConStickHandler.processJoystickInput(event, -1);
+      }
       return true;
    }
 
-   public static void processJoystickInput(MotionEvent event,
+   private static void processJoystickInput(MotionEvent event,
                                      int historyPos) {
 
       // TODO: Investigate if this can be used in conjunction with the productID
@@ -62,11 +71,6 @@ public class JoyConStickHandler {
 
       // Update the ship object based on the new x and y values
       System.out.println("************************ (x,y): " + x + ", " + y );
-      System.out.println("Print getRawX : " + event.getRawX());
-      System.out.println("Print getAxisValue : " + event.getAxisValue(1));
-      System.out.println("Print getOrientation : " + event.getOrientation());
-      System.out.println("Print getTouchMajor : " + event.getTouchMajor());
-      System.out.println("Print getTouchMajor : " + event.toString());
    }
 
    private static float getCenteredAxis(MotionEvent event,
@@ -90,5 +94,19 @@ public class JoyConStickHandler {
          }
       }
       return 0;
+   }
+
+   private static void debugMotionEvent(MotionEvent event) {
+      System.out.println("PEPE DEBUG--------------------------");
+      System.out.println("PEPE DEBUG MotionEvent Device: " + event.getDevice());
+      System.out.println("PEPE DEBUG MotionEvent DeviceId: " + event.getDeviceId());
+      System.out.println("PEPE DEBUG MotionEvent Id: " + event.getDevice().getId());
+      System.out.println("PEPE DEBUG MotionEvent getFlags: " + event.getFlags());
+      System.out.println("PEPE DEBUG MotionEvent getDownTime: " + event.getDownTime());
+      System.out.println("PEPE DEBUG MotionEvent getHistorySize: " + event.getHistorySize());
+      System.out.println("PEPE DEBUG MotionEvent getPointerCount: " + event.getPointerCount());
+//      System.out.println("\tPEPE DEBUG MotionEvent getPointerCount: " + event.getAxisValue(MotionEvent.AXIS_X, Motion));
+      System.out.println("PEPE DEBUG MotionEvent MetaState: " + event.getMetaState());
+//      System.out.println("\tPEPE DEBUG KeyEvent getAction: " + event.getAction());
    }
 }

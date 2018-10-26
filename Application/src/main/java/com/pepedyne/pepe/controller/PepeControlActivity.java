@@ -25,7 +25,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -196,18 +195,15 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
    public boolean dispatchKeyEvent(KeyEvent event) {
 //   public boolean onKeyDown(int keyCode, KeyEvent event) {
       JoyConButtonHandler.debugKeyEvent(event);
-
       if (event.getRepeatCount() < 1)
       {
          // Determine which JoyCon was the source of the event
          if (event.getDevice().getProductId() == PRODUCT_ID_LEFT_JOYCON) // Left JoyCon event
          {
-//             Log.i("\tPEPE DEBUG", "JoyCon: LEFT");
             return JoyConButtonHandler.executeLeftJoyConKeyEvent(event, pepeDispatcher);
          }
          else if (event.getDevice().getProductId() == PRODUCT_ID_RIGHT_JOYCON) // Right JoyCon event
          {
-//             Log.i("\tPEPE DEBUG", "JoyCon: RIGHT");
             return JoyConButtonHandler.executeRightJoyConKeyEvent(event, pepeDispatcher);
          }
       }
@@ -215,15 +211,21 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
    }
 
    @Override
+   public boolean dispatchGenericMotionEvent(MotionEvent event) {
+      if(onGenericMotionEvent(event))
+      {
+          return true;
+      }
+      return super.dispatchGenericMotionEvent(event);
+   }
+
+   @Override
    public boolean onGenericMotionEvent(MotionEvent event) {
       // Check that the event came from a game controller
-      if ((event.getSource() & InputDevice.SOURCE_JOYSTICK) ==
-              InputDevice.SOURCE_JOYSTICK &&
-              event.getAction() == MotionEvent.ACTION_MOVE)
+      if (JoyConStickHandler.handleJoystickInput(event))
       {
-         return JoyConStickHandler.handleJoystickInput(event);
+         return true;
       }
       return super.onGenericMotionEvent(event);
    }
-
 }
