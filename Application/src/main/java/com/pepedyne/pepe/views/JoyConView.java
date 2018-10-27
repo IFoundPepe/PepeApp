@@ -215,7 +215,8 @@ public class JoyConView extends View {
             return true;
          case KeyEvent.KEYCODE_BUTTON_Y: // press triangle: 100
             Log.d("PEPE DEBUG", "flap up");
-            pepeDispatcher.flapUp();
+            pepeDispatcher.flapLeftUp();
+            pepeDispatcher.flapRightUp();
             pepeDispatcher.silence();
             return true;
          case KeyEvent.KEYCODE_SPACE: // held triangle 62 - do nothing?
@@ -253,7 +254,8 @@ public class JoyConView extends View {
             return true;
          case KeyEvent.KEYCODE_BUTTON_Y: // press triangle: 100
             Log.d("PEPE DEBUG", "flap down");
-            pepeDispatcher.flapDown();
+            pepeDispatcher.flapLeftDown();
+            pepeDispatcher.flapRightDown();
             pepeDispatcher.silence();
             return true;
          case KeyEvent.KEYCODE_SPACE: // held triangle 62 - do nothing?

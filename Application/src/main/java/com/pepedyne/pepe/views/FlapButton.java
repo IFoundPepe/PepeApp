@@ -29,12 +29,14 @@ public class FlapButton extends AppCompatButton {
       this.setOnTouchListener((v, event) -> {
          if (event.getAction() == MotionEvent.ACTION_DOWN)
          {
-            host.getDispatcher().flapUp();
+            host.getDispatcher().flapLeftUp();
+            host.getDispatcher().flapRightUp();
          }
          else if (event.getAction() == MotionEvent.ACTION_UP)
          {
             v.performClick();
-            host.getDispatcher().flapDown();
+            host.getDispatcher().flapLeftDown();
+            host.getDispatcher().flapRightUp();
          }
          return false;
       });

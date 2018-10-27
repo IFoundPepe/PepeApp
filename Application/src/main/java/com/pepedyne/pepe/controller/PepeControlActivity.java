@@ -284,7 +284,7 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
    @Override
    public boolean dispatchKeyEvent(KeyEvent event) {
 //   public boolean onKeyDown(int keyCode, KeyEvent event) {
-      this.debugKeyEvent(event);
+//      this.debugKeyEvent(event);
 
       if (event.getRepeatCount() < 1)
       {
@@ -342,7 +342,9 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: upArrowDown - LEFT - Action Up");
-            // Do Nothing
+            // soaring
+            pepeDispatcher.soaring();
+            return true;
          }
       }
       else if (keyCode == keyMapperLeftJoyCon.get("downArrowDown"))
@@ -355,7 +357,9 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: downArrowDown - LEFT - Action Up");
-            // Do Nothing
+            // peacock
+            pepeDispatcher.peacock();
+            return true;
          }
       }
       else if (keyCode == keyMapperLeftJoyCon.get("leftArrow"))
@@ -368,7 +372,9 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: leftArrowDown - LEFT - Action Up");
-            // Do Nothing
+            // turn and wink
+            pepeDispatcher.turnAndWink();
+            return true;
          }
       }
       else if (keyCode == keyMapperLeftJoyCon.get("rightArrow"))
@@ -381,27 +387,25 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: rightArrowDown - LEFT - Action Up");
-            // Do Nothing
+            // look and focus
+            pepeDispatcher.lookAndFocus();
+            return true;
          }
       }
       else if (keyCode == keyMapperLeftJoyCon.get("LbuttonDown"))
       {
-         // TODO: What do we want this to do? - Should this be for the wings?
          if (event.getAction() == KeyEvent.ACTION_DOWN)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: LbuttonDown - LEFT - Action Down");
-// TODO: Enable after button debug
-//            // TODO: Make sure if flaps the correct wing
-//            // TODO: This may cause repetitive flaps. Do we invert logic?
-//            pepeDispatcher.flapUp(); // Leftt Flap Up
-//            return true;
+            // TODO: We will not be able to "hold up" a flap with this design
+            // Do Nothing
          }
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
-// TODO: Enable after button debug
-            Log.i("\tPEPE DEBUG", "JoyCon: LbuttonDown - LEFT - Action Up");
-//            pepeDispatcher.flapDown(); // Left Flap Down
-//            return true;
+//            // TODO: This may cause repetitive flaps. Do we invert logic?
+            // flap Left wing
+            pepeDispatcher.flapLeftOnce();
+            return true;
          }
       }
       else if (keyCode == keyMapperLeftJoyCon.get("ZLbutton"))
@@ -414,7 +418,9 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: ZLbutton - LEFT - Action Up");
-            // Do Nothing
+            // wink left eye
+            pepeDispatcher.winkLeftOnce();
+            return true;
          }
       }
       else if (keyCode == keyMapperLeftJoyCon.get("minusButton"))
@@ -422,16 +428,17 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
          if (event.getAction() == KeyEvent.ACTION_DOWN)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: minusButton - LEFT - Action Down");
-// TODO: Enable this after debugging
-//            // TODO: Do we want to use + to start AI and - to disable AI?
-//            // TODO: Maybe check state of pepeAI with getAIstate()
-//            pepeDispatcher.runPepeAI();
-//            return true;
+            // Do Nothing
          }
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: minusButton - LEFT - Action Up");
-            // Do Nothing
+// TODO: Enable this after debugging
+//            // TODO: Do we want to use + to start AI and - to disable AI?
+//            // TODO: Maybe check state of pepeAI with getAIstate()
+            pepeDispatcher.connectTweet(); // This is audible response that PepeAI is off
+            pepeDispatcher.setAIState(false);
+            return true;
          }
       }
       else if (keyCode == keyMapperLeftJoyCon.get("SLbutton"))
@@ -556,18 +563,15 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
          if (event.getAction() == KeyEvent.ACTION_DOWN)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: RbuttonDown - RIGHT - Action Down");
-// TODO: Enable after button debug
-//            // TODO: Make sure if flaps the correct wing
-//            // TODO: This may cause repetitive flaps. Do we invert logic?
-//            pepeDispatcher.flapUp(); // Right Flap Up
-//            return true;
+            // TODO: We will not be able to "hold up" a flap with this design
+            // Do Nothing
          }
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: RbuttonDown - RIGHT - Action Up");
-// TODO: Enable after button debug
-//            pepeDispatcher.flapDown(); // Right Flap Down
-//            return true;
+            // flap Right wing
+            pepeDispatcher.flapRightOnce();
+            return true;
          }
       }
       else if (keyCode == keyMapperRightJoyCon.get("ZRbutton"))
@@ -580,7 +584,8 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: ZRbutton - RIGHT - Action Up");
-            // Do Nothing
+            pepeDispatcher.winkRightOnce();
+            return true;
          }
       }
       else if (keyCode == keyMapperRightJoyCon.get("plusButton"))
@@ -588,15 +593,14 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
          if (event.getAction() == KeyEvent.ACTION_DOWN)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: plusButton - RIGHT - Action Down");
-            // TODO: Do we want to use + to start AI and - to disable AI?
-            // TODO: Maybe check state of pepeAI with getAIstate()
-            pepeDispatcher.runPepeAI();
-            return true;
+            // Do Nothing
          }
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: plusButton - RIGHT - Action Up");
-            // Do Nothing
+            pepeDispatcher.connectTweet(); // This is audible response that PepeAI is on
+            pepeDispatcher.runPepeAI();
+            return true;
          }
       }
       else if (keyCode == keyMapperRightJoyCon.get("SRbutton"))
@@ -688,12 +692,15 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
          if(x == -1){
             // Up
             Log.i("\tPEPE DEBUG", "JoyCon: joystick(Vertical): up");
+            // Do Nothing??
          }else if(x == 0){
             // Center
             Log.i("\tPEPE DEBUG", "JoyCon: joystick(Vertical): center");
+            // Do Nothing??
          }else if(x == 1) {
             // Down
             Log.i("\tPEPE DEBUG", "JoyCon: joystick(Vertical): down");
+            // Do Nothing??
          }
 // NOTE: This is wrong...straight from Google...This is the Horizontal motion for JoyCon
          // Calculate the vertical distance to move by
@@ -703,12 +710,18 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
          if(y == -1){
             // Right
             Log.i("\tPEPE DEBUG", "JoyCon: joystick(Horizontal): right");
+            pepeDispatcher.turnLeft();
+            pepeDispatcher.sendIt();
          }else if(y == 0){
             // Center
             Log.i("\tPEPE DEBUG", "JoyCon: joystick(Horizontal): center");
+            pepeDispatcher.resetTurn();
+            pepeDispatcher.sendIt();
          }else if(y == 1) {
             // Left
             Log.i("\tPEPE DEBUG", "JoyCon: joystick(Horizontal): left");
+            pepeDispatcher.turnRight();
+            pepeDispatcher.sendIt();
          }
       }
       else if(event.getDevice().getProductId() == 8199) // Right JoyCon event
@@ -722,12 +735,15 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
          if(x == -1){
             // Down
             Log.i("\tPEPE DEBUG", "JoyCon: joystick(Vertical): down");
+            // Do Nothing??
          }else if(x == 0){
             // Center
             Log.i("\tPEPE DEBUG", "JoyCon: joystick(Vertical): center");
+            // Do Nothing??
          }else if(x == 1) {
             // Up
             Log.i("\tPEPE DEBUG", "JoyCon: joystick(Vertical): up");
+            // Do Nothing??
          }
 // NOTE: This is wrong...straight from Google...This is the Horizontal motion for JoyCon
          // Calculate the vertical distance to move by
@@ -737,12 +753,18 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
          if(y == -1){
             // left
             Log.i("\tPEPE DEBUG", "JoyCon: joystick(Horizontal): left");
+            pepeDispatcher.lookLeft();
+            pepeDispatcher.sendIt();
          }else if(y == 0){
             // Center
             Log.i("\tPEPE DEBUG", "JoyCon: joystick(Horizontal): center");
+            pepeDispatcher.resetLook();
+            pepeDispatcher.sendIt();
          }else if(y == 1) {
             // Right
             Log.i("\tPEPE DEBUG", "JoyCon: joystick(Horizontal): right");
+            pepeDispatcher.lookRight();
+            pepeDispatcher.sendIt();
          }
       }
 

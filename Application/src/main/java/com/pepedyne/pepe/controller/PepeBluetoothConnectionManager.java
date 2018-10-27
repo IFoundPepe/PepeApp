@@ -25,9 +25,13 @@ public class PepeBluetoothConnectionManager {
    private static final int STEPS = 15;
 
    private ServoCollection collection;
-   private Servo flap;
+   private Servo flapLeft;
+   private Servo flapRight;
+   private Servo blinkLeft;
+   private Servo blinkRight;
+   private Servo tail;
    private Servo tweet;
-   private Servo lean;
+   private Servo turn;
    private Servo look;
 
    private AppCompatActivity activity;
@@ -38,23 +42,43 @@ public class PepeBluetoothConnectionManager {
 
       sendIt = false;
       collection = new ServoCollection();
-      System.out.println("R String: " + R.string.flap_servo_min_key);
-      System.out.println("Get String: " + activity.getString(R.string.flap_servo_min_key));
+//      System.out.println("R String: " + R.string.flap_left_servo_min_key);
+//      System.out.println("Get String: " + activity.getString(R.string.flap_left_servo_min_key));
 
-      flap = new StandardServo("flap",
-              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_servo_min_key), activity.getString(R.string.flap_servo_min_default))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_servo_max_key), activity.getString(R.string.flap_servo_max_default))));
-      collection.registerServo(flap);
+      flapLeft = new StandardServo("flapLeft",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_left_servo_min_key), activity.getString(R.string.flap_left_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_left_servo_max_key), activity.getString(R.string.flap_left_servo_max_default))));
+      collection.registerServo(flapLeft);
+
+      flapRight = new StandardServo("flapRight",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_right_servo_min_key), activity.getString(R.string.flap_right_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_right_servo_max_key), activity.getString(R.string.flap_right_servo_max_default))));
+      collection.registerServo(flapRight);
+
+      blinkLeft = new StandardServo("blinkLeft",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.blink_left_servo_min_key), activity.getString(R.string.blink_left_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.blink_left_servo_max_key), activity.getString(R.string.blink_left_servo_max_default))));
+      collection.registerServo(blinkLeft);
+
+      blinkRight = new StandardServo("blinkRight",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.blink_right_servo_min_key), activity.getString(R.string.blink_right_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.blink_right_servo_max_key), activity.getString(R.string.blink_right_servo_max_default))));
+      collection.registerServo(blinkRight);
+
+      tail = new StandardServo("tail",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.tail_servo_min_key), activity.getString(R.string.tail_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.tail_servo_max_key), activity.getString(R.string.tail_servo_max_default))));
+      collection.registerServo(tail);
 
       tweet = new TweetServo("tweet",
               Integer.parseInt(this.getPreference(activity.getString(R.string.tweet_servo_min_key), activity.getString(R.string.tweet_servo_min_default))),
               Integer.parseInt(this.getPreference(activity.getString(R.string.tweet_servo_max_key), activity.getString(R.string.tweet_servo_max_default))));
       collection.registerServo(tweet);
 
-      lean = new StandardServo("lean",
-              Integer.parseInt(this.getPreference(activity.getString(R.string.lean_servo_min_key), activity.getString(R.string.lean_servo_min_default))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.lean_servo_max_key), activity.getString(R.string.lean_servo_max_default))));
-      collection.registerServo(lean);
+      turn = new StandardServo("turn",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.turn_servo_min_key), activity.getString(R.string.turn_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.turn_servo_max_key), activity.getString(R.string.turn_servo_max_default))));
+      collection.registerServo(turn);
 
       look = new StandardServo("look",
               Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_min_key), activity.getString(R.string.look_servo_min_default))),
@@ -69,15 +93,24 @@ public class PepeBluetoothConnectionManager {
 
    public void reset()
    {
-      this.setServoLimits("flap",
-              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_servo_min_key), activity.getString(R.string.flap_servo_min_default))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_servo_max_key), activity.getString(R.string.flap_servo_max_default))));
+      this.setServoLimits("flapLeft",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_left_servo_min_key), activity.getString(R.string.flap_left_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_left_servo_max_key), activity.getString(R.string.flap_left_servo_max_default))));
+      this.setServoLimits("flapRight",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_right_servo_min_key), activity.getString(R.string.flap_right_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_right_servo_max_key), activity.getString(R.string.flap_right_servo_max_default))));
+      this.setServoLimits("blinkLeft",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.blink_left_servo_min_key), activity.getString(R.string.blink_left_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.blink_left_servo_max_key), activity.getString(R.string.blink_left_servo_max_default))));
+      this.setServoLimits("blinkRight",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.blink_right_servo_min_key), activity.getString(R.string.blink_right_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.blink_right_servo_max_key), activity.getString(R.string.blink_right_servo_max_default))));
       this.setServoLimits("tweet",
               Integer.parseInt(this.getPreference(activity.getString(R.string.tweet_servo_min_key), activity.getString(R.string.tweet_servo_min_default))),
               Integer.parseInt(this.getPreference(activity.getString(R.string.tweet_servo_max_key), activity.getString(R.string.tweet_servo_max_default))));
-      this.setServoLimits("lean",
-              Integer.parseInt(this.getPreference(activity.getString(R.string.lean_servo_min_key), activity.getString(R.string.lean_servo_min_default))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.lean_servo_max_key), activity.getString(R.string.lean_servo_max_default))));
+      this.setServoLimits("turn",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.turn_servo_min_key), activity.getString(R.string.turn_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.turn_servo_max_key), activity.getString(R.string.turn_servo_max_default))));
       this.setServoLimits("look",
               Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_min_key), activity.getString(R.string.look_servo_min_default))),
               Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_max_key), activity.getString(R.string.look_servo_max_default))));
@@ -95,12 +128,12 @@ public class PepeBluetoothConnectionManager {
       collection.getServoByName(servoKey).setLimit(new ServoLimit(min, max));
    }
 
-   public void calculateLookAndLean()
+   public void calculateLookAndTurn()
    {
       double distance = Math.cos(angle_value * (Math.PI/180) + Math.PI);
       double value = collection.getServoByName("look").getLimit().getNorm() * distance;
 //      int look = (int) (collection.getServoByName("look").getLimit().getMean() + value);
-      int lean = 0;
+      int turn = 0;
 
 //      if ( (angle_value == 0) && (strength_value == 0) )
 //      {
@@ -111,14 +144,14 @@ public class PepeBluetoothConnectionManager {
       {
          // Forward Tilt
          if ( strength_value > STRENGTH_JOYSTICK_LEAN  ) {
-            lean = this.lean.getLimit().getMin();
+            turn = this.turn.getLimit().getMin();
          }
       }
       else if ( ( angle_value > 225) && (angle_value < 325) )
       {
          // Backward Tilt
          if ( strength_value > STRENGTH_JOYSTICK_LEAN ) {
-            lean = this.lean.getLimit().getMax();
+            turn = this.turn.getLimit().getMax();
          }
       }
       int look = (int) angle_value;
@@ -129,7 +162,7 @@ public class PepeBluetoothConnectionManager {
 //      int bin = Math.round((look - this.look.getLimit().getMin()) / (this.look.getLimit().getRange() / STEPS));
 //      look = (bin * (this.look.getLimit().getRange() / STEPS) ) + this.look.getLimit().getMin();
       this.setLook(look);
-      this.setLean(lean);
+      this.setTurn(turn);
    }
 
    public void joystickLook(double distance_non_normalized )
@@ -152,23 +185,35 @@ public class PepeBluetoothConnectionManager {
       this.setLook(look);
    }
 
-
    public String generateData()
    {
       this.look.step();
-      this.lean.step();
-      this.flap.step();
+      this.turn.step();
+      this.flapLeft.step();
+      this.flapRight.step();
+      this.blinkLeft.step();
+      this.blinkRight.step();
+      this.tail.step();
       this.tweet.step();
 
       //Write to the Bluetooth service transmit characteristic
       //Data transmit interface:
       //      ! == look
-      //      @ == lean
-      //      $ == flap
-      //      # == tweet (see what I did there ;)
+      //      @ == turn
+      // TODO: I renamed and added the below, where is the mapping to the symbols defined?
+      //      $ == flapLeft
+      //      $ == flapRight
+      //      $ == blinkLeft
+      //      $ == blinkRight
+      //      $ == tail
+      //      # == tweet (see what I did there ;) <--This is dumb. Don't be cute, be functional!
       data = this.look.generateData() + "|" +
-              this.lean.generateData() + "|" +
-              this.flap.generateData() + "|" +
+              this.turn.generateData() + "|" +
+              this.flapLeft.generateData() + "|" +
+              this.flapRight.generateData() + "|" +
+              this.blinkLeft.generateData() + "|" +
+              this.blinkRight.generateData() + "|" +
+              this.tail.generateData() + "|" +
               this.tweet.generateData() + "%";
       return data;
    }
@@ -177,8 +222,12 @@ public class PepeBluetoothConnectionManager {
    {
       sendIt = false;
       if ( this.look.isChanged() ||
-           this.lean.isChanged() ||
-           this.flap.isChanged() ||
+           this.turn.isChanged() ||
+           this.flapLeft.isChanged() ||
+           this.flapRight.isChanged() ||
+           this.blinkLeft.isChanged() ||
+           this.blinkRight.isChanged() ||
+           this.tail.isChanged() ||
            this.tweet.isChanged() )
       {
          sendIt = true;
@@ -186,62 +235,71 @@ public class PepeBluetoothConnectionManager {
       return sendIt;
    }
 
-   public void setLook(int look) {
-      this.look.setCurrent(look);
-   }
+   public void tweet() { ((TweetServo) this.tweet).tweet(); }
 
-   public void setLean(int lean) {
-      this.lean.setCurrent(lean);
-   }
+   public void tweetRand() { ((TweetServo) this.tweet).tweetRand(); }
 
-   public void leanForward()
+   public void silence() { ((TweetServo) this.tweet).silence(); }
+
+   public void turnLeft()
    {
-      ((StandardServo) this.lean).setMin();
+      ((StandardServo) this.turn).setMin();
    }
 
-   public void leanBack()
+   public void turnRight()
    {
-      ((StandardServo) this.lean).setMax();
+      ((StandardServo) this.turn).setMax();
    }
 
+   public void resetTurn() { ((StandardServo) this.turn).setCurrent(this.turn.getLimit().getMean()); }
 
-   public void flapUp()
-   {
-      ((StandardServo) this.flap).setMax();
-   }
+   public void lookLeft() { ((StandardServo) this.look).setMin(); }
 
-   public void flapDown()
-   {
-      ((StandardServo) this.flap).setMin();
-   }
+   public void lookRight() { ((StandardServo) this.look).setMax(); }
 
-   public void connectTweet()
-   {
-      ((TweetServo) this.tweet).silence();
-   }
+   public void resetLook() { ((StandardServo) this.look).setCurrent(this.look.getLimit().getMean()); }
 
-   public void tweet()
-   {
-      ((TweetServo) this.tweet).tweet();
-   }
+    public void flapLeftUp() { ((StandardServo) this.flapLeft).setMax(); }
 
-   public void tweetRand()
-   {
-      ((TweetServo) this.tweet).tweetRand();
-   }
+   public void flapLeftDown() { ((StandardServo) this.flapLeft).setMin(); }
 
-   public void silence()
-   {
-      ((TweetServo) this.tweet).silence();
-   }
+   public void flapRightUp() { ((StandardServo) this.flapRight).setMax(); }
 
-   public void setAngle_value(double angle_value) {
-      this.angle_value = angle_value;
-   }
+   public void flapRightDown() { ((StandardServo) this.flapRight).setMin(); }
 
-   public void setStrength_value(double strength_value) {
-      this.strength_value = strength_value;
-   }
+   public void blinkLeftUp() { ((StandardServo) this.blinkLeft).setMax(); }
 
+   public void blinkLeftDown() { ((StandardServo) this.blinkLeft).setMin(); }
 
+   public void blinkRightUp() { ((StandardServo) this.blinkRight).setMax(); }
+
+   public void blinkRightDown() { ((StandardServo) this.blinkRight).setMin(); }
+
+   public void resetBlinkLeft() { ((StandardServo) this.blinkLeft).setCurrent(this.blinkLeft.getLimit().getMean()); }
+
+   public void resetBlinkRight() { ((StandardServo) this.blinkRight).setCurrent(this.blinkRight.getLimit().getMean()); }
+
+   public void tailUp() { ((StandardServo) this.tail).setMax(); }
+
+   public void tailDown() { ((StandardServo) this.tail).setMin(); }
+
+   public void setLook(int look) { this.look.setCurrent(look); }
+
+   public void setTurn(int turn) { this.turn.setCurrent(turn); }
+
+   public void setTail(int tail) { this.tail.setCurrent(tail); }
+
+   public void setFlapLeft(int flap) { this.flapLeft.setCurrent(flap); }
+
+   public void setFlapRight(int flap) { this.flapRight.setCurrent(flap); }
+
+   public void setBlinkLeft(int blink) { this.blinkLeft.setCurrent(blink); }
+
+   public void setBlinkRight(int blink) { this.blinkRight.setCurrent(blink); }
+
+   public void connectTweet() { ((TweetServo) this.tweet).silence(); }
+
+   public void setAngle_value(double angle_value) { this.angle_value = angle_value; }
+
+   public void setStrength_value(double strength_value) { this.strength_value = strength_value; }
 }
