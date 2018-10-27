@@ -18,6 +18,7 @@ package com.pepedyne.pepe.controller;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.hardware.input.InputManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -30,6 +31,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
@@ -40,7 +42,8 @@ import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProviderImpl;
 import com.pepedyne.pepe.dispatch.PepeDispatcher;
 import com.pepedyne.pepe.dispatch.SendDataHandler;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
@@ -54,6 +57,8 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
    // Derived Values
    public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
    public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+   private static final int PRODUCT_ID_LEFT_JOYCON = 8198;
+   private static final int PRODUCT_ID_RIGHT_JOYCON = 8199;
 
    private TextView mDataField;
    private String mDeviceAddress;
@@ -61,8 +66,7 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
    private PepeDispatcher pepeDispatcher;
    private Handler handler;
    private HandlerThread handlerThread;
-   private HashMap<String, Integer> keyMapperLeftJoyCon;
-   private HashMap<String, Integer> keyMapperRightJoyCon;
+   private View myView;
 
    public PepeDispatcher getDispatcher() {
       return pepeDispatcher;
@@ -92,11 +96,18 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
       findViewById(R.id.tweet);
       findViewById(R.id.PepAI);
       findViewById(R.id.settingsButton);
+      myView = findViewById(R.id.joycon);
+//      setContentView(myView);
+
+//      List<Integer> list = getGameControllerIds();
+//      for ( int i = 0; i < list.size(); i++ ) {
+//         Log.i("\tPEPE_DEBGU", "Controller: " + list.get(i));
+//      }
 
       handlerThread = new HandlerThread("MyHandlerThread");
       handlerThread.start();
       Looper looper = handlerThread.getLooper();
-      handler = new Handler(looper){
+      handler = new Handler(looper) {
          @Override
          public void handleMessage(Message msg) {
             // process incoming messages here
@@ -106,11 +117,8 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
             bluetoothLeServiceProvider.send(msg.obj.toString());
          }
       };
-      this.initKeyMapper();
-//      JoyConView joycon = findViewById(R.id.joycon);
-//      setContentView(joycon);
-//      joycon.setFocusable(true);
-//      joycon.setFocusableInTouchMode(true);
+
+      myView.requestFocus();
    }
 
    @Override
@@ -199,86 +207,24 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
       return false;
    }
 
+   public ArrayList<Integer> getGameControllerIds() {
+      ArrayList<Integer> gameControllerDeviceIds = new ArrayList<Integer>();
+      int[] deviceIds = InputDevice.getDeviceIds();
+      for (int deviceId : deviceIds) {
+         InputDevice dev = InputDevice.getDevice(deviceId);
+         int sources = dev.getSources();
 
-   private void debugKeyEvent(KeyEvent event) {
-      Log.i("\tPEPE DEBUG","--------------------------");
-      Log.d("PEPE DEBUG", "keyDown keyCode: " + event.getKeyCode());
-      Log.i("\tPEPE DEBUG", "KeyEvent DeviceId: " + event.getDeviceId());
-      Log.i("\tPEPE DEBUG", "KeyEvent Id: " + event.getDevice().getId());
-      Log.i("\tPEPE DEBUG", "KeyEvent getFlags: " + event.getFlags());
-      Log.i("\tPEPE DEBUG", "KeyEvent getDownTime: " + event.getDownTime());
-
-      Log.i("\tPEPE DEBUG", "KeyEvent getCharacters: " + event.getCharacters());
-      Log.i("\tPEPE DEBUG", "KeyEvent MetaState: " + event.getMetaState());
-      Log.i("\tPEPE DEBUG", "KeyEvent getModifiers: " + event.getModifiers());
-      Log.i("\tPEPE DEBUG", "KeyEvent getRepeatCount: " + event.getRepeatCount());
-
-      Log.i("\tPEPE DEBUG", "KeyEvent getAction: " + event.getAction());
-   }
-   private void debugMotionEvent(MotionEvent event) {
-      Log.i("\tPEPE DEBUG","--------------------------");
-      Log.d("PEPE DEBUG", "MotionEvent Device: " + event.getDevice());
-      Log.i("\tPEPE DEBUG", "MotionEvent DeviceId: " + event.getDeviceId());
-      Log.i("\tPEPE DEBUG", "MotionEvent Id: " + event.getDevice().getId());
-      Log.i("\tPEPE DEBUG", "MotionEvent getFlags: " + event.getFlags());
-      Log.i("\tPEPE DEBUG", "MotionEvent getDownTime: " + event.getDownTime());
-
-      Log.i("\tPEPE DEBUG", "MotionEvent getHistorySize: " + event.getHistorySize());
-      Log.i("\tPEPE DEBUG", "MotionEvent getPointerCount: " + event.getPointerCount());
-//      Log.i("\tPEPE DEBUG", "MotionEvent getPointerCount: " + event.getAxisValue(MotionEvent.AXIS_X, Motion));
-      Log.i("\tPEPE DEBUG", "MotionEvent MetaState: " + event.getMetaState());
-//
-//      Log.i("\tPEPE DEBUG", "KeyEvent getAction: " + event.getAction());
-   }
-
-   private void initKeyMapper() {
-      // ====Left JoyCon====
-      keyMapperLeftJoyCon = new HashMap<>();
-      // up arrow, Left JoyCon
-      keyMapperLeftJoyCon.put("upArrowDown", 98); // 98
-      keyMapperLeftJoyCon.put("upArrowUp", 23); // 23
-      // down arrow, Left JoyCon
-      keyMapperLeftJoyCon.put("downArrowDown", 97); // 97
-      keyMapperLeftJoyCon.put("downArrowUp", 4); // 4
-      // left arrow, Left JoyCon
-      keyMapperLeftJoyCon.put("leftArrow", 96); // 96 (Up and Down)
-      // right arrow, Left JoyCon
-      keyMapperLeftJoyCon.put("rightArrow", 99); // 99 (Up and Down)
-      // L button, Left JoyCon
-      keyMapperLeftJoyCon.put("LbuttonDown", 107); // 107
-      keyMapperLeftJoyCon.put("LbuttonUp", 23); // 23
-      // ZL button, Left JoyCon
-      keyMapperLeftJoyCon.put("ZLbutton", 1050); // 1050 (Up and Down)
-      // minus button, Left JoyCon
-      keyMapperLeftJoyCon.put("minusButton", 104); // 104 (Up and Down)
-      // SL button, Right JoyCon
-      keyMapperLeftJoyCon.put("SLbutton", 100); // 100 - Same as SL
-      // SR button, Right JoyCon
-      keyMapperLeftJoyCon.put("SRbutton", 101); // 101 - Same as SR
-
-      // ====Right JoyCon====
-      keyMapperRightJoyCon = new HashMap<>();
-      // X Button, Right JoyCon
-      keyMapperRightJoyCon.put("XbuttonDown", 97); // 97 - Same as down arrow press
-      keyMapperRightJoyCon.put("XbuttonUp", 4); // 4 - Same as down arrow release
-      // B Button, Right JoyCon
-      keyMapperRightJoyCon.put("BbuttonDown", 98); // 98 - Same as R button press
-      keyMapperRightJoyCon.put("BbuttonUp", 23); // 23 - Same as R button release
-      // Y Button, Right JoyCon
-      keyMapperRightJoyCon.put("Ybutton", 99); // 99 (Up and Down) - Same as right arrow
-      // A Button, Right JoyCon
-      keyMapperRightJoyCon.put("Abutton", 96); // 96 (Up and Down) - Same as left arrow
-      // R Button, Right JoyCon
-      keyMapperRightJoyCon.put("RbuttonDown", 107); // 107 - Same as B button press
-      keyMapperRightJoyCon.put("RbuttonUp", 23); // 23 - Same as B button release
-      // ZR Button, Right JoyCon
-      keyMapperRightJoyCon.put("ZRbutton", 1050); // 1050 (Up and Down) - Same as ZL
-      // plus button, Right JoyCon
-      keyMapperRightJoyCon.put("plusButton", 105); // 105 (Up and Down)
-      // SR button, Right JoyCon
-      keyMapperRightJoyCon.put("SRbutton", 101); // 101 - Same as SR
-      // SL button, Right JoyCon
-      keyMapperRightJoyCon.put("SLbutton", 100); // 100 - Same as SL
+         // Verify that the device has gamepad buttons, control sticks, or both.
+         if (((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD)
+                 || ((sources & InputDevice.SOURCE_JOYSTICK)
+                 == InputDevice.SOURCE_JOYSTICK)) {
+            // This device is a game controller. Store its device ID.
+            if (!gameControllerDeviceIds.contains(deviceId)) {
+               gameControllerDeviceIds.add(deviceId);
+            }
+         }
+      }
+      return gameControllerDeviceIds;
    }
 
    @Override
@@ -305,14 +251,10 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
 
    @Override
    public boolean dispatchGenericMotionEvent(MotionEvent event) {
-//   public boolean onKeyDown(int keyCode, KeyEvent event) {
-//      this.debugMotionEvent(event);
       if(onGenericMotionEvent(event))
       {
-//          Log.i("\tPEPE DEBUG", "JoyCon: WE DID IT!!!");
           return true;
       }
-
       return super.dispatchGenericMotionEvent(event);
    }
 
@@ -649,6 +591,7 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
 
    @Override
    public boolean onGenericMotionEvent(MotionEvent event) {
+      myView.requestFocus();
       // Check that the event came from a game controller
       if ((event.getSource() & InputDevice.SOURCE_JOYSTICK) ==
               InputDevice.SOURCE_JOYSTICK &&
@@ -790,36 +733,6 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
 //         y = getCenteredAxis(event, mInputDevice,
 //                 MotionEvent.AXIS_HAT_Y, historyPos);
 //      }
-//      if (y == 0) {
-//         y = getCenteredAxis(event, mInputDevice,
-//                 MotionEvent.AXIS_RZ, historyPos);
-//      }
-//
-//      // Update the ship object based on the new x and y values
-
+      return super.onGenericMotionEvent(event);
    }
-
-   private static float getCenteredAxis(MotionEvent event,
-                                        InputDevice device, int axis, int historyPos) {
-      final InputDevice.MotionRange range =
-              device.getMotionRange(axis, event.getSource());
-
-      // A joystick at rest does not always report an absolute position of
-      // (0,0). Use the getFlat() method to determine the range of values
-      // bounding the joystick axis center.
-      if (range != null) {
-         final float flat = range.getFlat();
-         final float value =
-                 historyPos < 0 ? event.getAxisValue(axis):
-                         event.getHistoricalAxisValue(axis, historyPos);
-
-         // Ignore axis values that are within the 'flat' region of the
-         // joystick axis center.
-         if (Math.abs(value) > flat) {
-            return value;
-         }
-      }
-      return 0;
-   }
-
 }
