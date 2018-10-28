@@ -218,7 +218,7 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
 
    @Override
    public boolean dispatchGenericMotionEvent(MotionEvent event) {
-      if (JoyConStickHandler.handleJoystickInput(event))
+      if (JoyConStickHandler.handleJoystickInput(event, pepeDispatcher))
       {
          return true;
       }

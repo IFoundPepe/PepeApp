@@ -128,7 +128,9 @@ public class JoyConButtonHandler {
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: upArrowDown - LEFT - Action Up");
-            // Do Nothing
+            // soaring
+            dispatcher.soaring();
+            return true;
          }
       }
       else if (keyCode == keyMapperLeftJoyCon.get("downArrowDown"))
@@ -141,7 +143,9 @@ public class JoyConButtonHandler {
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: downArrowDown - LEFT - Action Up");
-            // Do Nothing
+            // peacock
+            dispatcher.peacock();
+            return true;
          }
       }
       else if (keyCode == keyMapperLeftJoyCon.get("leftArrow"))
@@ -154,7 +158,9 @@ public class JoyConButtonHandler {
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: leftArrowDown - LEFT - Action Up");
-            // Do Nothing
+            // turn and wink
+            dispatcher.turnAndWink();
+            return true;
          }
       }
       else if (keyCode == keyMapperLeftJoyCon.get("rightArrow"))
@@ -167,27 +173,25 @@ public class JoyConButtonHandler {
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: rightArrowDown - LEFT - Action Up");
-            // Do Nothing
+            // look and focus
+            dispatcher.lookAndFocus();
+            return true;
          }
       }
       else if (keyCode == keyMapperLeftJoyCon.get("LbuttonDown"))
       {
-         // TODO: What do we want this to do? - Should this be for the wings?
          if (event.getAction() == KeyEvent.ACTION_DOWN)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: LbuttonDown - LEFT - Action Down");
-// TODO: Enable after button debug
-//            // TODO: Make sure if flaps the correct wing
-//            // TODO: This may cause repetitive flaps. Do we invert logic?
-//            pepeDispatcher.flapUp(); // Leftt Flap Up
-//            return true;
+            // TODO: We will not be able to "hold up" a flap with this design
+            // Do Nothing
          }
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
-// TODO: Enable after button debug
-            Log.i("\tPEPE DEBUG", "JoyCon: LbuttonDown - LEFT - Action Up");
-//            pepeDispatcher.flapDown(); // Left Flap Down
-//            return true;
+//            // TODO: This may cause repetitive flaps. Do we invert logic?
+            // flap Left wing
+            dispatcher.flapLeftOnce();
+            return true;
          }
       }
       else if (keyCode == keyMapperLeftJoyCon.get("ZLbutton"))
@@ -200,7 +204,9 @@ public class JoyConButtonHandler {
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: ZLbutton - LEFT - Action Up");
-            // Do Nothing
+            // wink left eye
+            dispatcher.winkLeftOnce();
+            return true;
          }
       }
       else if (keyCode == keyMapperLeftJoyCon.get("minusButton"))
@@ -208,16 +214,17 @@ public class JoyConButtonHandler {
          if (event.getAction() == KeyEvent.ACTION_DOWN)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: minusButton - LEFT - Action Down");
-// TODO: Enable this after debugging
-//            // TODO: Do we want to use + to start AI and - to disable AI?
-//            // TODO: Maybe check state of pepeAI with getAIstate()
-//            pepeDispatcher.runPepeAI();
-//            return true;
+            // Do Nothing
          }
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: minusButton - LEFT - Action Up");
-            // Do Nothing
+// TODO: Enable this after debugging
+//            // TODO: Do we want to use + to start AI and - to disable AI?
+//            // TODO: Maybe check state of pepeAI with getAIstate()
+            dispatcher.connectTweet(); // This is audible response that PepeAI is off
+            dispatcher.setAIState(false);
+            return true;
          }
       }
       else if (keyCode == keyMapperLeftJoyCon.get("SLbutton"))
@@ -280,153 +287,144 @@ public class JoyConButtonHandler {
 
       int keyCode = event.getKeyCode();
       if (keyCode == keyMapperRightJoyCon.get("XbuttonDown"))
-      {
          if (event.getAction() == KeyEvent.ACTION_DOWN)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: XbuttonDown - RIGHT - Action Down");
-            // TODO: Enable this after debugging
             // TODO: This may cause repetitive tweets. Do we invert logic?
-            //            pepeDispatcher.tweet();
-            //            return true;
-         }
-         else if (event.getAction() == KeyEvent.ACTION_UP)
-         {
-            Log.i("\tPEPE DEBUG", "JoyCon: XbuttonDown - RIGHT - Action Up");
-// TODO: Enable this after debugging
-//            pepeDispatcher.silence();
-//            return true;
-         }
-      }
-      else if (keyCode == keyMapperRightJoyCon.get("BbuttonDown"))
-      {
-         // TODO: What will this do?
-         if (event.getAction() == KeyEvent.ACTION_DOWN)
-         {
-            Log.i("\tPEPE DEBUG", "JoyCon: BbuttonDown - RIGHT - Action Down");
-            // Do Nothing
-         }
-         else if (event.getAction() == KeyEvent.ACTION_UP)
-         {
-            Log.i("\tPEPE DEBUG", "JoyCon: BbuttonDown - RIGHT - Action Up");
-            // Do Nothing
-         }
-      }
-      else if (keyCode == keyMapperRightJoyCon.get("Ybutton"))
-      {
-         if (event.getAction() == KeyEvent.ACTION_DOWN)
-         {
-            Log.i("\tPEPE DEBUG", "JoyCon: Ybutton - RIGHT - Action Down");
-            // Do Nothing
-         }
-         else if (event.getAction() == KeyEvent.ACTION_UP)
-         {
-            Log.i("\tPEPE DEBUG", "JoyCon: Ybutton - RIGHT - Action Up");
-            // Do Nothing
-         }
-      }
-      else if (keyCode == keyMapperRightJoyCon.get("Abutton"))
-      {
-         if (event.getAction() == KeyEvent.ACTION_DOWN)
-         {
-            view.getKeyDispatcherState().startTracking(event, view);
-            Log.i("\tPEPE DEBUG", "JoyCon: Abutton - RIGHT - Action Down");
-            // Do Nothing
-         }
-         else if (event.getAction() == KeyEvent.ACTION_UP)
-         {
-            view.getKeyDispatcherState().handleUpEvent(event);
-            Log.i("\tPEPE DEBUG", "JoyCon: Abutton - RIGHT - Action Up");
-            // Do Nothing
-         }
-      }
-      else if (keyCode == keyMapperRightJoyCon.get("RbuttonDown"))
-      {
-         if (event.getAction() == KeyEvent.ACTION_DOWN)
-         {
-            Log.i("\tPEPE DEBUG", "JoyCon: RbuttonDown - RIGHT - Action Down");
-// TODO: Enable after button debug
-//            // TODO: Make sure if flaps the correct wing
-//            // TODO: This may cause repetitive flaps. Do we invert logic?
-//            pepeDispatcher.flapUp(); // Right Flap Up
-//            return true;
-         }
-         else if (event.getAction() == KeyEvent.ACTION_UP)
-         {
-            Log.i("\tPEPE DEBUG", "JoyCon: RbuttonDown - RIGHT - Action Up");
-// TODO: Enable after button debug
-//            pepeDispatcher.flapDown(); // Right Flap Down
-//            return true;
-         }
-      }
-      else if (keyCode == keyMapperRightJoyCon.get("ZRbutton"))
-      {
-         if (event.getAction() == KeyEvent.ACTION_DOWN)
-         {
-            Log.i("\tPEPE DEBUG", "JoyCon: ZRbutton - RIGHT - Action Down");
-            // Do Nothing
-         }
-         else if (event.getAction() == KeyEvent.ACTION_UP)
-         {
-            Log.i("\tPEPE DEBUG", "JoyCon: ZRbutton - RIGHT - Action Up");
-            // Do Nothing
-         }
-      }
-      else if (keyCode == keyMapperRightJoyCon.get("plusButton"))
-      {
-         if (event.getAction() == KeyEvent.ACTION_DOWN)
-         {
-            Log.i("\tPEPE DEBUG", "JoyCon: plusButton - RIGHT - Action Down");
-            // TODO: Do we want to use + to start AI and - to disable AI?
-            // TODO: Maybe check state of pepeAI with getAIstate()
-//            dispatcher.runPepeAI();
+            dispatcher.tweet();
             return true;
          }
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
-            Log.i("\tPEPE DEBUG", "JoyCon: plusButton - RIGHT - Action Up");
-            // Do Nothing
+            Log.i("\tPEPE DEBUG", "JoyCon: XbuttonDown - RIGHT - Action Up");
+            dispatcher.silence();
+            return true;
          }
-      }
-      else if (keyCode == keyMapperRightJoyCon.get("SRbutton"))
-      {
-         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         else if (keyCode == keyMapperRightJoyCon.get("BbuttonDown"))
          {
-            Log.i("\tPEPE DEBUG", "JoyCon: SRbutton - RIGHT - Action Down");
-            // Do Nothing
+            // TODO: What will this do?
+            if (event.getAction() == KeyEvent.ACTION_DOWN)
+            {
+               Log.i("\tPEPE DEBUG", "JoyCon: BbuttonDown - RIGHT - Action Down");
+               // Do Nothing
+            }
+            else if (event.getAction() == KeyEvent.ACTION_UP)
+            {
+               Log.i("\tPEPE DEBUG", "JoyCon: BbuttonDown - RIGHT - Action Up");
+               // Do Nothing
+            }
          }
-         else if (event.getAction() == KeyEvent.ACTION_UP)
+         else if (keyCode == keyMapperRightJoyCon.get("Ybutton"))
          {
-            Log.i("\tPEPE DEBUG", "JoyCon: SRbutton - RIGHT - Action Up");
-            // Do Nothing
+            if (event.getAction() == KeyEvent.ACTION_DOWN)
+            {
+               Log.i("\tPEPE DEBUG", "JoyCon: Ybutton - RIGHT - Action Down");
+               // Do Nothing
+            }
+            else if (event.getAction() == KeyEvent.ACTION_UP)
+            {
+               Log.i("\tPEPE DEBUG", "JoyCon: Ybutton - RIGHT - Action Up");
+               // Do Nothing
+            }
          }
-      }
-      else if (keyCode == keyMapperRightJoyCon.get("SLbutton"))
-      {
-         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         else if (keyCode == keyMapperRightJoyCon.get("Abutton"))
          {
-            Log.i("\tPEPE DEBUG", "JoyCon: SLbutton - RIGHT - Action Down");
-            // Do Nothing
+            if (event.getAction() == KeyEvent.ACTION_DOWN)
+            {
+               Log.i("\tPEPE DEBUG", "JoyCon: Abutton - RIGHT - Action Down");
+               // Do Nothing
+            }
+            else if (event.getAction() == KeyEvent.ACTION_UP)
+            {
+               Log.i("\tPEPE DEBUG", "JoyCon: Abutton - RIGHT - Action Up");
+               // Do Nothing
+            }
          }
-         else if (event.getAction() == KeyEvent.ACTION_UP)
+         else if (keyCode == keyMapperRightJoyCon.get("RbuttonDown"))
          {
-            Log.i("\tPEPE DEBUG", "JoyCon: SLbutton - RIGHT - Action Up");
-            // Do Nothing
+            if (event.getAction() == KeyEvent.ACTION_DOWN)
+            {
+               Log.i("\tPEPE DEBUG", "JoyCon: RbuttonDown - RIGHT - Action Down");
+               // TODO: We will not be able to "hold up" a flap with this design
+               // Do Nothing
+            }
+            else if (event.getAction() == KeyEvent.ACTION_UP)
+            {
+               Log.i("\tPEPE DEBUG", "JoyCon: RbuttonDown - RIGHT - Action Up");
+               // flap Right wing
+               dispatcher.flapRightOnce();
+               return true;
+            }
          }
-      }
-      else
-      {
-         // TODO: Undefined keycode!!!!
-         if (event.getAction() == KeyEvent.ACTION_DOWN)
+         else if (keyCode == keyMapperRightJoyCon.get("ZRbutton"))
          {
-            Log.i("\tPEPE DEBUG", "JoyCon: Undefined - RIGHT - Action Down");
-            // Do Nothing
+            if (event.getAction() == KeyEvent.ACTION_DOWN)
+            {
+               Log.i("\tPEPE DEBUG", "JoyCon: ZRbutton - RIGHT - Action Down");
+               // Do Nothing
+            }
+            else if (event.getAction() == KeyEvent.ACTION_UP)
+            {
+               Log.i("\tPEPE DEBUG", "JoyCon: ZRbutton - RIGHT - Action Up");
+               dispatcher.winkRightOnce();
+               return true;
+            }
          }
-         else if (event.getAction() == KeyEvent.ACTION_UP)
+         else if (keyCode == keyMapperRightJoyCon.get("plusButton"))
          {
-            Log.i("\tPEPE DEBUG", "JoyCon: Undefined - RIGHT - Action Up");
-            // Do Nothing
+            if (event.getAction() == KeyEvent.ACTION_DOWN)
+            {
+               Log.i("\tPEPE DEBUG", "JoyCon: plusButton - RIGHT - Action Down");
+               // Do Nothing
+            }
+            else if (event.getAction() == KeyEvent.ACTION_UP)
+            {
+               Log.i("\tPEPE DEBUG", "JoyCon: plusButton - RIGHT - Action Up");
+               dispatcher.connectTweet(); // This is audible response that PepeAI is on
+               dispatcher.runPepeAI();
+               return true;
+            }
          }
-      }
+         else if (keyCode == keyMapperRightJoyCon.get("SRbutton"))
+         {
+            if (event.getAction() == KeyEvent.ACTION_DOWN)
+            {
+               Log.i("\tPEPE DEBUG", "JoyCon: SRbutton - RIGHT - Action Down");
+               // Do Nothing
+            }
+            else if (event.getAction() == KeyEvent.ACTION_UP)
+            {
+               Log.i("\tPEPE DEBUG", "JoyCon: SRbutton - RIGHT - Action Up");
+               // Do Nothing
+            }
+         }
+         else if (keyCode == keyMapperRightJoyCon.get("SLbutton"))
+         {
+            if (event.getAction() == KeyEvent.ACTION_DOWN)
+            {
+               Log.i("\tPEPE DEBUG", "JoyCon: SLbutton - RIGHT - Action Down");
+               // Do Nothing
+            }
+            else if (event.getAction() == KeyEvent.ACTION_UP)
+            {
+               Log.i("\tPEPE DEBUG", "JoyCon: SLbutton - RIGHT - Action Up");
+               // Do Nothing
+            }
+         }
+         else
+         {
+            // TODO: Undefined keycode!!!!
+            if (event.getAction() == KeyEvent.ACTION_DOWN)
+            {
+               Log.i("\tPEPE DEBUG", "JoyCon: Undefined - RIGHT - Action Down");
+               // Do Nothing
+            }
+            else if (event.getAction() == KeyEvent.ACTION_UP)
+            {
+               Log.i("\tPEPE DEBUG", "JoyCon: Undefined - RIGHT - Action Up");
+               // Do Nothing
+            }
+         }
       return true;
    }
 }

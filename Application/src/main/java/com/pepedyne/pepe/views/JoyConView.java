@@ -76,7 +76,7 @@ public class JoyConView extends View implements InputManager.InputDeviceListener
    @Override
    public boolean onGenericMotionEvent(MotionEvent event) {
       // Check that the event came from a game controller
-      if (JoyConStickHandler.handleJoystickInput(event))
+      if (JoyConStickHandler.handleJoystickInput(event, pepeDispatcher))
       {
          return true;
       }
