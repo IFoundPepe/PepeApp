@@ -158,8 +158,7 @@ public class DeviceControlActivity extends AppCompatActivity implements Bluetoot
    }
 
    @Override
-   public void onConnect()
-   {
+   public void onConnect() {
 
    }
 

@@ -14,7 +14,8 @@ public class JoyConButtonHandler {
    private static final Map<String, Integer> keyMapperLeftJoyCon;
    private static final Map<String, Integer> keyMapperRightJoyCon;
 
-   static {
+   static
+   {
       Map<String, Integer> aMap = new HashMap<>();
       Map<String, Integer> bMap = new HashMap<>();
 
@@ -81,7 +82,27 @@ public class JoyConButtonHandler {
       Log.d("\tPEPE DEBUG", "KeyEvent getAction: " + event.getAction());
    }
 
-   public static boolean  executeLeftJoyConKeyEvent(KeyEvent event, PepeDispatcher dispatcher, View view) {
+   public static boolean executeJoyConButton(KeyEvent event, PepeDispatcher dispatcher, View view) {
+//   public boolean onKeyDown(int keyCode, KeyEvent event) {
+//      this.debugKeyEvent(event);
+      if (event.getRepeatCount() < 1)
+      {
+         // Determine which JoyCon was the source of the event
+         if (event.getDevice().getProductId() == 8198) // Left JoyCon event
+         {
+            executeLeftJoyConKeyEvent(event, dispatcher, view);
+         }
+         else if (event.getDevice().getProductId() == 8199) // Right JoyCon event
+         {
+            executeRightJoyConKeyEvent(event, dispatcher, view);
+         }
+         return true;
+      }
+      return false;
+   }
+
+
+   public static boolean executeLeftJoyConKeyEvent(KeyEvent event, PepeDispatcher dispatcher, View view) {
 //======LEFT JOYCON KEY CODES======
 //      upArrowDown
 //      upArrowUp
@@ -377,7 +398,8 @@ public class JoyConButtonHandler {
          {
             Log.i("\tPEPE DEBUG", "JoyCon: SRbutton - RIGHT - Action Up");
             // Do Nothing
-         }      }
+         }
+      }
       else if (keyCode == keyMapperRightJoyCon.get("SLbutton"))
       {
          if (event.getAction() == KeyEvent.ACTION_DOWN)
@@ -389,7 +411,8 @@ public class JoyConButtonHandler {
          {
             Log.i("\tPEPE DEBUG", "JoyCon: SLbutton - RIGHT - Action Up");
             // Do Nothing
-         }      }
+         }
+      }
       else
       {
          // TODO: Undefined keycode!!!!

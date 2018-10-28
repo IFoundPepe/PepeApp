@@ -7,7 +7,7 @@ public class TweetServo extends StandardServo {
    }
 
    public void tweet() {
-      if(this.current <= this.getLimit().getMax())
+      if (this.current <= this.getLimit().getMax())
       {
          this.current++;
       }
@@ -16,20 +16,22 @@ public class TweetServo extends StandardServo {
          this.current = 1;
       }
    }
+
    public void tweet(int value) {
 
-      if(this.current < this.getLimit().getMax())
+      if (this.current < this.getLimit().getMax())
       {
          value = this.getLimit().getMax();
       }
-      else if (this.current > this.getLimit().getMin()) {
+      else if (this.current > this.getLimit().getMin())
+      {
          value = this.getLimit().getMin();
       }
       this.current = value;
    }
 
    public void tweetRand() {
-      this.current = (int) Math.ceil(Math.random() * this.getLimit().getMax()) ;
+      this.current = (int) Math.ceil(Math.random() * this.getLimit().getMax());
    }
 
    public void silence() {

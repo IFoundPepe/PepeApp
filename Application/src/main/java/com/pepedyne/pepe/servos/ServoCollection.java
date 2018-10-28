@@ -9,8 +9,7 @@ public class ServoCollection {
    private List<Servo> servos;
    private Map<String, Servo> servoMap;
 
-   public ServoCollection()
-   {
+   public ServoCollection() {
       this.servos = new ArrayList<>();
       this.servoMap = new HashMap<>();
    }
@@ -21,7 +20,8 @@ public class ServoCollection {
    }
 
    public Servo getServoByName(String name) {
-      if (servoMap.containsKey(name)) {
+      if (servoMap.containsKey(name))
+      {
          return servoMap.get(name);
       }
       return null;

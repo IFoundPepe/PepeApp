@@ -9,18 +9,17 @@ public class StandardServo extends Servo {
    @Override
    public void setCurrent(int current) {
       this.current = current;
-      if ( current < this.getLimit().getMin() )
+      if (current < this.getLimit().getMin())
       {
          this.current = this.getLimit().getMin();
       }
-      else if ( current > this.getLimit().getMax() )
+      else if (current > this.getLimit().getMax())
       {
          this.current = this.getLimit().getMax();
       }
    }
 
-   public void setMax()
-   {
+   public void setMax() {
       this.setCurrent(this.getLimit().getMax());
    }
 

@@ -122,8 +122,8 @@ public class BluetoothLeService extends Service {
 
       @Override
       public void onCharacteristicWrite(BluetoothGatt gatt,
-                                        BluetoothGattCharacteristic characteristic, int status){
-         if ( status == BluetoothGatt.GATT_SUCCESS)
+                                        BluetoothGattCharacteristic characteristic, int status) {
+         if (status == BluetoothGatt.GATT_SUCCESS)
          {
             ableToSend = true;
          }

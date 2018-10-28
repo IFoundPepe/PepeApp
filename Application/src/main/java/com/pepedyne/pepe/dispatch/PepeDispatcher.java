@@ -22,6 +22,7 @@ public class PepeDispatcher {
    final int tail_wait_milli = 350;
    final int turn_wait_milli = 500;
    final int soaring_turn_wait_milli = 2 * turn_wait_milli; // lock to lock rotation
+
    public PepeDispatcher(PepeBluetoothConnectionManager manager, SendDataHandler handler) {
 
       this.pepeManager = manager;
@@ -55,6 +56,7 @@ public class PepeDispatcher {
    public void reset() {
       pepeManager.reset();
    }
+
    public void stop() {
       this.stopRepeatingTask();
    }
@@ -166,12 +168,15 @@ public class PepeDispatcher {
    public void setFlapLeft(int flap) {
       pepeManager.setFlapLeft(flap);
    }
+
    public void setFlapRight(int flap) {
       pepeManager.setFlapRight(flap);
    }
+
    public void setBlinkLeft(int blink) {
       pepeManager.setBlinkLeft(blink);
    }
+
    public void setBlinkRight(int blink) {
       pepeManager.setBlinkRight(blink);
    }
@@ -199,7 +204,8 @@ public class PepeDispatcher {
 
    public void toggleAI() {
       pepeAI = !pepeAI;
-      if (pepeAI) {
+      if (pepeAI)
+      {
          this.startRepeatingTask();
       }
       else
@@ -224,34 +230,47 @@ public class PepeDispatcher {
       Log.d("PEPE DEBUG", "always tweet");
       pepeManager.tweetRand();
 
-      if (isBetween(roll, 1, 10)) {
+      if (isBetween(roll, 1, 10))
+      {
          Log.d("PEPE DEBUG", "look left");
 //         pepeManager.setLook(235); // Look middle left
          lookLeft();
          sendIt();
-      } else if (isBetween(roll, 11, 20)) {
+      }
+      else if (isBetween(roll, 11, 20))
+      {
          Log.d("PEPE DEBUG", "look right");
 //         pepeManager.setLook(445); // Look middle right
          lookRight();
          sendIt();
-      } else if (isBetween(roll, 21, 35)) {
+      }
+      else if (isBetween(roll, 21, 35))
+      {
          Log.d("PEPE DEBUG", "flap twice");
          flapTwice();
 //         sendIt(); // Macro function does not require sendIt()
-      } else if (isBetween(roll, 36,55)) {
+      }
+      else if (isBetween(roll, 36, 55))
+      {
          Log.d("PEPE DEBUG", "flap once");
          flapOnce();
 //         sendIt(); // Macro function does not require sendIt()
-      }  else if (isBetween(roll, 56,60)) {
+      }
+      else if (isBetween(roll, 56, 60))
+      {
          Log.d("PEPE DEBUG", "SOARING!");
 // TODO: THIS IS MADNESS!!! DON'T TRY THIS UNTIL YOU ARE SURE PEPE CAN HANDLE IT!!!!
 //         soaring();
 //          sendIt(); // Macro function does not require sendIt()
-      } else if (isBetween(roll, 61,65)) {
+      }
+      else if (isBetween(roll, 61, 65))
+      {
          Log.d("PEPE DEBUG", "lookAndFocus");
          lookAndFocus();
 //          sendIt(); // Macro function does not require sendIt()
-      } else{
+      }
+      else
+      {
          // TODO: Do i reset all here?
          // pepeManager.resetLook();
          // handler.sendData();
@@ -383,7 +402,8 @@ public class PepeDispatcher {
 
    public void lookAndFocus() {
       int roll = (int) Math.ceil(Math.random() * 3);
-      if (isBetween(roll, 1, 1)) {
+      if (isBetween(roll, 1, 1))
+      {
          Log.d("PEPE DEBUG", "look n focus left");
          // Look left
          lookLeft();
@@ -393,7 +413,9 @@ public class PepeDispatcher {
          resetLook();
          pepeManager.silence();
          sendIt();
-      } else if (isBetween(roll, 2, 2)) {
+      }
+      else if (isBetween(roll, 2, 2))
+      {
          Log.d("PEPE DEBUG", "look n focus right");
          // Look right
          lookRight();
@@ -403,7 +425,9 @@ public class PepeDispatcher {
          resetLook();
          pepeManager.silence();
          sendIt();
-      }else {
+      }
+      else
+      {
          Log.d("PEPE DEBUG", "look n focus middle");
          // No look
          focus();
@@ -424,7 +448,8 @@ public class PepeDispatcher {
 
    public void turnAndWink() {
       int roll = (int) Math.ceil(Math.random() * 3);
-      if (isBetween(roll, 1, 1)) {
+      if (isBetween(roll, 1, 1))
+      {
          Log.d("PEPE DEBUG", "wink left");
          // Turn left
          turnLeft();
@@ -435,7 +460,9 @@ public class PepeDispatcher {
          resetTurn();
          pepeManager.silence();
          sendIt();
-      } else if (isBetween(roll, 2, 2)) {
+      }
+      else if (isBetween(roll, 2, 2))
+      {
          Log.d("PEPE DEBUG", "wink right");
          // Turn right
          turnRight();
@@ -446,7 +473,9 @@ public class PepeDispatcher {
          resetTurn();
          pepeManager.silence();
          sendIt();
-      }else {
+      }
+      else
+      {
          Log.d("PEPE DEBUG", "double wink");
          // No look - double wink
          blinkLeftDown();

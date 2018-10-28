@@ -26,6 +26,7 @@ public class JoyConView extends View implements InputManager.InputDeviceListener
    private static final int PRODUCT_ID_LEFT_JOYCON = 8198;
    private static final int PRODUCT_ID_RIGHT_JOYCON = 8199;
    private PepeDispatcher pepeDispatcher;
+
    public JoyConView(Context context) {
       super(context);
       init();
@@ -52,7 +53,8 @@ public class JoyConView extends View implements InputManager.InputDeviceListener
       final PepeControlActivity host = (PepeControlActivity) this.getContext();
       pepeDispatcher = host.getDispatcher();
       List<Integer> list = getGameControllerIds();
-      for ( int i = 0; i < list.size(); i++ ) {
+      for (int i = 0; i < list.size(); i++)
+      {
          Log.i("\tPEPE_DEBGU", "Controller: " + list.get(i));
       }
 //      mInputManager = InputManagerCompat.Factory.getInputManager(getContext());
@@ -64,7 +66,7 @@ public class JoyConView extends View implements InputManager.InputDeviceListener
 
    @Override
    public boolean dispatchGenericMotionEvent(MotionEvent event) {
-      if(onGenericMotionEvent(event))
+      if (onGenericMotionEvent(event))
       {
          return true;
       }
@@ -114,99 +116,37 @@ public class JoyConView extends View implements InputManager.InputDeviceListener
       return super.dispatchKeyEvent(event);
    }
 
-
    @Override
    public void onInputDeviceAdded(int deviceId) {
       System.out.println("Input Added");
-
    }
 
    @Override
    public void onInputDeviceRemoved(int deviceId) {
-      System.out.println("Input Removed");
 
-      // 99/67(silence), 96/23(tweet), 100/62(flap)
-      switch (event.getKeyCode())
-      {
-         case KeyEvent.KEYCODE_BUTTON_A: // press X: 96 - do nothing?
-            if (event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() < 1)
-            {
-               Log.d("PEPE DEBUG", "tweet");
-               pepeDispatcher.tweet();
-            }
-            return true;
-         case KeyEvent.KEYCODE_DPAD_CENTER: // held X: 23 - do nothing?
-         case KeyEvent.KEYCODE_BUTTON_B: // press JoyCon X - 97
-            return true;
-         case KeyEvent.KEYCODE_BUTTON_X: // press IOS: 99 - do nothing?
-            return true;
-         case KeyEvent.KEYCODE_DEL: // held IOS: 67 - do nothing?
-            return true;
-         case KeyEvent.KEYCODE_BUTTON_Y: // press triangle: 100
-            Log.d("PEPE DEBUG", "flap up");
-            pepeDispatcher.flapLeftUp();
-            pepeDispatcher.flapRightUp();
-            pepeDispatcher.silence();
-            return true;
-         case KeyEvent.KEYCODE_SPACE: // held triangle 62 - do nothing?
-            return true;
-         default:
-            return super.dispatchKeyEvent(event);
-      }
    }
 
    @Override
-   public boolean onKeyUp(int keyCode, KeyEvent event) {
-      Log.d("PEPE DEBUG", "keyUp keyCode: " + keyCode);
-      // 99/67(silence), 96/23(tweet), 100/62(flap)
-      switch (keyCode)
-      {
-         case KeyEvent.KEYCODE_BUTTON_A: // press X: 96
-            Log.d("PEPE DEBUG", "tweet");
-            pepeDispatcher.tweet();
-            return true;
-         case KeyEvent.KEYCODE_DPAD_CENTER: // held X: 23 - do nothing?
-            return true;
-         case KeyEvent.KEYCODE_BUTTON_X: // press IOS: 99
-//            if (PepAIState)
-//            {
-//               Log.d("PEPE DEBUG", "PepAI stopped");
-//               PepAIState = false;
-//            }
-//            else
-//            {
-//               Log.d("PEPE DEBUG", "PepAI started");
-//               PepAIState = true;
-//            }
-            return true;
-         case KeyEvent.KEYCODE_DEL: // held IOS: 67 - do nothing?
-            return true;
-         case KeyEvent.KEYCODE_BUTTON_Y: // press triangle: 100
-            Log.d("PEPE DEBUG", "flap down");
-            pepeDispatcher.flapLeftDown();
-            pepeDispatcher.flapRightDown();
-            pepeDispatcher.silence();
-            return true;
-         case KeyEvent.KEYCODE_SPACE: // held triangle 62 - do nothing?
-            return true;
-         default:
-            return super.onKeyUp(keyCode, event);
-      }
+   public void onInputDeviceChanged(int deviceId) {
+
    }
 
-   public ArrayList<Integer> getGameControllerIds() {
+   private ArrayList<Integer> getGameControllerIds() {
       ArrayList<Integer> gameControllerDeviceIds = new ArrayList<Integer>();
       int[] deviceIds = InputDevice.getDeviceIds();
-      for (int deviceId : deviceIds) {
+      for (int deviceId : deviceIds)
+      {
          InputDevice dev = InputDevice.getDevice(deviceId);
          int sources = dev.getSources();
 
          // Verify that the device has gamepad buttons, control sticks, or both.
          if (((sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD)
                  || ((sources & InputDevice.SOURCE_JOYSTICK)
-                 == InputDevice.SOURCE_JOYSTICK)) {
+                 == InputDevice.SOURCE_JOYSTICK))
+         {
             // This device is a game controller. Store its device ID.
-            if (!gameControllerDeviceIds.contains(deviceId)) {
+            if (!gameControllerDeviceIds.contains(deviceId))
+            {
                gameControllerDeviceIds.add(deviceId);
             }
          }

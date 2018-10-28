@@ -15,6 +15,7 @@ public class ServoLimit implements Limit {
       this.mean = (min + max) / 2;
       this.norm = this.range / 2;
    }
+
    @Override
    public int getMin() {
       return min;

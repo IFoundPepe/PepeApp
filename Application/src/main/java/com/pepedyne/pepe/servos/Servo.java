@@ -9,7 +9,7 @@ public abstract class Servo implements ServoInterface {
    protected int previous;
    private Limit limit;
 
-   public Servo(String name, int min, int max){
+   public Servo(String name, int min, int max) {
       this.name = name;
       current = max;
       previous = min;
@@ -20,8 +20,7 @@ public abstract class Servo implements ServoInterface {
       return this.name;
    }
 
-   public Limit getLimit()
-   {
+   public Limit getLimit() {
       return limit;
    }
 
@@ -30,7 +29,8 @@ public abstract class Servo implements ServoInterface {
    }
 
    public boolean isChanged() {
-      if (previous != current) {
+      if (previous != current)
+      {
          return true;
       }
       return false;
