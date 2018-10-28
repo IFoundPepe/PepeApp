@@ -5,6 +5,7 @@ import android.view.KeyEvent;
 import android.view.View;
 
 import com.pepedyne.pepe.dispatch.PepeDispatcher;
+import com.pepedyne.pepe.dispatch.PepeSoaring;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,6 +14,9 @@ import java.util.Map;
 public class JoyConButtonHandler {
    private static final Map<String, Integer> keyMapperLeftJoyCon;
    private static final Map<String, Integer> keyMapperRightJoyCon;
+
+   // TODO Add more macros
+   private static PepeSoaring soaringMacro = new PepeSoaring();
 
    static
    {
@@ -129,7 +133,8 @@ public class JoyConButtonHandler {
          {
             Log.i("\tPEPE DEBUG", "JoyCon: upArrowDown - LEFT - Action Up");
             // soaring
-            dispatcher.soaring();
+            dispatcher.setMacro(soaringMacro);
+            dispatcher.runOneTimeMacro();
             return true;
          }
       }
@@ -223,7 +228,7 @@ public class JoyConButtonHandler {
 //            // TODO: Do we want to use + to start AI and - to disable AI?
 //            // TODO: Maybe check state of pepeAI with getAIstate()
             dispatcher.connectTweet(); // This is audible response that PepeAI is off
-            dispatcher.setAIState(false);
+            dispatcher.setRepeatingTaskState(false);
             return true;
          }
       }

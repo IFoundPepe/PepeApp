@@ -15,13 +15,18 @@ public class PepeDispatcher {
    final int PepAIIntervalVariance = 300;  //number of wake up intervals
    private int PepAIActionCounter = 0;
    // Roll 1 to 5, TODO: Increase the number of possibilities
-   final int roll_variance = 100;
    // TODO: Is this value still adequate for M.I.K.E.P.?
    final int blink_wait_milli = 350;
    final int flap_wait_milli = 350;
    final int tail_wait_milli = 350;
    final int turn_wait_milli = 500;
    final int soaring_turn_wait_milli = 2 * turn_wait_milli; // lock to lock rotation
+
+   private PepeRunningTaskMacro macro;
+
+   PepeBluetoothConnectionManager getManager() {
+      return pepeManager;
+   }
 
    public PepeDispatcher(PepeBluetoothConnectionManager manager, SendDataHandler handler) {
 
@@ -40,7 +45,8 @@ public class PepeDispatcher {
             PepAIActionCounter++;
             if (pepeAI && (PepAIActionCounter >= PepAIIntervalVariance))
             {
-               runPepeAI();
+               macro.execute(PepeDispatcher.this);
+//               runPepeAI();
                PepAIActionCounter = 0;
             }
          }
@@ -48,7 +54,9 @@ public class PepeDispatcher {
          {
             // 100% guarantee that this always happens, even if
             // your update method throws an exception
-            mHandler.postDelayed(mStatusChecker, mInterval);
+            if (macro.isRepeatingTask()) {
+               mHandler.postDelayed(mStatusChecker, mInterval);
+            }
          }
       }
    };
@@ -72,145 +80,180 @@ public class PepeDispatcher {
    public void tweet() {
        Log.d("PEPE DEBUG", "tweet");
       pepeManager.tweet();
+      handler.sendData();
    }
 
    public void tweetRand() {
       pepeManager.tweetRand();
+      handler.sendData();
    }
 
    public void silence() {
       pepeManager.silence();
+      handler.sendData();
    }
 
    public void turnLeft() {
        Log.d("PEPE DEBUG", "turn left");
       pepeManager.turnLeft();
+      handler.sendData();
    }
 
    public void turnRight() {
        Log.d("PEPE DEBUG", "turn right");
       pepeManager.turnRight();
+      handler.sendData();
    }
 
    public void resetTurn() {
       Log.d("PEPE DEBUG", "turn reset");
       pepeManager.resetTurn();
+      handler.sendData();
    }
 
    public void lookLeft() {
        Log.d("PEPE DEBUG", "look left");
       pepeManager.lookLeft();
+      handler.sendData();
    }
 
    public void lookRight() {
        Log.d("PEPE DEBUG", "look right");
       pepeManager.lookRight();
+      handler.sendData();
    }
 
    public void resetLook() {
       Log.d("PEPE DEBUG", "look reset");
       pepeManager.resetLook();
+      handler.sendData();
    }
 
    public void flapLeftUp() {
        Log.d("PEPE DEBUG", "flap left up");
       pepeManager.flapLeftUp();
+      handler.sendData();
    }
 
    public void flapLeftDown() {
        Log.d("PEPE DEBUG", "flap left down");
       pepeManager.flapLeftDown();
+      handler.sendData();
    }
 
    public void flapRightUp() {
        Log.d("PEPE DEBUG", "flap right up");
       pepeManager.flapRightUp();
+      handler.sendData();
    }
 
    public void flapRightDown() {
        Log.d("PEPE DEBUG", "flap right down");
       pepeManager.flapRightDown();
+      handler.sendData();
    }
 
    public void blinkLeftUp() {
        Log.d("PEPE DEBUG", "blink left up");
       pepeManager.blinkLeftUp();
+      handler.sendData();
    }
 
    public void blinkLeftDown() {
        Log.d("PEPE DEBUG", "blink left down");
       pepeManager.blinkLeftDown();
+      handler.sendData();
    }
 
    public void blinkRightUp() {
       pepeManager.blinkRightUp();
        Log.d("PEPE DEBUG", "blink left up");
+      handler.sendData();
    }
 
    public void blinkRightDown() {
        Log.d("PEPE DEBUG", "blink right down");
       pepeManager.blinkRightDown();
+      handler.sendData();
    }
 
    public void resetBlinkLeft() {
       Log.d("PEPE DEBUG", "blink left reset");
       pepeManager.resetBlinkLeft();
+      handler.sendData();
    }
 
    public void resetBlinkRight() {
       Log.d("PEPE DEBUG", "blink right reset");
       pepeManager.resetBlinkRight();
+      handler.sendData();
    }
 
    public void tailUp() {
        Log.d("PEPE DEBUG", "tail up");
       pepeManager.tailUp();
+      handler.sendData();
    }
 
    public void tailDown() {
        Log.d("PEPE DEBUG", "tail down");
       pepeManager.tailDown();
+      handler.sendData();
    }
 
    public void setLook(int look) {
       pepeManager.setLook(look);
+      handler.sendData();
    }
 
    public void setTurn(int turn) {
       pepeManager.setTurn(turn);
+      handler.sendData();
    }
 
    public void setTail(int tail) {
       pepeManager.setTail(tail);
+      handler.sendData();
    }
 
    public void setFlapLeft(int flap) {
       pepeManager.setFlapLeft(flap);
+      handler.sendData();
    }
 
    public void setFlapRight(int flap) {
       pepeManager.setFlapRight(flap);
+      handler.sendData();
    }
 
    public void setBlinkLeft(int blink) {
       pepeManager.setBlinkLeft(blink);
+      handler.sendData();
    }
 
    public void setBlinkRight(int blink) {
       pepeManager.setBlinkRight(blink);
+      handler.sendData();
    }
 
    public void connectTweet() {
       Log.d("PEPE DEBUG", "connect tweet");
       pepeManager.silence();
+      handler.sendData();
    }
 
    public void calculate() {
       pepeManager.calculateLookAndTurn();
+      handler.sendData();
    }
 
    public String generateData() {
       return pepeManager.generateData();
+   }
+
+   public void sendData()
+   {
+      handler.sendData();
    }
 
    public boolean sendIt() {
@@ -222,7 +265,11 @@ public class PepeDispatcher {
       pepeManager.setAngle_value(ang);
    }
 
-   public void toggleAI() {
+   public void runOneTimeMacro() {
+      this.startRepeatingTask();
+   }
+
+   public void toggleRepeatingMacro() {
       pepeAI = !pepeAI;
       if (pepeAI)
       {
@@ -234,312 +281,16 @@ public class PepeDispatcher {
       }
    }
 
-   public boolean getAIState() {
+   public boolean getRepeatingTaskState() {
       return pepeAI;
    }
 
-   public void setAIState(boolean state) {
+   public void setRepeatingTaskState(boolean state) {
       pepeAI = state;
    }
 
-   public void runPepeAI() {
-      int roll = (int) Math.ceil(Math.random() * roll_variance);
-      Log.d("PEPE DEBUG", "roll == " + roll);
-
-      // Tweet always
-      Log.d("PEPE DEBUG", "always tweet");
-      pepeManager.tweetRand();
-
-      if (isBetween(roll, 1, 10))
-      {
-         Log.d("PEPE DEBUG", "look left");
-//         pepeManager.setLook(235); // Look middle left
-         lookLeft();
-         sendIt();
-      }
-      else if (isBetween(roll, 11, 20))
-      {
-         Log.d("PEPE DEBUG", "look right");
-//         pepeManager.setLook(445); // Look middle right
-         lookRight();
-         sendIt();
-      }
-      else if (isBetween(roll, 21, 35))
-      {
-         Log.d("PEPE DEBUG", "flap twice");
-         flapTwice();
-//         sendIt(); // Macro function does not require sendIt()
-      }
-      else if (isBetween(roll, 36, 55))
-      {
-         Log.d("PEPE DEBUG", "flap once");
-         flapOnce();
-//         sendIt(); // Macro function does not require sendIt()
-      }
-      else if (isBetween(roll, 56, 60))
-      {
-         Log.d("PEPE DEBUG", "SOARING!");
-// TODO: THIS IS MADNESS!!! DON'T TRY THIS UNTIL YOU ARE SURE PEPE CAN HANDLE IT!!!!
-         soaring();
-//          sendIt(); // Macro function does not require sendIt()
-      }
-      else if (isBetween(roll, 61, 65))
-      {
-         Log.d("PEPE DEBUG", "lookAndFocus");
-         lookAndFocus();
-//          sendIt(); // Macro function does not require sendIt()
-      }
-      else
-      {
-         // TODO: Do i reset all here?
-         // pepeManager.resetLook();
-         // handler.sendData();
-      }
-   }
-
-   public void flapTwice() {
-      Log.d("PEPE DEBUG", "flap twice");
-      pepeManager.blinkLeftDown();// Opposite with eyes like hes squinting
-      pepeManager.blinkRightDown();
-      pepeManager.flapLeftUp();
-      pepeManager.flapRightUp();
-      sendIt();
-      android.os.SystemClock.sleep(flap_wait_milli);
-      pepeManager.resetBlinkLeft();
-      pepeManager.resetBlinkRight();
-      pepeManager.flapLeftDown();
-      pepeManager.flapRightDown();
-      pepeManager.silence();
-      sendIt();
-      android.os.SystemClock.sleep(flap_wait_milli + (flap_wait_milli / 2));
-      pepeManager.blinkLeftDown();// Opposite with eyes like hes squinting
-      pepeManager.blinkRightDown();
-      pepeManager.flapLeftUp();
-      pepeManager.flapRightUp();
-      sendIt();
-      android.os.SystemClock.sleep(flap_wait_milli);
-      pepeManager.resetBlinkLeft();
-      pepeManager.resetBlinkRight();
-      pepeManager.flapLeftDown();
-      pepeManager.flapRightDown();
-      pepeManager.silence();
-      sendIt();
-   }
-
-   public void flapOnce() {
-      Log.d("PEPE DEBUG", "flap once");
-      pepeManager.blinkLeftDown();// Opposite with eyes like hes squinting
-      pepeManager.blinkRightDown();
-      pepeManager.flapLeftUp();
-      pepeManager.flapRightUp();
-      sendIt();
-      android.os.SystemClock.sleep(flap_wait_milli);
-      pepeManager.resetBlinkLeft();
-      pepeManager.resetBlinkRight();
-      pepeManager.flapLeftDown();
-      pepeManager.flapRightDown();
-      pepeManager.silence();
-      sendIt();
-   }
-
-   public void flapLeftOnce() {
-      Log.d("PEPE DEBUG", "flap left once");
-      pepeManager.flapLeftUp();
-      sendIt();
-      android.os.SystemClock.sleep(flap_wait_milli);
-      pepeManager.flapLeftDown();
-      pepeManager.silence();
-      sendIt();
-   }
-
-   public void flapRightOnce() {
-      Log.d("PEPE DEBUG", "flap right once");
-      pepeManager.flapRightUp();
-      sendIt();
-      android.os.SystemClock.sleep(flap_wait_milli);
-      pepeManager.flapRightDown();
-      pepeManager.silence();
-      sendIt();
-   }
-
-   public void winkLeftOnce() {
-      Log.d("PEPE DEBUG", "wink left once");
-      pepeManager.blinkLeftDown();
-      sendIt();
-      android.os.SystemClock.sleep(blink_wait_milli);
-      pepeManager.resetBlinkLeft();
-      pepeManager.silence();
-      sendIt();
-   }
-
-   public void winkRightOnce() {
-      Log.d("PEPE DEBUG", "wink right once");
-      pepeManager.blinkRightDown();
-      sendIt();
-      android.os.SystemClock.sleep(blink_wait_milli);
-      pepeManager.resetBlinkRight();
-      pepeManager.silence();
-      sendIt();
-   }
-
-   public void soaring() {
-      Log.d("PEPE DEBUG", "SOARING!");
-      pepeManager.flapLeftUp(); // Start with just left wing up
-         sendIt();
-         android.os.SystemClock.sleep(flap_wait_milli);
-         pepeManager.turnRight();
-         sendIt();
-         android.os.SystemClock.sleep(turn_wait_milli);// Finished 1st turn right
-         pepeManager.flapLeftDown();
-         pepeManager.flapRightUp();
-         sendIt();
-         android.os.SystemClock.sleep(flap_wait_milli);
-         pepeManager.turnLeft();
-         sendIt();
-         android.os.SystemClock.sleep(soaring_turn_wait_milli);// Finished 1st turn left
-         pepeManager.flapRightDown();
-         pepeManager.flapLeftUp();
-         sendIt();
-         android.os.SystemClock.sleep(flap_wait_milli);
-         pepeManager.turnRight();
-         sendIt();
-         android.os.SystemClock.sleep(soaring_turn_wait_milli);// Finished 2nd turn right
-         pepeManager.flapLeftDown();
-         pepeManager.flapRightUp();
-         sendIt();
-         android.os.SystemClock.sleep(flap_wait_milli);
-         pepeManager.turnLeft();
-         sendIt();
-         android.os.SystemClock.sleep(soaring_turn_wait_milli);// Finished 2nd turn leftt
-         pepeManager.flapLeftDown();
-         pepeManager.flapRightUp();
-         sendIt();
-         android.os.SystemClock.sleep(flap_wait_milli);
-         pepeManager.turnLeft();
-         sendIt();
-         android.os.SystemClock.sleep(soaring_turn_wait_milli);
-         // TODO: set to center position with constant
-         pepeManager.setLook(340); // Recenter
-         sendIt();
-         pepeManager.flapRightDown(); // Put right wing back down
-         sendIt();
-         pepeManager.silence();
-         sendIt();
-   }
-
-   public void lookAndFocus() {
-      int roll = (int) Math.ceil(Math.random() * 3);
-      if (isBetween(roll, 1, 1))
-      {
-         Log.d("PEPE DEBUG", "look n focus left");
-         // Look left
-         lookLeft();
-         focus();
-         // sendIt(); // Focus is a macro and already sends and unfocuses
-         android.os.SystemClock.sleep(blink_wait_milli);
-         resetLook();
-         pepeManager.silence();
-         sendIt();
-      }
-      else if (isBetween(roll, 2, 2))
-      {
-         Log.d("PEPE DEBUG", "look n focus right");
-         // Look right
-         lookRight();
-         focus();
-         // sendIt(); // Focus is a macro and already sends and unfocuses
-         android.os.SystemClock.sleep(blink_wait_milli);
-         resetLook();
-         pepeManager.silence();
-         sendIt();
-      }
-      else
-      {
-         Log.d("PEPE DEBUG", "look n focus middle");
-         // No look
-         focus();
-      }
-   }
-
-   public void focus() {
-      Log.d("PEPE DEBUG", "focus");
-      blinkLeftDown();
-      blinkRightDown();
-      sendIt();
-      android.os.SystemClock.sleep(blink_wait_milli);
-      resetBlinkLeft();
-      resetBlinkRight();
-      pepeManager.silence();
-      sendIt();
-   }
-
-   public void turnAndWink() {
-      int roll = (int) Math.ceil(Math.random() * 3);
-      if (isBetween(roll, 1, 1))
-      {
-         Log.d("PEPE DEBUG", "wink left");
-         // Turn left
-         turnLeft();
-         blinkLeftDown();
-         sendIt();
-         android.os.SystemClock.sleep(blink_wait_milli);
-         resetBlinkLeft();
-         resetTurn();
-         pepeManager.silence();
-         sendIt();
-      }
-      else if (isBetween(roll, 2, 2))
-      {
-         Log.d("PEPE DEBUG", "wink right");
-         // Turn right
-         turnRight();
-         blinkRightDown();
-         sendIt();
-         android.os.SystemClock.sleep(blink_wait_milli);
-         resetBlinkRight();
-         resetTurn();
-         pepeManager.silence();
-         sendIt();
-      }
-      else
-      {
-         Log.d("PEPE DEBUG", "double wink");
-         // No look - double wink
-         blinkLeftDown();
-         sendIt();
-         android.os.SystemClock.sleep(blink_wait_milli);
-         resetBlinkLeft();
-         sendIt();
-         android.os.SystemClock.sleep(blink_wait_milli);
-         blinkRightDown();
-         sendIt();
-         android.os.SystemClock.sleep(blink_wait_milli);
-         resetBlinkRight();
-         pepeManager.silence();
-         sendIt();
-      }
-   }
-
-   public void peacock() {
-      Log.d("PEPE DEBUG", "peacock");
-      // lift tail, rotate back and forth
-      tailUp();
-      sendIt();
-      android.os.SystemClock.sleep(tail_wait_milli);
-      turnLeft();
-      sendIt();
-      android.os.SystemClock.sleep(turn_wait_milli);
-      turnRight();
-      sendIt();
-      android.os.SystemClock.sleep(soaring_turn_wait_milli); // Lock to lock turn
-      resetTurn();
-      pepeManager.silence();
-      sendIt();
-      // TODO: consider adding a double flap and possibly another "wiggle" before the reset
-   }
-
-   private boolean isBetween(int roll, int lower, int upper) {
-      return lower <= roll && roll <= upper;
+   public void setMacro(PepeRunningTaskMacro macro) {
+      this.macro = macro;
    }
 
 }

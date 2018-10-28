@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import com.pepedyne.pepe.controller.PepeControlActivity;
+import com.pepedyne.pepe.dispatch.PepeAIMacro;
 
 public class PepeAIButton extends AppCompatButton {
    public PepeAIButton(Context context) {
@@ -25,11 +26,13 @@ public class PepeAIButton extends AppCompatButton {
 
    public void init() {
       final PepeControlActivity host = (PepeControlActivity) this.getContext();
+      PepeAIMacro macro = new PepeAIMacro();
 
       this.setOnTouchListener((v, event) -> {
          if (event.getAction() == MotionEvent.ACTION_UP)
          {
-            host.getDispatcher().toggleAI();
+            host.getDispatcher().setMacro(macro);
+            host.getDispatcher().toggleRepeatingMacro();
             performClick();
          }
          return true;

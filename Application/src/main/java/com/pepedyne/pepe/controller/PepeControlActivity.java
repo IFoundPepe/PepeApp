@@ -87,6 +87,7 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
       bluetoothLeServiceProvider.onCreate(this);
 
       pepeDispatcher = new PepeDispatcher(new PepeBluetoothConnectionManager(this), this);
+//      pepeMacros = new PepeMacros(pepeDispatcher);
 
       getSupportActionBar().setTitle(mDeviceName);
       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
