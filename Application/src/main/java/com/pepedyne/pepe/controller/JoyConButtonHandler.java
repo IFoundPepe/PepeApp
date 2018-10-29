@@ -5,7 +5,13 @@ import android.view.KeyEvent;
 import android.view.View;
 
 import com.pepedyne.pepe.dispatch.PepeDispatcher;
+import com.pepedyne.pepe.dispatch.PepeLookAndFocus;
+import com.pepedyne.pepe.dispatch.PepeMacros;
+import com.pepedyne.pepe.dispatch.PepeTurnAndWink;
+import com.pepedyne.pepe.dispatch.PepeTurnAndWink;
+import com.pepedyne.pepe.dispatch.PepePeacock;
 import com.pepedyne.pepe.dispatch.PepeSoaring;
+import com.pepedyne.pepe.dispatch.PepeAI;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,6 +23,10 @@ public class JoyConButtonHandler {
 
    // TODO Add more macros
    private static PepeSoaring soaringMacro = new PepeSoaring();
+   private static PepeAI pepeAIMacro = new PepeAI();
+   private static PepeLookAndFocus lookAndFocusMacro = new PepeLookAndFocus();
+   private static PepePeacock peacockMacro = new PepePeacock();
+   private static PepeTurnAndWink turnAndWinkMacro = new PepeTurnAndWink();
 
    static
    {
@@ -149,7 +159,8 @@ public class JoyConButtonHandler {
          {
             Log.i("\tPEPE DEBUG", "JoyCon: downArrowDown - LEFT - Action Up");
             // peacock
-            dispatcher.peacock();
+            dispatcher.setMacro(peacockMacro);
+            dispatcher.runOneTimeMacro();
             return true;
          }
       }
@@ -164,7 +175,8 @@ public class JoyConButtonHandler {
          {
             Log.i("\tPEPE DEBUG", "JoyCon: leftArrowDown - LEFT - Action Up");
             // turn and wink
-            dispatcher.turnAndWink();
+            dispatcher.setMacro(turnAndWinkMacro);
+            dispatcher.runOneTimeMacro();
             return true;
          }
       }
@@ -179,7 +191,8 @@ public class JoyConButtonHandler {
          {
             Log.i("\tPEPE DEBUG", "JoyCon: rightArrowDown - LEFT - Action Up");
             // look and focus
-            dispatcher.lookAndFocus();
+            dispatcher.setMacro(lookAndFocusMacro);
+            dispatcher.runOneTimeMacro();
             return true;
          }
       }
@@ -189,13 +202,15 @@ public class JoyConButtonHandler {
          {
             Log.i("\tPEPE DEBUG", "JoyCon: LbuttonDown - LEFT - Action Down");
             // TODO: We will not be able to "hold up" a flap with this design
-            // Do Nothing
+            // flap Left wing up
+            dispatcher.flapLeftUp();
+            return true;
          }
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
 //            // TODO: This may cause repetitive flaps. Do we invert logic?
-            // flap Left wing
-            dispatcher.flapLeftOnce();
+            // flap Left wing down
+            dispatcher.flapLeftDown();
             return true;
          }
       }
@@ -204,13 +219,14 @@ public class JoyConButtonHandler {
          if (event.getAction() == KeyEvent.ACTION_DOWN)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: ZLbutton - LEFT - Action Down");
-            // Do Nothing
+            dispatcher.blinkLeftDown();
+            return true;
          }
          else if (event.getAction() == KeyEvent.ACTION_UP)
          {
             Log.i("\tPEPE DEBUG", "JoyCon: ZLbutton - LEFT - Action Up");
-            // wink left eye
-            dispatcher.winkLeftOnce();
+            // left eye reset
+            dispatcher.resetBlinkLeft();
             return true;
          }
       }
@@ -228,7 +244,8 @@ public class JoyConButtonHandler {
 //            // TODO: Do we want to use + to start AI and - to disable AI?
 //            // TODO: Maybe check state of pepeAI with getAIstate()
             dispatcher.connectTweet(); // This is audible response that PepeAI is off
-            dispatcher.setRepeatingTaskState(false);
+            dispatcher.setMacro(pepeAIMacro); // Is this needed?
+            dispatcher.setRepeatingTaskState(true);
             return true;
          }
       }
@@ -351,13 +368,15 @@ public class JoyConButtonHandler {
             {
                Log.i("\tPEPE DEBUG", "JoyCon: RbuttonDown - RIGHT - Action Down");
                // TODO: We will not be able to "hold up" a flap with this design
-               // Do Nothing
+               // flap Right wing up
+               dispatcher.flapLeftUp();
+               return true;
             }
             else if (event.getAction() == KeyEvent.ACTION_UP)
             {
                Log.i("\tPEPE DEBUG", "JoyCon: RbuttonDown - RIGHT - Action Up");
-               // flap Right wing
-               dispatcher.flapRightOnce();
+               // flap Right wing down
+               dispatcher.flapLeftDown();
                return true;
             }
          }
@@ -366,12 +385,15 @@ public class JoyConButtonHandler {
             if (event.getAction() == KeyEvent.ACTION_DOWN)
             {
                Log.i("\tPEPE DEBUG", "JoyCon: ZRbutton - RIGHT - Action Down");
-               // Do Nothing
+               // flap Right wing down
+               dispatcher.blinkRightDown();
+               return true;
             }
             else if (event.getAction() == KeyEvent.ACTION_UP)
             {
                Log.i("\tPEPE DEBUG", "JoyCon: ZRbutton - RIGHT - Action Up");
-               dispatcher.winkRightOnce();
+               // flap Right wing down
+               dispatcher.resetBlinkRight();
                return true;
             }
          }
@@ -386,7 +408,8 @@ public class JoyConButtonHandler {
             {
                Log.i("\tPEPE DEBUG", "JoyCon: plusButton - RIGHT - Action Up");
                dispatcher.connectTweet(); // This is audible response that PepeAI is on
-               dispatcher.runPepeAI();
+               dispatcher.setMacro(pepeAIMacro);
+               dispatcher.setRepeatingTaskState(true);
                return true;
             }
          }

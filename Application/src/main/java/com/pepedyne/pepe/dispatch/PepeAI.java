@@ -2,16 +2,11 @@ package com.pepedyne.pepe.dispatch;
 
 import android.util.Log;
 
-public class PepeAIMacro implements PepeRunningTaskMacro {
-    private boolean isBetween(int roll, int lower, int upper) {
-        return lower <= roll && roll <= upper;
-    }
+public class PepeAI implements PepeRunningTaskMacro {
+
     final int roll_variance = 100;
 
-    public boolean isRepeatingTask() {
-        return true;
-    }
-
+    @Override
     public void execute(PepeDispatcher dispatcher) {
         int roll = (int) Math.ceil(Math.random() * roll_variance);
         Log.d("PEPE DEBUG", "roll == " + roll);
@@ -63,5 +58,14 @@ public class PepeAIMacro implements PepeRunningTaskMacro {
             // pepeManager.resetLook();
             // handler.sendData();
         }
+    }
+
+    @Override
+    public boolean isRepeatingTask() {
+        return true;
+    }
+
+    private boolean isBetween(int roll, int lower, int upper) {
+        return lower <= roll && roll <= upper;
     }
 }

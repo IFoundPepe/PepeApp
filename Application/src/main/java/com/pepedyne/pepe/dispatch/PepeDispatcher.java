@@ -177,6 +177,25 @@ public class PepeDispatcher {
       handler.sendData();
    }
 
+   public void focusBlinkLeft() {
+      Log.d("PEPE DEBUG", "blink left focus");
+      pepeManager.focusBlinkLeft();
+      handler.sendData();
+   }
+
+   public void focusBlinkRight() {
+      Log.d("PEPE DEBUG", "blink right focus");
+      pepeManager.focusBlinkRight();
+      handler.sendData();
+   }
+
+   public void focus() {
+      Log.d("PEPE DEBUG", "blink left focus");
+      pepeManager.focusBlinkLeft();
+      pepeManager.focusBlinkRight();
+      handler.sendData();
+   }
+
    public void resetBlinkLeft() {
       Log.d("PEPE DEBUG", "blink left reset");
       pepeManager.resetBlinkLeft();

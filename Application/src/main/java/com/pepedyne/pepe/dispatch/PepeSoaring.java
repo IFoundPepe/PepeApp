@@ -6,7 +6,6 @@ public class PepeSoaring implements PepeRunningTaskMacro {
 
     // TODO Copy this for big macros
 
-    // Roll 1 to 5, TODO: Increase the number of possibilities
     // TODO: Is this value still adequate for M.I.K.E.P.?
     final int blink_wait_milli = 350;
     final int flap_wait_milli = 350;
@@ -59,8 +58,6 @@ public class PepeSoaring implements PepeRunningTaskMacro {
 
     }
     
-
-
     @Override
     public boolean isRepeatingTask() {
         return false;
