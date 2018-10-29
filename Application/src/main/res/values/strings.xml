@@ -97,4 +97,12 @@
     <string name="tail_servo_min_default">130</string>
     <string name="tail_servo_max_default">300</string>
 
+    <string name="key_servo_min">Key Servo Min</string>
+    <string name="key_servo_min_key">pref_key_key_servo_min</string>
+    <string name="key_servo_max">Key Servo Max</string>>
+    <string name="key_servo_max_key">pref_key_key_servo_max</string>
+    <string name="key_servo_min_default">130</string>
+    <string name="key_servo_max_default">550</string>
+
+
 </resources>

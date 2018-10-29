@@ -32,7 +32,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.UUID;
 
@@ -386,8 +385,7 @@ public class BluetoothLeService extends Service {
    }
 
    // region Send Data to UART
-   protected void sendData(String text) {
-      final byte[] value = text.getBytes(Charset.forName("UTF-8"));
+   protected void sendData(byte[] value) {
       writeCustomCharacteristic(value);
    }
 

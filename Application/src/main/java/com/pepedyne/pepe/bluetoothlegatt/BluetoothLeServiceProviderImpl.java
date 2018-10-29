@@ -193,7 +193,7 @@ public class BluetoothLeServiceProviderImpl implements BluetoothLeServiceProvide
    }
 
    @Override
-   public void send(String data) {
+   public void send(byte[] data) {
       if (mBluetoothLeService != null)
       {
          mBluetoothLeService.sendData(data);

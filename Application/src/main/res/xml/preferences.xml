@@ -77,5 +77,21 @@
                 android:summary="@string/look_servo_max_default"/>
         </PreferenceScreen>
 
+
+        <PreferenceScreen android:title="Key Servo Settings">
+            <EditTextPreference
+                android:key="@string/key_servo_min_key"
+                android:defaultValue="@string/key_servo_min_default"
+                android:title="@string/key_servo_min"
+                android:dialogTitle="@string/key_servo_min"
+                android:summary="@string/key_servo_min_default"/>
+            <EditTextPreference
+                android:key="@string/key_servo_max_key"
+                android:defaultValue="@string/key_servo_max_default"
+                android:title="@string/key_servo_max"
+                android:dialogTitle="@string/key_servo_max"
+                android:summary="@string/key_servo_max_default"/>
+        </PreferenceScreen>
+
     </PreferenceCategory>
 </PreferenceScreen>

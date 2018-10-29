@@ -11,6 +11,9 @@ import com.pepedyne.pepe.servos.ServoCollection;
 import com.pepedyne.pepe.servos.StandardServo;
 import com.pepedyne.pepe.servos.TweetServo;
 
+import java.nio.charset.Charset;
+import java.util.Arrays;
+
 
 /**
  * Created by Jeremy on 11/1/2017.
@@ -33,11 +36,18 @@ public class PepeBluetoothConnectionManager {
    private Servo tweet;
    private Servo turn;
    private Servo look;
+   private Servo key;
+
+   private byte[] percentByte;
 
    private AppCompatActivity activity;
 
    public PepeBluetoothConnectionManager(Context context) {
       this.activity = (AppCompatActivity) context;
+
+
+      String percent = "%";
+      this.percentByte = percent.getBytes(Charset.forName("UTF-8"));
 
       sendIt = false;
       collection = new ServoCollection();
@@ -83,6 +93,11 @@ public class PepeBluetoothConnectionManager {
               Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_min_key), activity.getString(R.string.look_servo_min_default))),
               Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_max_key), activity.getString(R.string.look_servo_max_default))));
       collection.registerServo(look);
+
+      key = new StandardServo("key",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.key_servo_min_key), activity.getString(R.string.key_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.key_servo_max_key), activity.getString(R.string.key_servo_max_default))));
+      collection.registerServo(key);
    }
 
    private String getPreference(String key, String defaultValue) {
@@ -111,6 +126,9 @@ public class PepeBluetoothConnectionManager {
       this.setServoLimits("look",
               Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_min_key), activity.getString(R.string.look_servo_min_default))),
               Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_max_key), activity.getString(R.string.look_servo_max_default))));
+      this.setServoLimits("key",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.key_servo_min_key), activity.getString(R.string.key_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.key_servo_max_key), activity.getString(R.string.key_servo_max_default))));
    }
 
    // App Joystick Values
@@ -182,7 +200,37 @@ public class PepeBluetoothConnectionManager {
       this.setLook(look);
    }
 
-   public String generateData() {
+   public static byte[] int2byte(int[]src) {
+      int srcLength = src.length;
+      byte[]dst = new byte[srcLength << 2];
+
+      for (int i=0; i<srcLength; i++) {
+         int x = src[i];
+         int j = i << 2;
+         dst[j++] = (byte) ((x >>> 0) & 0xff);
+         dst[j++] = (byte) ((x >>> 8) & 0xff);
+         dst[j++] = (byte) ((x >>> 16) & 0xff);
+         dst[j++] = (byte) ((x >>> 24) & 0xff);
+      }
+      return dst;
+   }
+
+   public static byte[] short2byte(short[]src) {
+      int srcLength = src.length;
+      byte[]dst = new byte[srcLength << 2];
+
+      for (int i=0; i<srcLength; i++) {
+         int x = src[i];
+         int j = i << 2;
+         dst[j++] = (byte) ((x >>> 0) & 0xff);
+         dst[j++] = (byte) ((x >>> 8) & 0xff);
+//         dst[j++] = (byte) ((x >>> 16) & 0xff);
+//         dst[j++] = (byte) ((x >>> 24) & 0xff);
+      }
+      return dst;
+   }
+
+   public byte[] generateData() {
       this.look.step();
       this.turn.step();
       this.flapLeft.step();
@@ -191,6 +239,7 @@ public class PepeBluetoothConnectionManager {
       this.blinkRight.step();
       this.tail.step();
       this.tweet.step();
+      this.key.step();
 
       //Write to the Bluetooth service transmit characteristic
       //Data transmit interface:
@@ -203,15 +252,46 @@ public class PepeBluetoothConnectionManager {
       //      $ == blinkRight
       //      $ == tail
       //      # == tweet (see what I did there ;) <--This is dumb. Don't be cute, be functional!
-      data = this.look.generateData() + "|" +
-              this.turn.generateData() + "|" +
-              this.flapLeft.generateData() + "|" +
-              this.flapRight.generateData() + "|" +
-              this.blinkLeft.generateData() + "|" +
-              this.blinkRight.generateData() + "|" +
-              this.tail.generateData() + "|" +
-              this.tweet.generateData() + "%";
-      return data;
+
+      System.out.println("DATA ---- ");
+      System.out.println("Look: " + look.generateData());
+      System.out.println("Turn: " + turn.generateData());
+      System.out.println("flapLeft: " + flapLeft.generateData());
+      System.out.println("flapRight: " + flapRight.generateData());
+      System.out.println("blinkLeft: " + blinkLeft.generateData());
+      System.out.println("blinkRight: " + blinkRight.generateData());
+      System.out.println("tail: " + tail.generateData());
+      System.out.println("key: " + key.generateData());
+      System.out.println("tweet: " + tweet.generateData());
+      int i = 0;
+      byte [] packedData = new byte[12];
+      packedData[i++] = (byte) look.generateData();
+      packedData[i++] = (byte) turn.generateData();
+
+      packedData[i++] = (byte) ((flapLeft.generateData() >>> 0) & 0xff);
+      packedData[i++] = (byte) ((flapLeft.generateData() >>> 8) & 0xff);
+
+
+      packedData[i++] = (byte) ((flapRight.generateData() >>> 0) & 0xff);
+      packedData[i++] = (byte) ((flapRight.generateData() >>> 8) & 0xff);
+
+//      packedData[i++] = (short) flapLeft.generateData();
+//      packedData[i++] = (short) flapRight.generateData();
+      packedData[i++] = (byte) blinkLeft.generateData();
+      packedData[i++] = (byte) blinkRight.generateData();
+      packedData[i++] = (byte) tail.generateData();
+      packedData[i++] = (byte) key.generateData();
+      packedData[i++] = (byte) tweet.generateData();
+//      byte[] bytes = short2byte(packedData);
+      byte [] bytes = packedData;
+
+      byte[] combined = new byte[bytes.length + percentByte.length];
+
+      for (int j = 0; j < combined.length; ++j)
+      {
+         combined[j] = j < bytes.length ? bytes[j] : percentByte[j - bytes.length];
+      }
+      return combined;
    }
 
    public boolean sendIt() {
@@ -223,6 +303,7 @@ public class PepeBluetoothConnectionManager {
               this.blinkLeft.isChanged() ||
               this.blinkRight.isChanged() ||
               this.tail.isChanged() ||
+              this.key.isChanged() ||
               this.tweet.isChanged())
       {
          sendIt = true;

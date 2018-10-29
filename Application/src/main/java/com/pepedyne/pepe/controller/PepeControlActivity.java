@@ -113,9 +113,9 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
          public void handleMessage(Message msg) {
             // process incoming messages here
             // this will run in the thread, which instantiates it
-            Log.d("PEPE DEBUG", "Data: " + msg.obj.toString());
+            Log.d("PEPE DEBUG", "Data: " + msg.obj);
 
-            bluetoothLeServiceProvider.send(msg.obj.toString());
+            bluetoothLeServiceProvider.send((byte[]) msg.obj);
          }
       };
 
@@ -200,9 +200,9 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
    public boolean sendData() {
       if ((bluetoothLeServiceProvider != null) && pepeDispatcher.sendIt())
       {
-         String data = pepeDispatcher.generateData();
+        byte[] packedData = pepeDispatcher.generateData();
          Message msg = new Message();
-         msg.obj = data;
+         msg.obj = packedData;
          handler.sendMessage(msg);
       }
       return false;

@@ -247,7 +247,7 @@ public class PepeDispatcher {
       handler.sendData();
    }
 
-   public String generateData() {
+   public byte[] generateData() {
       return pepeManager.generateData();
    }
 

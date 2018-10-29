@@ -22,5 +22,5 @@ public interface BluetoothLeServiceProvider {
 
    void registerCallback(BluetoothCallbackInf callback);
 
-   void send(String data);
+   void send(byte[] data);
 }
