@@ -306,6 +306,14 @@ public class PepeBluetoothConnectionManager {
       ((StandardServo) this.blinkRight).setCurrent(this.blinkRight.getLimit().getMean());
    }
 
+   public void focusBlinkLeft() {
+      ((StandardServo) this.blinkLeft).setCurrent((this.blinkLeft.getLimit().getMean()+this.blinkLeft.getLimit().getMin())/2);
+   }
+
+   public void focusBlinkRight() {
+      ((StandardServo) this.blinkRight).setCurrent((this.blinkRight.getLimit().getMean()+this.blinkRight.getLimit().getMin())/2);
+   }
+
    public void tailUp() {
       ((StandardServo) this.tail).setMax();
    }
