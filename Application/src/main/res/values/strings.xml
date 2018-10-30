@@ -39,6 +39,8 @@
     <string name="Turn_Label">Turn</string>
     <string name="Flap_Button">Flap</string>
     <string name="Tweet_Button">Tweet</string>
+    <string name="Laser_Button">Laser</string>
+    <string name="Settings_Button">Settings</string>
 
     <!-- Servo Strings! -->
     <string name="tweet_servo_min">Tweet Servo Min</string>
@@ -52,57 +54,77 @@
     <string name="flap_left_servo_min_key">pref_key_flap_left_servo_min</string>
     <string name="flap_left_servo_max">Flap Servo Max</string>>
     <string name="flap_left_servo_max_key">pref_key_flap_left_servo_max</string>
-    <string name="flap_left_servo_min_default">320</string>
-    <string name="flap_left_servo_max_default">560</string>
+    <string name="flap_left_servo_min_default">0</string>
+    <string name="flap_left_servo_max_default">90</string>
 
     <string name="flap_right_servo_min">Flap Right Servo Min</string>
     <string name="flap_right_servo_min_key">pref_key_flap_right_servo_min</string>
     <string name="flap_right_servo_max">Flap Right Servo Max</string>>
     <string name="flap_right_servo_max_key">pref_key_flap_right_servo_max</string>
-    <string name="flap_right_servo_min_default">320</string>
-    <string name="flap_right_servo_max_default">560</string>
+    <string name="flap_right_servo_min_default">0</string>
+    <string name="flap_right_servo_max_default">90</string>
 
     <string name="blink_left_servo_min">Blink Left Servo Min</string>
     <string name="blink_left_servo_min_key">pref_key_blink_left_servo_min</string>
     <string name="blink_left_servo_max">Blink Servo Max</string>>
     <string name="blink_left_servo_max_key">pref_key_blink_left_servo_max</string>
-    <string name="blink_left_servo_min_default">320</string>
-    <string name="blink_left_servo_max_default">560</string>
+    <string name="blink_left_servo_min_default">0</string>
+    <string name="blink_left_servo_max_default">180</string>
 
     <string name="blink_right_servo_min">Blink Right Servo Min</string>
     <string name="blink_right_servo_min_key">pref_key_blink_right_servo_min</string>
     <string name="blink_right_servo_max">Blink Right Servo Max</string>>
     <string name="blink_right_servo_max_key">pref_key_blink_right_servo_max</string>
-    <string name="blink_right_servo_min_default">320</string>
-    <string name="blink_right_servo_max_default">560</string>
+    <string name="blink_right_servo_min_default">0</string>
+    <string name="blink_right_servo_max_default">180</string>
 
     <string name="turn_servo_min">Turn Servo Min</string>
     <string name="turn_servo_min_key">pref_key_turn_servo_min</string>
     <string name="turn_servo_max">Turn Servo Max</string>>
     <string name="turn_servo_max_key">pref_key_turn_servo_max</string>
-    <string name="turn_servo_min_default">130</string>
-    <string name="turn_servo_max_default">300</string>
+    <string name="turn_servo_min_default">0</string>
+    <string name="turn_servo_max_default">180</string>
 
     <string name="look_servo_min">Look Servo Min</string>
     <string name="look_servo_min_key">pref_key_look_servo_min</string>
     <string name="look_servo_max">Look Servo Max</string>>
     <string name="look_servo_max_key">pref_key_look_servo_max</string>
-    <string name="look_servo_min_default">130</string>
-    <string name="look_servo_max_default">550</string>
+    <string name="look_servo_min_default">0</string>
+    <string name="look_servo_max_default">180</string>
 
     <string name="tail_servo_min">Tail Servo Min</string>
     <string name="tail_servo_min_key">pref_key_tail_servo_min</string>
     <string name="tail_servo_max">Tail Servo Max</string>>
     <string name="tail_servo_max_key">pref_key_tail_servo_max</string>
-    <string name="tail_servo_min_default">130</string>
-    <string name="tail_servo_max_default">300</string>
+    <string name="tail_servo_min_default">0</string>
+    <string name="tail_servo_max_default">90</string>
+
+    <string name="laser_servo_min">Laser Servo Min</string>
+    <string name="laser_servo_min_key">pref_key_laser_servo_min</string>
+    <string name="laser_servo_max">Laser Servo Max</string>>
+    <string name="laser_servo_max_key">pref_key_laser_servo_max</string>
+    <string name="laser_servo_min_default">0</string>
+    <string name="laser_servo_max_default">10</string>
 
     <string name="key_servo_min">Key Servo Min</string>
     <string name="key_servo_min_key">pref_key_key_servo_min</string>
     <string name="key_servo_max">Key Servo Max</string>>
     <string name="key_servo_max_key">pref_key_key_servo_max</string>
-    <string name="key_servo_min_default">130</string>
-    <string name="key_servo_max_default">550</string>
+    <string name="key_servo_min_default">0</string>
+    <string name="key_servo_max_default">180</string>
 
+    <string name="eye_color_right_servo_min">Eye Color Right Servo Min</string>
+    <string name="eye_color_right_servo_min_key">pref_key_eye_color_right_servo_min</string>
+    <string name="eye_color_right_servo_max">Eye Color Right Servo Max</string>>
+    <string name="eye_color_right_servo_max_key">pref_key_eye_color_right_servo_max</string>
+    <string name="eye_color_right_servo_min_default">0</string>
+    <string name="eye_color_right_servo_max_default">255</string>
+
+    <string name="eye_color_left_servo_min">Eye Color Left Servo Min</string>
+    <string name="eye_color_left_servo_min_key">pref_key_eye_color_left_servo_min</string>
+    <string name="eye_color_left_servo_max">Eye Color Left Servo Max</string>>
+    <string name="eye_color_left_servo_max_key">pref_key_eye_color_left_servo_max</string>
+    <string name="eye_color_left_servo_min_default">0</string>
+    <string name="eye_color_left_servo_max_default">255</string>
 
 </resources>

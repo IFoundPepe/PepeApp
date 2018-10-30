@@ -17,7 +17,7 @@
                 android:summary="@string/tweet_servo_max_default"/>
         </PreferenceScreen>
 
-        <PreferenceScreen android:title="Flap Left Servo Settings">
+        <PreferenceScreen android:title="Flap Servo Settings">
             <EditTextPreference
                 android:key="@string/flap_left_servo_min_key"
                 android:defaultValue="@string/flap_left_servo_min_default"
@@ -30,9 +30,6 @@
                 android:title="@string/flap_left_servo_max"
                 android:dialogTitle="@string/flap_left_servo_max"
                 android:summary="@string/flap_left_servo_max_default"/>
-        </PreferenceScreen>
-
-        <PreferenceScreen android:title="Flap Right Servo Settings">
             <EditTextPreference
                 android:key="@string/flap_right_servo_min_key"
                 android:defaultValue="@string/flap_right_servo_min_default"
@@ -47,7 +44,7 @@
                 android:summary="@string/flap_right_servo_max_default"/>
         </PreferenceScreen>
 
-        <PreferenceScreen android:title="Turn Servo Settings">
+        <PreferenceScreen android:title="Turn And Look Servo Settings">
             <EditTextPreference
                 android:key="@string/turn_servo_min_key"
                 android:defaultValue="@string/turn_servo_min_default"
@@ -60,9 +57,6 @@
                 android:title="@string/turn_servo_max"
                 android:dialogTitle="@string/turn_servo_max"
                 android:summary="@string/turn_servo_max_default"/>
-        </PreferenceScreen>
-
-        <PreferenceScreen android:title="Look Servo Settings">
             <EditTextPreference
                 android:key="@string/look_servo_min_key"
                 android:defaultValue="@string/look_servo_min_default"
@@ -77,6 +71,32 @@
                 android:summary="@string/look_servo_max_default"/>
         </PreferenceScreen>
 
+        <PreferenceScreen android:title="Eye Settings">
+            <EditTextPreference
+                android:key="@string/blink_right_servo_min_key"
+                android:defaultValue="@string/blink_right_servo_min_default"
+                android:title="@string/blink_right_servo_min"
+                android:dialogTitle="@string/blink_right_servo_max"
+                android:summary="@string/blink_right_servo_min_default"/>
+            <EditTextPreference
+                android:key="@string/blink_right_servo_max_key"
+                android:defaultValue="@string/blink_right_servo_max_default"
+                android:title="@string/blink_right_servo_max"
+                android:dialogTitle="@string/blink_right_servo_max"
+                android:summary="@string/blink_right_servo_max"/>
+            <EditTextPreference
+                android:key="@string/blink_left_servo_min_key"
+                android:defaultValue="@string/blink_left_servo_min_default"
+                android:title="@string/blink_left_servo_min"
+                android:dialogTitle="@string/blink_left_servo_max"
+                android:summary="@string/blink_left_servo_min_default"/>
+            <EditTextPreference
+                android:key="@string/blink_left_servo_max_key"
+                android:defaultValue="@string/blink_left_servo_max_default"
+                android:title="@string/blink_left_servo_max"
+                android:dialogTitle="@string/blink_left_servo_max"
+                android:summary="@string/blink_left_servo_max"/>
+        </PreferenceScreen>
 
         <PreferenceScreen android:title="Key Servo Settings">
             <EditTextPreference
@@ -91,6 +111,37 @@
                 android:title="@string/key_servo_max"
                 android:dialogTitle="@string/key_servo_max"
                 android:summary="@string/key_servo_max_default"/>
+        </PreferenceScreen>
+
+        <PreferenceScreen android:title="Tail Servo Settings">
+            <EditTextPreference
+                android:key="@string/tail_servo_min_key"
+                android:defaultValue="@string/tail_servo_min_default"
+                android:title="@string/tail_servo_min"
+                android:dialogTitle="@string/tail_servo_min"
+                android:summary="@string/tail_servo_min_default"/>
+            <EditTextPreference
+                android:key="@string/tail_servo_max_key"
+                android:defaultValue="@string/tail_servo_max_default"
+                android:title="@string/tail_servo_max"
+                android:dialogTitle="@string/tail_servo_max"
+                android:summary="@string/tail_servo_max_default"/>
+        </PreferenceScreen>
+
+
+        <PreferenceScreen android:title="Laser Servo Settings">
+            <EditTextPreference
+                android:key="@string/laser_servo_min_key"
+                android:defaultValue="@string/laser_servo_min_default"
+                android:title="@string/laser_servo_min"
+                android:dialogTitle="@string/laser_servo_min"
+                android:summary="@string/laser_servo_min_default"/>
+            <EditTextPreference
+                android:key="@string/laser_servo_max_key"
+                android:defaultValue="@string/laser_servo_max_default"
+                android:title="@string/laser_servo_max"
+                android:dialogTitle="@string/laser_servo_max"
+                android:summary="@string/laser_servo_max_default"/>
         </PreferenceScreen>
 
     </PreferenceCategory>

@@ -2,6 +2,7 @@ package com.pepedyne.pepe.views;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -9,7 +10,7 @@ import android.view.View;
 import com.pepedyne.pepe.controller.PepeControlActivity;
 import com.pepedyne.pepe.settings.SettingsActivity;
 
-public class SettingsButton extends View {
+public class SettingsButton extends AppCompatButton {
    public SettingsButton(Context context) {
       super(context);
       init();
@@ -22,11 +23,6 @@ public class SettingsButton extends View {
 
    public SettingsButton(Context context, AttributeSet attrs, int defStyleAttr) {
       super(context, attrs, defStyleAttr);
-      init();
-   }
-
-   public SettingsButton(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-      super(context, attrs, defStyleAttr, defStyleRes);
       init();
    }
 

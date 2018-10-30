@@ -5,8 +5,13 @@ public class TweetServo extends StandardServo {
    public TweetServo(String name, int min, int max) {
       super(name, min, max);
    }
+   private int prevTweet;
 
    public void tweet() {
+      if (this.current == 0 ) {
+         this.current = prevTweet;
+      }
+
       if (this.current <= this.getLimit().getMax())
       {
          this.current++;
@@ -18,7 +23,6 @@ public class TweetServo extends StandardServo {
    }
 
    public void tweet(int value) {
-
       if (this.current < this.getLimit().getMax())
       {
          value = this.getLimit().getMax();
@@ -35,6 +39,7 @@ public class TweetServo extends StandardServo {
    }
 
    public void silence() {
+      prevTweet = this.current;
       this.current = 0;
    }
 

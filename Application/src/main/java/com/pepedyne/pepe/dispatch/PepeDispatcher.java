@@ -261,8 +261,64 @@ public class PepeDispatcher {
       handler.sendData();
    }
 
+   public void calculateLook() {
+      pepeManager.calculateLook();
+      handler.sendData();
+   }
+
+   public void calculateTurn() {
+      pepeManager.calculateTurn();
+      handler.sendData();
+   }
+
    public void calculate() {
-      pepeManager.calculateLookAndTurn();
+      pepeManager.calculateLook();
+      pepeManager.calculateTurn();
+      handler.sendData();
+   }
+
+   public void laserOn() {
+      pepeManager.laserOn();
+      handler.sendData();
+   }
+
+   public void laserOff() {
+      pepeManager.laserOff();
+      handler.sendData();
+   }
+
+   public void setLaser(int value) {
+      pepeManager.setLaser(value);
+      handler.sendData();
+   }
+
+   public void rightEyeOff() {
+      pepeManager.eyeRightOff();
+      handler.sendData();
+   }
+
+   public void rightEyeOn() {
+      pepeManager.eyeRightOn();
+      handler.sendData();
+   }
+
+   public void rightEyeSetColor(int value) {
+      pepeManager.setEyeRight(value);
+      handler.sendData();
+   }
+
+   public void leftEyeOff() {
+      pepeManager.eyeLeftOff();
+      handler.sendData();
+   }
+
+   public void leftEyeOn() {
+      pepeManager.eyeLeftOn();
+      handler.sendData();
+   }
+
+   public void leftEyeSetColor(int value) {
+      pepeManager.setEyeLeft(value);
       handler.sendData();
    }
 
@@ -279,9 +335,12 @@ public class PepeDispatcher {
       return pepeManager.sendIt();
    }
 
-   public void setMove(double str, double ang) {
-      pepeManager.setStrength_value(str);
+   public void setLook(double ang) {
       pepeManager.setAngle_value(ang);
+   }
+
+   public void setTurn(double ang) {
+      pepeManager.setTurn_value(ang);
    }
 
    public void runOneTimeMacro() {

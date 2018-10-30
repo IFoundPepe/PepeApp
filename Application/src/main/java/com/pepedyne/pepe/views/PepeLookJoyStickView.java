@@ -8,19 +8,19 @@ import com.pepedyne.pepe.controller.PepeControlActivity;
 
 import io.github.controlwear.virtual.joystick.android.JoystickView;
 
-public class PepeJoyStickView extends JoystickView {
+public class PepeLookJoyStickView extends JoystickView {
 
-   public PepeJoyStickView(Context context) {
+   public PepeLookJoyStickView(Context context) {
       super(context);
       this.initialize();
    }
 
-   public PepeJoyStickView(Context context, AttributeSet attrs, int defStyleAttr) {
+   public PepeLookJoyStickView(Context context, AttributeSet attrs, int defStyleAttr) {
       super(context, attrs, defStyleAttr);
       this.initialize();
    }
 
-   public PepeJoyStickView(Context context, AttributeSet attrs) {
+   public PepeLookJoyStickView(Context context, AttributeSet attrs) {
       super(context, attrs);
       this.initialize();
    }
@@ -36,15 +36,15 @@ public class PepeJoyStickView extends JoystickView {
       this.setOnTouchListener((v, event) -> {
          if (event.getAction() == MotionEvent.ACTION_UP)
          {
-            host.getDispatcher().setMove(0, 0);
+            host.getDispatcher().setLook(0);
             performClick();
          }
          return false;
       });
 
       this.setOnMoveListener((angle, strength) -> {
-         host.getDispatcher().setMove(strength, angle);
-         host.getDispatcher().calculate();
+         host.getDispatcher().setLook(angle);
+         host.getDispatcher().calculateLook();
       });
    }
 }

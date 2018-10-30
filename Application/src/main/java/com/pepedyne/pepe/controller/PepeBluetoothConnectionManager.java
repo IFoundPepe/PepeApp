@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.example.android.bluetoothlegatt.R;
 import com.pepedyne.pepe.limits.ServoLimit;
+import com.pepedyne.pepe.servos.EyeColorServo;
+import com.pepedyne.pepe.servos.LaserServo;
 import com.pepedyne.pepe.servos.Servo;
 import com.pepedyne.pepe.servos.ServoCollection;
 import com.pepedyne.pepe.servos.StandardServo;
@@ -37,6 +39,9 @@ public class PepeBluetoothConnectionManager {
    private Servo turn;
    private Servo look;
    private Servo key;
+   private Servo eyeColorRight;
+   private Servo eyeColorLeft;
+   private Servo laser;
 
    private byte[] percentByte;
 
@@ -98,6 +103,22 @@ public class PepeBluetoothConnectionManager {
               Integer.parseInt(this.getPreference(activity.getString(R.string.key_servo_min_key), activity.getString(R.string.key_servo_min_default))),
               Integer.parseInt(this.getPreference(activity.getString(R.string.key_servo_max_key), activity.getString(R.string.key_servo_max_default))));
       collection.registerServo(key);
+
+      eyeColorLeft = new EyeColorServo("eyeColorLeft",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_left_servo_min_key), activity.getString(R.string.eye_color_left_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_left_servo_max_key), activity.getString(R.string.eye_color_left_servo_max_default))));
+      collection.registerServo(eyeColorLeft);
+
+      eyeColorRight = new EyeColorServo("eyeColorRight",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_right_servo_min_key), activity.getString(R.string.eye_color_right_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_right_servo_max_key), activity.getString(R.string.eye_color_right_servo_max_default))));
+      collection.registerServo(eyeColorRight);
+
+      laser = new LaserServo("laser",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.laser_servo_min_key), activity.getString(R.string.laser_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.laser_servo_max_key), activity.getString(R.string.laser_servo_max_default))));
+      collection.registerServo(laser);
+
    }
 
    private String getPreference(String key, String defaultValue) {
@@ -129,12 +150,22 @@ public class PepeBluetoothConnectionManager {
       this.setServoLimits("key",
               Integer.parseInt(this.getPreference(activity.getString(R.string.key_servo_min_key), activity.getString(R.string.key_servo_min_default))),
               Integer.parseInt(this.getPreference(activity.getString(R.string.key_servo_max_key), activity.getString(R.string.key_servo_max_default))));
+      this.setServoLimits("eyeColorRight",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_right_servo_min_key), activity.getString(R.string.eye_color_right_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_right_servo_max_key), activity.getString(R.string.eye_color_right_servo_max_default))));
+
+      this.setServoLimits("eyeColorLeft",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_left_servo_min_key), activity.getString(R.string.eye_color_left_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_left_servo_max_key), activity.getString(R.string.eye_color_left_servo_max_default))));
+
+      this.setServoLimits("laser",
+              Integer.parseInt(this.getPreference(activity.getString(R.string.laser_servo_min_key), activity.getString(R.string.laser_servo_min_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.laser_servo_max_key), activity.getString(R.string.laser_servo_max_default))));
    }
 
    // App Joystick Values
    private double angle_value;
-   private double strength_value;
-   private String data = "";
+   private double turn_angle;
    private boolean sendIt;
 
    private void setServoLimits(String servoKey, int min, int max) {
@@ -142,43 +173,22 @@ public class PepeBluetoothConnectionManager {
       collection.getServoByName(servoKey).setLimit(new ServoLimit(min, max));
    }
 
-   public void calculateLookAndTurn() {
-      double distance = Math.cos(angle_value * (Math.PI / 180) + Math.PI);
-      double value = collection.getServoByName("look").getLimit().getNorm() * distance;
-//      int look = (int) (collection.getServoByName("look").getLimit().getMean() + value);
-      int turn = 0;
-
-//      if ( (angle_value == 0) && (strength_value == 0) )
-//      {
-//         look = this.look.getLimit().getMean();
-//      }
-
-      if ((angle_value > 45) && (angle_value < 135))
+   public void calculateTurn() {
+      int turn = (int) turn_angle;
+      if (turn_angle > 180)
       {
-         // Forward Tilt
-         if (strength_value > STRENGTH_JOYSTICK_LEAN)
-         {
-            turn = this.turn.getLimit().getMin();
-         }
+         turn = 360 - (int) turn_angle;
       }
-      else if ((angle_value > 225) && (angle_value < 325))
-      {
-         // Backward Tilt
-         if (strength_value > STRENGTH_JOYSTICK_LEAN)
-         {
-            turn = this.turn.getLimit().getMax();
-         }
-      }
+      this.setTurn(turn);
+   }
+
+   public void calculateLook() {
       int look = (int) angle_value;
       if (angle_value > 180)
       {
          look = 360 - (int) angle_value;
       }
-
-//      int bin = Math.round((look - this.look.getLimit().getMin()) / (this.look.getLimit().getRange() / STEPS));
-//      look = (bin * (this.look.getLimit().getRange() / STEPS) ) + this.look.getLimit().getMin();
       this.setLook(look);
-      this.setTurn(turn);
    }
 
    public void joystickLook(double distance_non_normalized) {
@@ -240,6 +250,9 @@ public class PepeBluetoothConnectionManager {
       this.tail.step();
       this.tweet.step();
       this.key.step();
+      this.eyeColorRight.step();
+      this.eyeColorLeft.step();
+      this.laser.step();
 
       //Write to the Bluetooth service transmit characteristic
       //Data transmit interface:
@@ -262,18 +275,22 @@ public class PepeBluetoothConnectionManager {
       System.out.println("blinkRight: " + blinkRight.generateData());
       System.out.println("tail: " + tail.generateData());
       System.out.println("key: " + key.generateData());
+      System.out.println("laser: " + laser.generateData());
+      System.out.println("eyeColorRight: " + eyeColorRight.generateData());
+      System.out.println("eyeColorLeft: " + eyeColorLeft.generateData());
       System.out.println("tweet: " + tweet.generateData());
       int i = 0;
       byte [] packedData = new byte[12];
       packedData[i++] = (byte) look.generateData();
       packedData[i++] = (byte) turn.generateData();
 
-      packedData[i++] = (byte) ((flapLeft.generateData() >>> 0) & 0xff);
-      packedData[i++] = (byte) ((flapLeft.generateData() >>> 8) & 0xff);
+//      packedData[i++] = (byte) ((flapLeft.generateData() >>> 0) & 0xff);
+//      packedData[i++] = (byte) ((flapLeft.generateData() >>> 8) & 0xff);
+      packedData[i++] = (byte) flapLeft.generateData();
 
-
-      packedData[i++] = (byte) ((flapRight.generateData() >>> 0) & 0xff);
-      packedData[i++] = (byte) ((flapRight.generateData() >>> 8) & 0xff);
+//      packedData[i++] = (byte) ((flapRight.generateData() >>> 0) & 0xff);
+//      packedData[i++] = (byte) ((flapRight.generateData() >>> 8) & 0xff);
+      packedData[i++] = (byte) flapRight.generateData();
 
 //      packedData[i++] = (short) flapLeft.generateData();
 //      packedData[i++] = (short) flapRight.generateData();
@@ -282,6 +299,14 @@ public class PepeBluetoothConnectionManager {
       packedData[i++] = (byte) tail.generateData();
       packedData[i++] = (byte) key.generateData();
       packedData[i++] = (byte) tweet.generateData();
+
+      packedData[i++] = (byte) eyeColorRight.generateData();
+      packedData[i++] = (byte) eyeColorLeft.generateData();
+      packedData[i++] = (byte) laser.generateData();
+
+      // Laser
+      // RightEyeColor
+      // LeftEyeColor
 //      byte[] bytes = short2byte(packedData);
       byte [] bytes = packedData;
 
@@ -304,11 +329,50 @@ public class PepeBluetoothConnectionManager {
               this.blinkRight.isChanged() ||
               this.tail.isChanged() ||
               this.key.isChanged() ||
+              this.eyeColorRight.isChanged() ||
+              this.eyeColorLeft.isChanged() ||
+              this.laser.isChanged() ||
               this.tweet.isChanged())
       {
          sendIt = true;
       }
       return sendIt;
+   }
+
+   public void laserOn() {
+      ((LaserServo) this.laser).on();
+   }
+
+   public void laserOff() {
+      ((LaserServo) this.laser).off();
+   }
+
+   public void setLaser(int value) {
+      ((LaserServo) this.laser).setStrength(value);
+   }
+
+   public void eyeRightOn() {
+      ((EyeColorServo) this.eyeColorRight).eyeOn();
+   }
+
+   public void eyeRightOff() {
+      ((EyeColorServo) this.eyeColorRight).eyeOff();
+   }
+
+   public void setEyeRight(int value) {
+      ((EyeColorServo) this.eyeColorRight).setColor(value);
+   }
+
+   public void eyeLeftOn() {
+      ((EyeColorServo) this.eyeColorLeft).eyeOn();
+   }
+
+   public void eyeLeftOff() {
+      ((EyeColorServo) this.eyeColorLeft).eyeOff();
+   }
+
+   public void setEyeLeft(int value) {
+      ((EyeColorServo) this.eyeColorLeft).setColor(value);
    }
 
    public void tweet() {
@@ -439,7 +503,7 @@ public class PepeBluetoothConnectionManager {
       this.angle_value = angle_value;
    }
 
-   public void setStrength_value(double strength_value) {
-      this.strength_value = strength_value;
+   public void setTurn_value(double strength_value) {
+      this.turn_angle = strength_value;
    }
 }
