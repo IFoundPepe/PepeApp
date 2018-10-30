@@ -335,6 +335,12 @@ public class PepeBluetoothConnectionManager {
       ((StandardServo) this.turn).setCurrent(this.turn.getLimit().getMean());
    }
 
+   public void turnTo(float angle) {
+      angle = Math.max(-1.0f, Math.min(angle, 1.0f));
+      float value = 0.5f * angle * this.turn.getLimit().getRange() + this.turn.getLimit().getMean();
+      this.turn.setCurrent((int)value);
+   }
+
    public void lookLeft() {
       ((StandardServo) this.look).setMin();
    }

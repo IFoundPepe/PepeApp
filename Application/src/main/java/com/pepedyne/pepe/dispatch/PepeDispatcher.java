@@ -111,6 +111,12 @@ public class PepeDispatcher {
       handler.sendData();
    }
 
+   public void turnTo(float angle) {
+      Log.d("PEPE DEBUG", "turn to " + angle);
+      pepeManager.turnTo(angle);
+      handler.sendData();
+   }
+
    public void lookLeft() {
        Log.d("PEPE DEBUG", "look left");
       pepeManager.lookLeft();
