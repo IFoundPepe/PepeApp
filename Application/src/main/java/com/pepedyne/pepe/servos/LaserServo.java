@@ -1,7 +1,7 @@
 package com.pepedyne.pepe.servos;
 
 public class LaserServo extends StandardServo {
-   private int prevStrength = 1;
+   private int prevStrength = 2;
 
    public LaserServo(String name, int min, int max) {
       super(name, min, max);

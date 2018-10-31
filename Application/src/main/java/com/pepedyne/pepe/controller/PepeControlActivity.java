@@ -93,11 +93,21 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
       findViewById(R.id.joystick);
-      findViewById(R.id.flap);
       findViewById(R.id.tweet);
       findViewById(R.id.PepAI);
       findViewById(R.id.settingsButton);
       findViewById(R.id.laser);
+      findViewById(R.id.flap);
+      findViewById(R.id.flapleft);
+      findViewById(R.id.flapright);
+      findViewById(R.id.blink);
+      findViewById(R.id.winkleft);
+      findViewById(R.id.winkright);
+      findViewById(R.id.focus);
+      findViewById(R.id.key);
+      findViewById(R.id.tail);
+      findViewById(R.id.eye);
+      findViewById(R.id.confused);
       myView = findViewById(R.id.joycon);
 //      setContentView(myView);
 

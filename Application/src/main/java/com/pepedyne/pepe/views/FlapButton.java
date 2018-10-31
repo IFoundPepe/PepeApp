@@ -38,7 +38,7 @@ public class FlapButton extends AppCompatButton {
             host.getDispatcher().flapLeftDown();
             host.getDispatcher().flapRightUp();
          }
-         return false;
+         return true;
       });
    }
 

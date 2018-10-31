@@ -7,19 +7,18 @@ import android.view.MotionEvent;
 
 import com.pepedyne.pepe.controller.PepeControlActivity;
 
-public class LaserButton extends AppCompatButton {
+public class WinkRight extends AppCompatButton {
+   public WinkRight(Context context) {
+      super(context);
+      init();
+   }
 
-   public LaserButton(Context context) {
-   super(context);
-   init();
-}
-
-   public LaserButton(Context context, AttributeSet attrs) {
+   public WinkRight(Context context, AttributeSet attrs) {
       super(context, attrs);
       init();
    }
 
-   public LaserButton(Context context, AttributeSet attrs, int defStyleAttr) {
+   public WinkRight(Context context, AttributeSet attrs, int defStyleAttr) {
       super(context, attrs, defStyleAttr);
       init();
    }
@@ -30,14 +29,16 @@ public class LaserButton extends AppCompatButton {
       this.setOnTouchListener((v, event) -> {
          if (event.getAction() == MotionEvent.ACTION_DOWN)
          {
-            host.getDispatcher().laserOn();
+            host.getDispatcher().blinkRightDown();
+//            host.getDispatcher().flapRightUp();
          }
          else if (event.getAction() == MotionEvent.ACTION_UP)
          {
-            host.getDispatcher().laserOff();
             v.performClick();
+            host.getDispatcher().blinkRightUp();
+//            host.getDispatcher().flapRightUp();
          }
-         return false;
+         return true;
       });
    }
 

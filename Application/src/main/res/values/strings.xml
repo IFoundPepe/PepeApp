@@ -41,6 +41,14 @@
     <string name="Tweet_Button">Tweet</string>
     <string name="Laser_Button">Laser</string>
     <string name="Settings_Button">Settings</string>
+    <string name="Blink_Button">Blink</string>
+    <string name="WinkR_Button">Wink Right</string>
+    <string name="WinkL_Button">Wink Left</string>
+    <string name="Tail_Button">Tail</string>
+    <string name="Focus_Button">Focus</string>
+    <string name="FlapR_Button">Flap Right</string>
+    <string name="FlapL_Button">Flap Left</string>
+
 
     <!-- Servo Strings! -->
     <string name="tweet_servo_min">Tweet Servo Min</string>
@@ -118,13 +126,13 @@
     <string name="eye_color_right_servo_max">Eye Color Right Servo Max</string>>
     <string name="eye_color_right_servo_max_key">pref_key_eye_color_right_servo_max</string>
     <string name="eye_color_right_servo_min_default">0</string>
-    <string name="eye_color_right_servo_max_default">255</string>
+    <string name="eye_color_right_servo_max_default">180</string>
 
     <string name="eye_color_left_servo_min">Eye Color Left Servo Min</string>
     <string name="eye_color_left_servo_min_key">pref_key_eye_color_left_servo_min</string>
     <string name="eye_color_left_servo_max">Eye Color Left Servo Max</string>>
     <string name="eye_color_left_servo_max_key">pref_key_eye_color_left_servo_max</string>
     <string name="eye_color_left_servo_min_default">0</string>
-    <string name="eye_color_left_servo_max_default">255</string>
+    <string name="eye_color_left_servo_max_default">180</string>
 
 </resources>
