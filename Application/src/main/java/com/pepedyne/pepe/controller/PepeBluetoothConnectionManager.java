@@ -11,6 +11,7 @@ import com.pepedyne.pepe.servos.LaserServo;
 import com.pepedyne.pepe.servos.Servo;
 import com.pepedyne.pepe.servos.ServoCollection;
 import com.pepedyne.pepe.servos.StandardServo;
+import com.pepedyne.pepe.servos.ToggleServo;
 import com.pepedyne.pepe.servos.TweetServo;
 
 import java.nio.charset.Charset;
@@ -91,27 +92,29 @@ public class PepeBluetoothConnectionManager {
 
       turn = new StandardServo("turn",
               Integer.parseInt(this.getPreference(activity.getString(R.string.turn_servo_min_key), activity.getString(R.string.turn_servo_min_default))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.turn_servo_max_key), activity.getString(R.string.turn_servo_max_default))));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.turn_servo_max_key), activity.getString(R.string.turn_servo_max_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.turn_servo_max_key), activity.getString(R.string.turn_servo_max_default)))/2);
       collection.registerServo(turn);
 
       look = new StandardServo("look",
               Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_min_key), activity.getString(R.string.look_servo_min_default))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_max_key), activity.getString(R.string.look_servo_max_default))));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_max_key), activity.getString(R.string.look_servo_max_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.look_servo_max_key), activity.getString(R.string.look_servo_max_default)))/2);
       collection.registerServo(look);
 
-      key = new StandardServo("key",
+      key = new ToggleServo("key",
               Integer.parseInt(this.getPreference(activity.getString(R.string.key_servo_min_key), activity.getString(R.string.key_servo_min_default))),
               Integer.parseInt(this.getPreference(activity.getString(R.string.key_servo_max_key), activity.getString(R.string.key_servo_max_default))));
       collection.registerServo(key);
 
       eyeColorLeft = new EyeColorServo("eyeColorLeft",
-              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_left_servo_min_key), activity.getString(R.string.eye_color_left_servo_min_default))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_left_servo_max_key), activity.getString(R.string.eye_color_left_servo_max_default))));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_left_key), activity.getString(R.string.eye_color_left_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_left_servo_max_key), activity.getString(R.string.eye_color_left_default))));
       collection.registerServo(eyeColorLeft);
 
       eyeColorRight = new EyeColorServo("eyeColorRight",
-              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_right_servo_min_key), activity.getString(R.string.eye_color_right_servo_min_default))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_right_servo_max_key), activity.getString(R.string.eye_color_right_servo_max_default))));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_right_key), activity.getString(R.string.eye_color_right_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_right_key), activity.getString(R.string.eye_color_right_default))));
       collection.registerServo(eyeColorRight);
 
       laser = new LaserServo("laser",
@@ -151,12 +154,12 @@ public class PepeBluetoothConnectionManager {
               Integer.parseInt(this.getPreference(activity.getString(R.string.key_servo_min_key), activity.getString(R.string.key_servo_min_default))),
               Integer.parseInt(this.getPreference(activity.getString(R.string.key_servo_max_key), activity.getString(R.string.key_servo_max_default))));
       this.setServoLimits("eyeColorRight",
-              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_right_servo_min_key), activity.getString(R.string.eye_color_right_servo_min_default))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_right_servo_max_key), activity.getString(R.string.eye_color_right_servo_max_default))));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_right_key), activity.getString(R.string.eye_color_right_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_right_key), activity.getString(R.string.eye_color_right_default))));
 
       this.setServoLimits("eyeColorLeft",
-              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_left_servo_min_key), activity.getString(R.string.eye_color_left_servo_min_default))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_left_servo_max_key), activity.getString(R.string.eye_color_left_servo_max_default))));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_left_key), activity.getString(R.string.eye_color_left_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.eye_color_left_key), activity.getString(R.string.eye_color_left_default))));
 
       this.setServoLimits("laser",
               Integer.parseInt(this.getPreference(activity.getString(R.string.laser_servo_min_key), activity.getString(R.string.laser_servo_min_default))),
@@ -267,18 +270,18 @@ public class PepeBluetoothConnectionManager {
       //      # == tweet (see what I did there ;) <--This is dumb. Don't be cute, be functional!
 
       System.out.println("DATA ---- ");
-      System.out.println("Look: " + look.generateData());
+      System.out.println("************************Look: " + look.generateData());
       System.out.println("Turn: " + turn.generateData());
-      System.out.println("flapLeft: " + flapLeft.generateData());
-      System.out.println("flapRight: " + flapRight.generateData());
-      System.out.println("blinkLeft: " + blinkLeft.generateData());
-      System.out.println("blinkRight: " + blinkRight.generateData());
-      System.out.println("tail: " + tail.generateData());
-      System.out.println("key: " + key.generateData());
-      System.out.println("laser: " + laser.generateData());
+//      System.out.println("flapLeft: " + flapLeft.generateData());
+//      System.out.println("flapRight: " + flapRight.generateData());
+//      System.out.println("blinkLeft: " + blinkLeft.generateData());
+//      System.out.println("blinkRight: " + blinkRight.generateData());
+//      System.out.println("tail: " + tail.generateData());
+//      System.out.println("key: " + key.generateData());
+//      System.out.println("laser: " + laser.generateData());
       System.out.println("eyeColorRight: " + eyeColorRight.generateData());
       System.out.println("eyeColorLeft: " + eyeColorLeft.generateData());
-      System.out.println("tweet: " + tweet.generateData());
+//      System.out.println("tweet: " + tweet.generateData());
       int i = 0;
       byte [] packedData = new byte[12];
       packedData[i++] = (byte) look.generateData();
@@ -339,6 +342,23 @@ public class PepeBluetoothConnectionManager {
       return sendIt;
    }
 
+   public void keyToggle()
+   {
+      ((ToggleServo) this.key).toggle();
+   }
+
+   public void keyRight() {
+      ((StandardServo) this.key).setMax();
+   }
+
+   public void keyLeft() {
+      ((StandardServo) this.key).setMax();
+   }
+
+   public void keyOff() {
+      ((StandardServo) this.key).setMin();
+   }
+
    public void laserOn() {
       ((LaserServo) this.laser).on();
    }
@@ -396,7 +416,7 @@ public class PepeBluetoothConnectionManager {
    }
 
    public void resetTurn() {
-      ((StandardServo) this.turn).setCurrent(this.turn.getLimit().getMean());
+      this.turn.setCurrent(this.turn.getLimit().getMean());
    }
 
    public void lookLeft() {
@@ -408,7 +428,7 @@ public class PepeBluetoothConnectionManager {
    }
 
    public void resetLook() {
-      ((StandardServo) this.look).setCurrent(this.look.getLimit().getMean());
+      this.look.setCurrent(this.look.getLimit().getMean());
    }
 
    public void flapLeftUp() {
@@ -444,19 +464,19 @@ public class PepeBluetoothConnectionManager {
    }
 
    public void resetBlinkLeft() {
-      ((StandardServo) this.blinkLeft).setCurrent(this.blinkLeft.getLimit().getMean());
+      this.blinkLeft.setCurrent(this.blinkLeft.getLimit().getMean());
    }
 
    public void resetBlinkRight() {
-      ((StandardServo) this.blinkRight).setCurrent(this.blinkRight.getLimit().getMean());
+      this.blinkRight.setCurrent(this.blinkRight.getLimit().getMean());
    }
 
    public void focusBlinkLeft() {
-      ((StandardServo) this.blinkLeft).setCurrent((this.blinkLeft.getLimit().getMean()+this.blinkLeft.getLimit().getMin())/2);
+      this.blinkLeft.setCurrent((this.blinkLeft.getLimit().getMean()+this.blinkLeft.getLimit().getMin())/2);
    }
 
    public void focusBlinkRight() {
-      ((StandardServo) this.blinkRight).setCurrent((this.blinkRight.getLimit().getMean()+this.blinkRight.getLimit().getMin())/2);
+      this.blinkRight.setCurrent((this.blinkRight.getLimit().getMean()+this.blinkRight.getLimit().getMin())/2);
    }
 
    public void tailUp() {

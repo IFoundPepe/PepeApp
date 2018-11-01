@@ -37,8 +37,8 @@ public class PepeLookJoyStickView extends JoystickView {
       this.setOnTouchListener((v, event) -> {
          if (event.getAction() == MotionEvent.ACTION_UP)
          {
-//            host.getDispatcher().setLook(0);
             performClick();
+            host.getDispatcher().resetLook();
          }
          return false;
       });

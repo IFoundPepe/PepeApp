@@ -29,15 +29,22 @@ public class Blink extends AppCompatButton {
       this.setOnTouchListener((v, event) -> {
          if (event.getAction() == MotionEvent.ACTION_DOWN)
          {
-            host.getDispatcher().blinkRightDown();
-            host.getDispatcher().blinkLeftUp();
+//            host.getDispatch();
+            host.getDispatcher().getManager().blinkRightDown();
+            host.getDispatcher().getManager().blinkLeftDown();
+            host.getDispatcher().getManager().eyeLeftOff();
+            host.getDispatcher().getManager().eyeRightOff();
+            host.getDispatcher().sendData();
 //            host.getDispatcher().flapRightUp();
          }
          else if (event.getAction() == MotionEvent.ACTION_UP)
          {
             v.performClick();
-            host.getDispatcher().blinkRightUp();
-            host.getDispatcher().blinkLeftDown();
+            host.getDispatcher().getManager().blinkRightUp();
+            host.getDispatcher().getManager().blinkLeftUp();
+            host.getDispatcher().getManager().eyeLeftOn();
+            host.getDispatcher().getManager().eyeRightOn();
+            host.getDispatcher().sendData();
 //            host.getDispatcher().flapRightUp();
          }
          return true;

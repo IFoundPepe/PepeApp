@@ -32,13 +32,13 @@ public class PepeTurnJoyStickView  extends JoystickView {
 
    private void initialize() {
       final PepeControlActivity host = (PepeControlActivity) this.getContext();
-      this.setAutoReCenterButton(false);
+//      this.setAutoReCenterButton(false);
 
       this.setOnTouchListener((v, event) -> {
          if (event.getAction() == MotionEvent.ACTION_UP)
          {
-//            host.getDispatcher().setTurn(0);
             performClick();
+            host.getDispatcher().resetTurn();
          }
          return false;
       });

@@ -118,21 +118,16 @@
     <string name="key_servo_min_key">pref_key_key_servo_min</string>
     <string name="key_servo_max">Key Servo Max</string>>
     <string name="key_servo_max_key">pref_key_key_servo_max</string>
-    <string name="key_servo_min_default">0</string>
-    <string name="key_servo_max_default">180</string>
+    <string name="key_servo_min_default">80</string>
+    <string name="key_servo_max_default">100</string>
 
-    <string name="eye_color_right_servo_min">Eye Color Right Servo Min</string>
-    <string name="eye_color_right_servo_min_key">pref_key_eye_color_right_servo_min</string>
-    <string name="eye_color_right_servo_max">Eye Color Right Servo Max</string>>
-    <string name="eye_color_right_servo_max_key">pref_key_eye_color_right_servo_max</string>
-    <string name="eye_color_right_servo_min_default">0</string>
-    <string name="eye_color_right_servo_max_default">180</string>
+    <string name="eye_color_right">Eye Color Right</string>
+    <string name="eye_color_right_key">pref_key_eye_color_right</string>
+    <string name="eye_color_right_default">1</string>
 
-    <string name="eye_color_left_servo_min">Eye Color Left Servo Min</string>
-    <string name="eye_color_left_servo_min_key">pref_key_eye_color_left_servo_min</string>
-    <string name="eye_color_left_servo_max">Eye Color Left Servo Max</string>>
-    <string name="eye_color_left_servo_max_key">pref_key_eye_color_left_servo_max</string>
-    <string name="eye_color_left_servo_min_default">0</string>
-    <string name="eye_color_left_servo_max_default">180</string>
+    <string name="eye_color_left">Eye Color Left </string>
+    <string name="eye_color_left_key">pref_key_eye_color_left_servo_min</string>
+    <string name="eye_color_left_servo_max_key">pref_key_eye_color_left</string>
+    <string name="eye_color_left_default">1</string>
 
 </resources>

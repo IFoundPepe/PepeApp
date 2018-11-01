@@ -24,7 +24,7 @@ public class PepeDispatcher {
 
    private PepeRunningTaskMacro macro;
 
-   PepeBluetoothConnectionManager getManager() {
+   public PepeBluetoothConnectionManager getManager() {
       return pepeManager;
    }
 
@@ -78,7 +78,6 @@ public class PepeDispatcher {
    }
 
    public void tweet() {
-       Log.d("PEPE DEBUG", "tweet");
       pepeManager.tweet();
       handler.sendData();
    }
@@ -94,128 +93,107 @@ public class PepeDispatcher {
    }
 
    public void turnLeft() {
-       Log.d("PEPE DEBUG", "turn left");
       pepeManager.turnLeft();
       handler.sendData();
    }
 
    public void turnRight() {
-       Log.d("PEPE DEBUG", "turn right");
       pepeManager.turnRight();
       handler.sendData();
    }
 
    public void resetTurn() {
-      Log.d("PEPE DEBUG", "turn reset");
       pepeManager.resetTurn();
       handler.sendData();
    }
 
    public void lookLeft() {
-       Log.d("PEPE DEBUG", "look left");
       pepeManager.lookLeft();
       handler.sendData();
    }
 
    public void lookRight() {
-       Log.d("PEPE DEBUG", "look right");
       pepeManager.lookRight();
       handler.sendData();
    }
 
    public void resetLook() {
-      Log.d("PEPE DEBUG", "look reset");
       pepeManager.resetLook();
       handler.sendData();
    }
 
    public void flapLeftUp() {
-       Log.d("PEPE DEBUG", "flap left up");
       pepeManager.flapLeftUp();
       handler.sendData();
    }
 
    public void flapLeftDown() {
-       Log.d("PEPE DEBUG", "flap left down");
       pepeManager.flapLeftDown();
       handler.sendData();
    }
 
    public void flapRightUp() {
-       Log.d("PEPE DEBUG", "flap right up");
       pepeManager.flapRightUp();
       handler.sendData();
    }
 
    public void flapRightDown() {
-       Log.d("PEPE DEBUG", "flap right down");
       pepeManager.flapRightDown();
       handler.sendData();
    }
 
    public void blinkLeftUp() {
-       Log.d("PEPE DEBUG", "blink left up");
       pepeManager.blinkLeftUp();
       handler.sendData();
    }
 
    public void blinkLeftDown() {
-       Log.d("PEPE DEBUG", "blink left down");
       pepeManager.blinkLeftDown();
       handler.sendData();
    }
 
    public void blinkRightUp() {
       pepeManager.blinkRightUp();
-       Log.d("PEPE DEBUG", "blink left up");
       handler.sendData();
    }
 
    public void blinkRightDown() {
-       Log.d("PEPE DEBUG", "blink right down");
       pepeManager.blinkRightDown();
       handler.sendData();
    }
 
    public void focusBlinkLeft() {
-      Log.d("PEPE DEBUG", "blink left focus");
       pepeManager.focusBlinkLeft();
       handler.sendData();
    }
 
    public void focusBlinkRight() {
-      Log.d("PEPE DEBUG", "blink right focus");
       pepeManager.focusBlinkRight();
       handler.sendData();
    }
 
    public void focus() {
-      Log.d("PEPE DEBUG", "blink left focus");
       pepeManager.focusBlinkLeft();
       pepeManager.focusBlinkRight();
       handler.sendData();
    }
 
    public void resetBlinkLeft() {
-      Log.d("PEPE DEBUG", "blink left reset");
       pepeManager.resetBlinkLeft();
       handler.sendData();
    }
 
    public void resetBlinkRight() {
-      Log.d("PEPE DEBUG", "blink right reset");
       pepeManager.resetBlinkRight();
       handler.sendData();
    }
 
    public void tailUp() {
-       Log.d("PEPE DEBUG", "tail up");
       pepeManager.tailUp();
       handler.sendData();
    }
 
    public void tailDown() {
-       Log.d("PEPE DEBUG", "tail down");
       pepeManager.tailDown();
       handler.sendData();
    }
@@ -256,7 +234,6 @@ public class PepeDispatcher {
    }
 
    public void connectTweet() {
-      Log.d("PEPE DEBUG", "connect tweet");
       pepeManager.silence();
       handler.sendData();
    }
@@ -319,6 +296,26 @@ public class PepeDispatcher {
 
    public void leftEyeSetColor(int value) {
       pepeManager.setEyeLeft(value);
+      handler.sendData();
+   }
+
+   public void keyToggle() {
+      pepeManager.keyToggle();
+      handler.sendData();
+   }
+
+   public void keyRight() {
+      pepeManager.keyRight();
+      handler.sendData();
+   }
+
+   public void keyLeft() {
+      pepeManager.keyLeft();
+      handler.sendData();
+   }
+
+   public void keyOff() {
+      pepeManager.keyOff();
       handler.sendData();
    }
 

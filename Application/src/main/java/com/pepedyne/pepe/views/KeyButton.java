@@ -30,9 +30,11 @@ public class KeyButton extends AppCompatButton {
       this.setOnTouchListener((v, event) -> {
          if (event.getAction() == MotionEvent.ACTION_DOWN)
          {
+            host.getDispatcher().keyToggle();
          }
          else if (event.getAction() == MotionEvent.ACTION_UP)
          {
+//            host.getDispatcher().keyOff();
             v.performClick();
          }
          return true;

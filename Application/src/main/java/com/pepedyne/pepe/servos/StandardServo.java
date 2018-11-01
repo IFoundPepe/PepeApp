@@ -6,6 +6,10 @@ public class StandardServo extends Servo {
       super(name, min, max);
    }
 
+   public StandardServo(String name, int min, int max, int cur) {
+      super(name, min, max, cur);
+   }
+
    @Override
    public void setCurrent(int current) {
       this.current = current;
@@ -25,6 +29,10 @@ public class StandardServo extends Servo {
 
    public void setMin() {
       this.setCurrent(this.getLimit().getMin());
+   }
+
+   public void setMean() {
+      this.setCurrent(this.getLimit().getMean());
    }
 
 }

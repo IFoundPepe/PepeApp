@@ -30,10 +30,16 @@ public class FocusButton extends AppCompatButton {
       this.setOnTouchListener((v, event) -> {
          if (event.getAction() == MotionEvent.ACTION_DOWN)
          {
+            host.getDispatcher().getManager().blinkRightDown();
+            host.getDispatcher().getManager().blinkLeftDown();
+            host.getDispatcher().sendData();
          }
          else if (event.getAction() == MotionEvent.ACTION_UP)
          {
             v.performClick();
+            host.getDispatcher().getManager().blinkRightUp();
+            host.getDispatcher().getManager().blinkLeftUp();
+            host.getDispatcher().sendData();
          }
          return true;
       });

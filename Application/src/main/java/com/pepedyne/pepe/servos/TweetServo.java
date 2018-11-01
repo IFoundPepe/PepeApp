@@ -20,6 +20,8 @@ public class TweetServo extends StandardServo {
       {
          this.current = 1;
       }
+//      prevTweet = current;
+      System.out.println("CURRENT: " + current);
    }
 
    public void tweet(int value) {
@@ -41,6 +43,7 @@ public class TweetServo extends StandardServo {
    public void silence() {
       prevTweet = this.current;
       this.current = 0;
+      System.out.println("PREVIOUS: " + prevTweet);
    }
 
 }

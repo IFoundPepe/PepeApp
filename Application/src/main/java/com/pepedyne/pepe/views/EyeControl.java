@@ -30,9 +30,15 @@ public class EyeControl extends AppCompatButton{
       this.setOnTouchListener((v, event) -> {
          if (event.getAction() == MotionEvent.ACTION_DOWN)
          {
+            host.getDispatcher().getManager().eyeLeftOff();
+            host.getDispatcher().getManager().eyeRightOff();
+            host.sendData();
          }
          else if (event.getAction() == MotionEvent.ACTION_UP)
          {
+            host.getDispatcher().getManager().eyeLeftOn();
+            host.getDispatcher().getManager().eyeRightOn();
+            host.sendData();
             v.performClick();
          }
          return true;

@@ -91,6 +91,18 @@
                 android:dialogTitle="@string/blink_left_servo_max"
                 android:summary="@string/blink_left_servo_min_default"/>
             <EditTextPreference
+                android:key="@string/eye_color_right_key"
+                android:defaultValue="@string/eye_color_right_default"
+                android:title="@string/eye_color_right"
+                android:dialogTitle="@string/eye_color_right"
+                android:summary="@string/eye_color_right"/>
+            <EditTextPreference
+                android:key="@string/eye_color_left_key"
+                android:defaultValue="@string/eye_color_left_default"
+                android:title="@string/eye_color_left"
+                android:dialogTitle="@string/eye_color_left"
+                android:summary="@string/eye_color_left"/>
+            <EditTextPreference
                 android:key="@string/blink_left_servo_max_key"
                 android:defaultValue="@string/blink_left_servo_max_default"
                 android:title="@string/blink_left_servo_max"

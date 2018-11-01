@@ -9,10 +9,17 @@ public abstract class Servo implements ServoInterface {
    protected int previous;
    private Limit limit;
 
+   public Servo(String name, int min, int max, int current) {
+      this.name = name;
+      this.current = current;
+      this.previous = min;
+      this.limit = new ServoLimit(min, max);
+   }
+
    public Servo(String name, int min, int max) {
       this.name = name;
-      current = max;
-      previous = min;
+      this.current = max;
+      this.previous = min;
       this.limit = new ServoLimit(min, max);
    }
 
