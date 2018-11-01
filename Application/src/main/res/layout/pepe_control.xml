@@ -9,7 +9,7 @@
     <com.pepedyne.pepe.views.SettingsButton
         android:id="@+id/settingsButton"
         android:layout_width="100dp"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         android:text="@string/Settings_Button"
         app:layout_constraintBottom_toTopOf="@+id/blink"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,7 +20,7 @@
     <com.pepedyne.pepe.views.LaserButton
         android:id="@+id/laser"
         android:layout_width="100dp"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         android:text="@string/Laser_Button"
         app:layout_constraintBottom_toTopOf="@+id/winkright"
         app:layout_constraintEnd_toStartOf="@+id/settingsButton"
@@ -31,7 +31,7 @@
     <com.pepedyne.pepe.views.FlapButton
         android:id="@+id/flap"
         android:layout_width="100dp"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         android:text="@string/Flap_Button"
         app:layout_constraintBottom_toTopOf="@+id/tail"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +42,7 @@
     <com.pepedyne.pepe.views.TweetButton
         android:id="@+id/tweet"
         android:layout_width="100dp"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         android:text="@string/Tweet_Button"
         app:layout_constraintBottom_toTopOf="@+id/winkleft"
         app:layout_constraintEnd_toStartOf="@+id/laser"
@@ -111,7 +111,7 @@
     <com.pepedyne.pepe.views.Blink
         android:id="@+id/blink"
         android:layout_width="100dp"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         android:text="Blink"
         app:layout_constraintBottom_toTopOf="@+id/eye"
         app:layout_constraintEnd_toEndOf="parent"
@@ -122,7 +122,7 @@
     <com.pepedyne.pepe.views.WinkLeft
         android:id="@+id/winkleft"
         android:layout_width="100dp"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         android:text="Wink Left"
         app:layout_constraintBottom_toTopOf="@+id/focus"
         app:layout_constraintEnd_toStartOf="@+id/winkright"
@@ -133,7 +133,7 @@
     <com.pepedyne.pepe.views.WinkRight
         android:id="@+id/winkright"
         android:layout_width="100dp"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         android:text="Wink Right"
         app:layout_constraintBottom_toTopOf="@+id/confused"
         app:layout_constraintEnd_toStartOf="@+id/blink"
@@ -144,7 +144,7 @@
     <com.pepedyne.pepe.views.TailButton
         android:id="@+id/tail"
         android:layout_width="100dp"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         android:text="Tail"
         app:layout_constraintBottom_toTopOf="@+id/joystick"
         app:layout_constraintEnd_toEndOf="parent"
@@ -155,7 +155,7 @@
     <com.pepedyne.pepe.views.FlapLeftButton
         android:id="@+id/flapleft"
         android:layout_width="100dp"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         android:text="Flap Left"
         app:layout_constraintBottom_toTopOf="@+id/key"
         app:layout_constraintEnd_toStartOf="@+id/flapright"
@@ -166,7 +166,7 @@
     <com.pepedyne.pepe.views.FlapRightButton
         android:id="@+id/flapright"
         android:layout_width="100dp"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         android:text="Flap Right"
         app:layout_constraintBottom_toTopOf="@+id/tail"
         app:layout_constraintEnd_toStartOf="@+id/flap"
@@ -177,7 +177,7 @@
     <com.pepedyne.pepe.views.KeyButton
         android:id="@+id/key"
         android:layout_width="100dp"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         android:text="Key"
         app:layout_constraintBottom_toTopOf="@+id/joystick2"
         app:layout_constraintEnd_toStartOf="@+id/tail"
@@ -188,7 +188,7 @@
     <com.pepedyne.pepe.views.EyeControl
         android:id="@+id/eye"
         android:layout_width="100dp"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         android:text="Eyes"
         app:layout_constraintBottom_toTopOf="@+id/flap"
         app:layout_constraintEnd_toEndOf="parent"
@@ -199,7 +199,7 @@
     <com.pepedyne.pepe.views.FocusButton
         android:id="@+id/focus"
         android:layout_width="100dp"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         android:text="Focus"
         app:layout_constraintBottom_toTopOf="@+id/flapleft"
         app:layout_constraintEnd_toStartOf="@+id/confused"
@@ -210,7 +210,7 @@
     <com.pepedyne.pepe.views.ConfusedButton
         android:id="@+id/confused"
         android:layout_width="100dp"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         android:text="Confused"
         app:layout_constraintBottom_toTopOf="@+id/flapright"
         app:layout_constraintEnd_toStartOf="@+id/eye"

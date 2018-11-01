@@ -67,7 +67,8 @@ public class PepeBluetoothConnectionManager {
 
       flapRight = new StandardServo("flapRight",
               Integer.parseInt(this.getPreference(activity.getString(R.string.flap_right_servo_min_key), activity.getString(R.string.flap_right_servo_min_default))),
-              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_right_servo_max_key), activity.getString(R.string.flap_right_servo_max_default))));
+              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_right_servo_max_key), activity.getString(R.string.flap_right_servo_max_default))),
+              Integer.parseInt(this.getPreference(activity.getString(R.string.flap_right_servo_min_key), activity.getString(R.string.flap_right_servo_min_default))));
       collection.registerServo(flapRight);
 
       blinkLeft = new StandardServo("blinkLeft",
