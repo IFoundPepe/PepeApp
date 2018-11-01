@@ -44,8 +44,10 @@ public class PepeTurnJoyStickView  extends JoystickView {
       });
 
       this.setOnMoveListener((angle, strength) -> {
-         host.getDispatcher().setTurn(angle);
-         host.getDispatcher().calculateLook();
+         if ( angle != 0 ) {
+            host.getDispatcher().setTurn(angle);
+            host.getDispatcher().calculateLook();
+         }
       });
    }
 }

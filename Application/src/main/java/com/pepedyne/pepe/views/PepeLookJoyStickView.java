@@ -32,7 +32,7 @@ public class PepeLookJoyStickView extends JoystickView {
 
    private void initialize() {
       final PepeControlActivity host = (PepeControlActivity) this.getContext();
-      this.setAutoReCenterButton(false);
+//      this.setAutoReCenterButton(false);
 
       this.setOnTouchListener((v, event) -> {
          if (event.getAction() == MotionEvent.ACTION_UP)
@@ -44,8 +44,10 @@ public class PepeLookJoyStickView extends JoystickView {
       });
 
       this.setOnMoveListener((angle, strength) -> {
-         host.getDispatcher().setLook(angle);
-         host.getDispatcher().calculateLook();
+         if ( angle > 1 ) {
+            host.getDispatcher().setLook(angle);
+            host.getDispatcher().calculateLook();
+         }
       });
    }
 }

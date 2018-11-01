@@ -94,7 +94,7 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
 
       findViewById(R.id.joystick);
       findViewById(R.id.tweet);
-      findViewById(R.id.PepAI);
+//      findViewById(R.id.PepAI);
       findViewById(R.id.settingsButton);
       findViewById(R.id.laser);
       findViewById(R.id.flap);
