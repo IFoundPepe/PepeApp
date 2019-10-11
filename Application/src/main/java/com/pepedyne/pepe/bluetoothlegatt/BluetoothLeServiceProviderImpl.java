@@ -27,14 +27,13 @@ import static android.content.Context.BIND_AUTO_CREATE;
 
 public class BluetoothLeServiceProviderImpl implements BluetoothLeServiceProvider {
 
-   public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
    public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
    private BluetoothCallbackInf callback;
    private BluetoothLeService mBluetoothLeService;
    private boolean mConnected = false;
    private BluetoothGattCharacteristic mNotifyCharacteristic;
    private ArrayList<ArrayList<BluetoothGattCharacteristic>> mGattCharacteristics =
-           new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
+           new ArrayList<>();
 
    public void registerCallback(BluetoothCallbackInf callback) {
       this.callback = callback;
@@ -48,6 +47,7 @@ public class BluetoothLeServiceProviderImpl implements BluetoothLeServiceProvide
       this.initBroadcastReceiver(activity);
       this.initOnChildClickListener();
       this.initServiceConnection(activity);
+      LIST_UUID = "UUID";
    }
 
    @Override
@@ -132,8 +132,7 @@ public class BluetoothLeServiceProviderImpl implements BluetoothLeServiceProvide
                // it first so it doesn't update the data field on the user interface.
                if (mNotifyCharacteristic != null)
                {
-                  mBluetoothLeService.setCharacteristicNotification(
-                          mNotifyCharacteristic, false);
+                  mBluetoothLeService.setCharacteristicNotification(mNotifyCharacteristic, false);
                   mNotifyCharacteristic = null;
                }
                mBluetoothLeService.readCharacteristic(characteristic);
@@ -209,8 +208,7 @@ public class BluetoothLeServiceProviderImpl implements BluetoothLeServiceProvide
       return intentFilter;
    }
 
-   private final String LIST_NAME = "NAME";
-   private final String LIST_UUID = "UUID";
+   private final String LIST_UUID;
 
    // Demonstrates how to iterate through the supported GATT Services/Characteristics.
    // In this sample, we populate the data structure that is bound to the ExpandableListView
@@ -223,15 +221,16 @@ public class BluetoothLeServiceProviderImpl implements BluetoothLeServiceProvide
       String uuid;
       String unknownServiceString = activity.getResources().getString(R.string.unknown_service);
       String unknownCharaString = activity.getResources().getString(R.string.unknown_characteristic);
-      ArrayList<HashMap<String, String>> gattServiceData = new ArrayList<HashMap<String, String>>();
+      ArrayList<HashMap<String, String>> gattServiceData = new ArrayList<>();
       ArrayList<ArrayList<HashMap<String, String>>> gattCharacteristicData
-              = new ArrayList<ArrayList<HashMap<String, String>>>();
-      mGattCharacteristics = new ArrayList<ArrayList<BluetoothGattCharacteristic>>();
+              = new ArrayList<>();
+      mGattCharacteristics = new ArrayList<>();
 
       // Loops through available GATT Services.
+      String LIST_NAME = "NAME";
       for (BluetoothGattService gattService : gattServices)
       {
-         HashMap<String, String> currentServiceData = new HashMap<String, String>();
+         HashMap<String, String> currentServiceData = new HashMap<>();
          uuid = gattService.getUuid().toString();
          currentServiceData.put(
                  LIST_NAME, SampleGattAttributes.lookup(uuid, unknownServiceString));
@@ -239,17 +238,17 @@ public class BluetoothLeServiceProviderImpl implements BluetoothLeServiceProvide
          gattServiceData.add(currentServiceData);
 
          ArrayList<HashMap<String, String>> gattCharacteristicGroupData =
-                 new ArrayList<HashMap<String, String>>();
+                 new ArrayList<>();
          List<BluetoothGattCharacteristic> gattCharacteristics =
                  gattService.getCharacteristics();
          ArrayList<BluetoothGattCharacteristic> charas =
-                 new ArrayList<BluetoothGattCharacteristic>();
+                 new ArrayList<>();
 
          // Loops through available Characteristics.
          for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics)
          {
             charas.add(gattCharacteristic);
-            HashMap<String, String> currentCharaData = new HashMap<String, String>();
+            HashMap<String, String> currentCharaData = new HashMap<>();
             uuid = gattCharacteristic.getUuid().toString();
             currentCharaData.put(
                     LIST_NAME, SampleGattAttributes.lookup(uuid, unknownCharaString));

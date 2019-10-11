@@ -19,8 +19,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
       super.onCreate(savedInstanceState);
       settingsFragment = new SettingsFragment();
       // Display the fragment as the main content.
-      getFragmentManager().beginTransaction()
-              .replace(android.R.id.content, settingsFragment).commit();
+      getFragmentManager().beginTransaction().replace(android.R.id.content, settingsFragment).commit();
    }
 
    @Override

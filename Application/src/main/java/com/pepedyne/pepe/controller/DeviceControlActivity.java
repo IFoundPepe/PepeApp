@@ -30,6 +30,8 @@ import com.pepedyne.pepe.bluetoothlegatt.BluetoothCallbackInf;
 import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProvider;
 import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProviderImpl;
 
+import java.util.Objects;
+
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
  * and display GATT services and characteristics supported by the device.  The Activity
@@ -37,15 +39,12 @@ import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProviderImpl;
  * Bluetooth LE API.
  */
 public class DeviceControlActivity extends AppCompatActivity implements BluetoothCallbackInf {
-   private final static String TAG = DeviceControlActivity.class.getSimpleName();
-
    public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
    public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
 
    private BluetoothLeServiceProvider bluetoothLeServiceProvider;
    private TextView mConnectionState;
    private TextView mDataField;
-   private String mDeviceName;
    private String mDeviceAddress;
    private ExpandableListView mGattServicesList;
 
@@ -55,7 +54,7 @@ public class DeviceControlActivity extends AppCompatActivity implements Bluetoot
       setContentView(R.layout.gatt_services_characteristics);
 
       final Intent intent = getIntent();
-      mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
+      final String mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
       mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
 
       bluetoothLeServiceProvider = new BluetoothLeServiceProviderImpl(this);
@@ -63,12 +62,12 @@ public class DeviceControlActivity extends AppCompatActivity implements Bluetoot
 
       // Sets up UI references.
       ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
-      mGattServicesList = (ExpandableListView) findViewById(R.id.gatt_services_list);
+      mGattServicesList = findViewById(R.id.gatt_services_list);
       mGattServicesList.setOnChildClickListener(bluetoothLeServiceProvider.getListener());
-      mConnectionState = (TextView) findViewById(R.id.connection_state);
-      mDataField = (TextView) findViewById(R.id.data_value);
+      mConnectionState = findViewById(R.id.connection_state);
+      mDataField = findViewById(R.id.data_value);
 
-      getSupportActionBar().setTitle(mDeviceName);
+      Objects.requireNonNull(getSupportActionBar()).setTitle(mDeviceName);
       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
       bluetoothLeServiceProvider.onCreate(this);
    }
@@ -127,12 +126,7 @@ public class DeviceControlActivity extends AppCompatActivity implements Bluetoot
    // Callback Methods
    @Override
    public void updateConnectionState(final int resourceId) {
-      runOnUiThread(new Runnable() {
-         @Override
-         public void run() {
-            mConnectionState.setText(resourceId);
-         }
-      });
+      runOnUiThread(() -> mConnectionState.setText(resourceId));
    }
 
    @Override
