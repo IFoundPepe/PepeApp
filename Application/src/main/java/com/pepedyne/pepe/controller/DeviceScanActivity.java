@@ -16,6 +16,7 @@
 
 package com.pepedyne.pepe.controller;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.bluetooth.BluetoothAdapter;
@@ -31,6 +32,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -46,6 +49,7 @@ import android.widget.TextView;
 import com.example.android.bluetoothlegatt.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -66,6 +70,17 @@ public class DeviceScanActivity extends ListActivity {
       super.onCreate(savedInstanceState);
       mHandler = new Handler();
 
+      List<String> neededPerms = Arrays.asList(Manifest.permission.BLUETOOTH,
+              Manifest.permission.BLUETOOTH_ADMIN,
+              Manifest.permission.ACCESS_FINE_LOCATION,
+              Manifest.permission.ACCESS_COARSE_LOCATION
+      );
+
+      for (String permission : neededPerms) {
+         if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+            Log.e("PEPE DEBUG", "No  permission: " + permission);
+         }
+      }
 
 //        listView = (ListView) findViewById(R.id.list_view);
       // Use this check to determine whether BLE is supported on the device.  Then you can
@@ -215,7 +230,7 @@ public class DeviceScanActivity extends ListActivity {
       }
 
       public void addDevice(BluetoothDevice device) {
-         if (!mLeDevices.contains(device))
+         if (!mLeDevices.contains(device) && device.getName() != null)
          {
             mLeDevices.add(device);
          }

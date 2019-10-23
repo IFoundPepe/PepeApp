@@ -18,7 +18,6 @@ package com.pepedyne.pepe.controller;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.hardware.input.InputManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -26,7 +25,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,9 +39,6 @@ import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProvider;
 import com.pepedyne.pepe.bluetoothlegatt.BluetoothLeServiceProviderImpl;
 import com.pepedyne.pepe.dispatch.PepeDispatcher;
 import com.pepedyne.pepe.dispatch.SendDataHandler;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * For a given BLE device, this Activity provides the user interface to connect, display data,
@@ -97,14 +92,12 @@ public class PepeControlActivity extends AppCompatActivity implements SendDataHa
 //      findViewById(R.id.PepAI);
       findViewById(R.id.settingsButton);
       findViewById(R.id.laser);
-      findViewById(R.id.flap);
-      findViewById(R.id.flapleft);
-      findViewById(R.id.flapright);
+      findViewById(R.id.animate);
+      findViewById(R.id.red_alert);
       findViewById(R.id.blink);
       findViewById(R.id.winkleft);
       findViewById(R.id.winkright);
       findViewById(R.id.focus);
-      findViewById(R.id.key);
       findViewById(R.id.tail);
       findViewById(R.id.eye);
       findViewById(R.id.confused);

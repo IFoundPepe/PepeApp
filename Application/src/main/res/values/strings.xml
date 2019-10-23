@@ -48,6 +48,8 @@
     <string name="Focus_Button">Focus</string>
     <string name="FlapR_Button">Flap Right</string>
     <string name="FlapL_Button">Flap Left</string>
+    <string name="Red_Alert_Button">Red Alert</string>
+    <string name="Animate_Button">Animate</string>
 
 
     <!-- Servo Strings! -->
@@ -129,5 +131,19 @@
     <string name="eye_color_left_key">pref_key_eye_color_left_servo_min</string>
     <string name="eye_color_left_servo_max_key">pref_key_eye_color_left</string>
     <string name="eye_color_left_default">1</string>
+
+    <string name="red_alert_servo_min">Red Alert Servo Min</string>
+    <string name="red_alert_servo_min_key">pref_key_red_alert_servo_min</string>
+    <string name="red_alert_servo_max">Red Alert Servo Max</string>>
+    <string name="red_alert_servo_max_key">pref_key_red_alert_servo_max</string>
+    <string name="red_alert_servo_min_default">80</string>
+    <string name="red_alert_servo_max_default">100</string>
+
+    <string name="animate_servo_min">Animate Servo Min</string>
+    <string name="animate_servo_min_key">pref_key_animate_servo_min</string>
+    <string name="animate_servo_max">Animate Servo Max</string>>
+    <string name="animate_servo_max_key">pref_key_animate_servo_max</string>
+    <string name="animate_servo_min_default">80</string>
+    <string name="animate_servo_max_default">100</string>
 
 </resources>

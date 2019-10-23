@@ -14,7 +14,7 @@
         app:layout_constraintBottom_toTopOf="@+id/blink"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/laser"
+        app:layout_constraintStart_toEndOf="@+id/animate"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.pepedyne.pepe.views.LaserButton
@@ -22,21 +22,10 @@
         android:layout_width="100dp"
         android:layout_height="55dp"
         android:text="@string/Laser_Button"
-        app:layout_constraintBottom_toTopOf="@+id/winkright"
-        app:layout_constraintEnd_toStartOf="@+id/settingsButton"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tweet"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.pepedyne.pepe.views.FlapButton
-        android:id="@+id/flap"
-        android:layout_width="100dp"
-        android:layout_height="55dp"
-        android:text="@string/Flap_Button"
-        app:layout_constraintBottom_toTopOf="@+id/tail"
+        app:layout_constraintBottom_toTopOf="@+id/joystick"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/flapright"
+        app:layout_constraintStart_toEndOf="@+id/tail"
         app:layout_constraintTop_toBottomOf="@+id/eye" />
 
     <com.pepedyne.pepe.views.TweetButton
@@ -44,11 +33,11 @@
         android:layout_width="100dp"
         android:layout_height="55dp"
         android:text="@string/Tweet_Button"
-        app:layout_constraintBottom_toTopOf="@+id/winkleft"
-        app:layout_constraintEnd_toStartOf="@+id/laser"
+        app:layout_constraintBottom_toTopOf="@+id/joystick2"
+        app:layout_constraintEnd_toStartOf="@+id/tail"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/focus" />
 
     <com.pepedyne.pepe.views.JoyConView
         android:id="@+id/joycon"
@@ -57,21 +46,21 @@
         tools:layout_editor_absoluteX="908dp"
         tools:layout_editor_absoluteY="65dp" />
 
-    <com.pepedyne.pepe.views.PepeLookJoyStickView xmlns:custom="http://schemas.android.com/apk/res-auto"
+    <com.pepedyne.pepe.views.PepeLookJoyStickView
         android:id="@+id/joystick"
         android:layout_width="145dp"
         android:layout_height="150dp"
-        custom:JV_backgroundColor="#b9b9b9"
-        custom:JV_borderColor="#000000"
-        custom:JV_borderWidth="4dp"
-        custom:JV_buttonColor="#020202"
-        custom:JV_buttonSizeRatio="15%"
-        custom:JV_fixedCenter="false"
-        custom:layout_constraintBottom_toBottomOf="parent"
-        custom:layout_constraintEnd_toEndOf="parent"
-        custom:layout_constraintHorizontal_bias="0.5"
-        custom:layout_constraintStart_toEndOf="@+id/joystick2"
-        custom:layout_constraintTop_toBottomOf="@+id/tail" />
+        app:JV_backgroundColor="#b9b9b9"
+        app:JV_borderColor="#000000"
+        app:JV_borderWidth="4dp"
+        app:JV_buttonColor="#020202"
+        app:JV_buttonSizeRatio="15%"
+        app:JV_fixedCenter="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/joystick2"
+        app:layout_constraintTop_toBottomOf="@+id/laser" />
 
     <com.pepedyne.pepe.views.PepeTurnJoyStickView
         android:id="@+id/joystick2"
@@ -87,7 +76,7 @@
         app:layout_constraintEnd_toStartOf="@+id/joystick"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/key" />
+        app:layout_constraintTop_toBottomOf="@+id/tweet" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -128,7 +117,29 @@
         app:layout_constraintEnd_toStartOf="@+id/winkright"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tweet" />
+        app:layout_constraintTop_toBottomOf="@+id/red_alert" />
+
+    <com.pepedyne.pepe.views.WinkLeft
+        android:id="@+id/red_alert"
+        android:layout_width="100dp"
+        android:layout_height="55dp"
+        android:text="@string/Red_Alert_Button"
+        app:layout_constraintBottom_toTopOf="@+id/winkleft"
+        app:layout_constraintEnd_toStartOf="@+id/animate"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.pepedyne.pepe.views.WinkRight
+        android:id="@+id/animate"
+        android:layout_width="100dp"
+        android:layout_height="55dp"
+        android:text="@string/Animate_Button"
+        app:layout_constraintBottom_toTopOf="@+id/winkright"
+        app:layout_constraintEnd_toStartOf="@+id/settingsButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/red_alert"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.pepedyne.pepe.views.WinkRight
         android:id="@+id/winkright"
@@ -139,7 +150,7 @@
         app:layout_constraintEnd_toStartOf="@+id/blink"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/winkleft"
-        app:layout_constraintTop_toBottomOf="@+id/laser" />
+        app:layout_constraintTop_toBottomOf="@+id/animate" />
 
     <com.pepedyne.pepe.views.TailButton
         android:id="@+id/tail"
@@ -147,50 +158,17 @@
         android:layout_height="55dp"
         android:text="Tail"
         app:layout_constraintBottom_toTopOf="@+id/joystick"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/laser"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/key"
-        app:layout_constraintTop_toBottomOf="@+id/flap" />
-
-    <com.pepedyne.pepe.views.FlapLeftButton
-        android:id="@+id/flapleft"
-        android:layout_width="100dp"
-        android:layout_height="55dp"
-        android:text="Flap Left"
-        app:layout_constraintBottom_toTopOf="@+id/key"
-        app:layout_constraintEnd_toStartOf="@+id/flapright"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/focus" />
-
-    <com.pepedyne.pepe.views.FlapRightButton
-        android:id="@+id/flapright"
-        android:layout_width="100dp"
-        android:layout_height="55dp"
-        android:text="Flap Right"
-        app:layout_constraintBottom_toTopOf="@+id/tail"
-        app:layout_constraintEnd_toStartOf="@+id/flap"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/flapleft"
+        app:layout_constraintStart_toEndOf="@+id/tweet"
         app:layout_constraintTop_toBottomOf="@+id/confused" />
-
-    <com.pepedyne.pepe.views.KeyButton
-        android:id="@+id/key"
-        android:layout_width="100dp"
-        android:layout_height="55dp"
-        android:text="Key"
-        app:layout_constraintBottom_toTopOf="@+id/joystick2"
-        app:layout_constraintEnd_toStartOf="@+id/tail"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flapleft" />
 
     <com.pepedyne.pepe.views.EyeControl
         android:id="@+id/eye"
         android:layout_width="100dp"
         android:layout_height="55dp"
         android:text="Eyes"
-        app:layout_constraintBottom_toTopOf="@+id/flap"
+        app:layout_constraintBottom_toTopOf="@+id/laser"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/confused"
@@ -201,7 +179,7 @@
         android:layout_width="100dp"
         android:layout_height="55dp"
         android:text="Focus"
-        app:layout_constraintBottom_toTopOf="@+id/flapleft"
+        app:layout_constraintBottom_toTopOf="@+id/tweet"
         app:layout_constraintEnd_toStartOf="@+id/confused"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -212,7 +190,7 @@
         android:layout_width="100dp"
         android:layout_height="55dp"
         android:text="Confused"
-        app:layout_constraintBottom_toTopOf="@+id/flapright"
+        app:layout_constraintBottom_toTopOf="@+id/tail"
         app:layout_constraintEnd_toStartOf="@+id/eye"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/focus"
@@ -220,6 +198,13 @@
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
