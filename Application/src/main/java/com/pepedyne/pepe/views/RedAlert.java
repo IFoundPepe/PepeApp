@@ -30,20 +30,20 @@ public class RedAlert extends AppCompatButton {
          if (event.getAction() == MotionEvent.ACTION_DOWN)
          {
 //            host.getDispatch();
-            host.getDispatcher().getManager().blinkRightDown();
-            host.getDispatcher().getManager().blinkLeftDown();
-            host.getDispatcher().getManager().eyeLeftOff();
-            host.getDispatcher().getManager().eyeRightOff();
+            host.getDispatcher().getManager().blinkRightUp();
+            host.getDispatcher().getManager().blinkLeftUp();
+            host.getDispatcher().getManager().eyeLeftOn();
+            host.getDispatcher().getManager().eyeRightOn();
             host.getDispatcher().sendData();
 //            host.getDispatcher().flapRightUp();
          }
          else if (event.getAction() == MotionEvent.ACTION_UP)
          {
             v.performClick();
-            host.getDispatcher().getManager().blinkRightUp();
-            host.getDispatcher().getManager().blinkLeftUp();
-            host.getDispatcher().getManager().eyeLeftOn();
-            host.getDispatcher().getManager().eyeRightOn();
+            host.getDispatcher().getManager().blinkRightDown();
+            host.getDispatcher().getManager().blinkLeftDown();
+            host.getDispatcher().getManager().eyeLeftOff();
+            host.getDispatcher().getManager().eyeRightOff();
             host.getDispatcher().sendData();
 //            host.getDispatcher().flapRightUp();
          }
