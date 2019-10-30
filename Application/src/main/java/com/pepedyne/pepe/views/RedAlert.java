@@ -37,9 +37,9 @@ public class RedAlert extends AppCompatButton {
             host.getDispatcher().getManager().setEyeRight(EyeColorServo.RED);
 //            host.getDispatcher().getManager().eyeLeftOn();
             host.getDispatcher().getManager().eyeRightOn();
-            host.getDispatcher().sendData();
             host.getDispatcher().flapRightUp();
             host.getDispatcher().flapLeftUp();
+            host.getDispatcher().sendData();
          }
          else if (event.getAction() == MotionEvent.ACTION_UP)
          {
@@ -48,9 +48,9 @@ public class RedAlert extends AppCompatButton {
             host.getDispatcher().getManager().blinkLeftDown();
             host.getDispatcher().getManager().eyeLeftOff();
             host.getDispatcher().getManager().eyeRightOff();
-            host.getDispatcher().sendData();
             host.getDispatcher().flapRightDown();
             host.getDispatcher().flapLeftDown();
+            host.getDispatcher().sendData();
 //            host.getDispatcher().flapRightUp();
          }
          return true;

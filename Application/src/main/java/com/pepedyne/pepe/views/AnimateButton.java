@@ -31,6 +31,7 @@ public class AnimateButton extends AppCompatButton {
          if (event.getAction() == MotionEvent.ACTION_DOWN)
          {
             host.getDispatcher().keyToggle();
+            host.getDispatcher().sendData();
          }
          else if (event.getAction() == MotionEvent.ACTION_UP)
          {
