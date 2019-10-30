@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import com.pepedyne.pepe.controller.PepeControlActivity;
+import com.pepedyne.pepe.servos.EyeColorServo;
 
 public class RedAlert extends AppCompatButton {
    public RedAlert(Context context) {
@@ -32,7 +33,9 @@ public class RedAlert extends AppCompatButton {
 //            host.getDispatch();
             host.getDispatcher().getManager().blinkRightUp();
             host.getDispatcher().getManager().blinkLeftUp();
-            host.getDispatcher().getManager().eyeLeftOn();
+            host.getDispatcher().getManager().setEyeLeft(EyeColorServo.RED);
+            host.getDispatcher().getManager().setEyeRight(EyeColorServo.RED);
+//            host.getDispatcher().getManager().eyeLeftOn();
             host.getDispatcher().getManager().eyeRightOn();
             host.getDispatcher().sendData();
             host.getDispatcher().flapRightUp();
