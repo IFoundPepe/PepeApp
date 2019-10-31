@@ -132,8 +132,18 @@ public class PepeDispatcher {
       handler.sendData();
    }
 
+   public void flapLeftOff() {
+      pepeManager.flapLeftOff();
+      handler.sendData();
+   }
+
    public void flapRightUp() {
       pepeManager.flapRightUp();
+      handler.sendData();
+   }
+
+   public void flapRightOff() {
+      pepeManager.flapRightOff();
       handler.sendData();
    }
 

@@ -447,6 +447,9 @@ public class PepeBluetoothConnectionManager {
    public void flapRightDown() {
       ((StandardServo) this.flapRight).setMin();
    }
+   public void flapRightOff() {
+      ((StandardServo) this.flapRight).setCurrent(0);
+   }
 
    public void blinkLeftUp() {
       ((StandardServo) this.blinkLeft).setMax();
@@ -454,6 +457,9 @@ public class PepeBluetoothConnectionManager {
 
    public void blinkLeftDown() {
       ((StandardServo) this.blinkLeft).setMin();
+   }
+   public void flapLeftOff() {
+      ((StandardServo) this.flapRight).setCurrent(0);
    }
 
    public void blinkRightUp() {
